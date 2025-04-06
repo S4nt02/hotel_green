@@ -1,17 +1,18 @@
 import { Link } from 'react-router-dom';
 
-function homePage(){
-    return(
+function HomePage() {
+    return (
+      <div>
+        Teste conexão com o banco de dados<br />
         <div>
-            Teste conexão com o banco de dados<br></br>
-            <div>
-                
-            </div>
-            <div>
-                <Link to="/login"><h1>ir para página de login</h1></Link>
-            </div>
+          {/* Aqui você pode colocar mais conteúdo depois */}
         </div>
-    )
-}
-
-export default homePage
+        <div>
+          <Link to="/login"><h1>ir para página de login</h1></Link>
+        </div>
+      </div>
+    );
+  }
+  
+  export default HomePage;
+  
