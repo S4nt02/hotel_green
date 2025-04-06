@@ -4,17 +4,15 @@ const cors = require('cors');
 const express = require('express');
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+app.use(express.static('frontend/build'));
 
 const port = process.env.PORT || 8080;
+
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
 app.use(cors());
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
-  });
 ///////////////////////// Conexão com banco de dados ///////////////////////////////
 const mysql = require('mysql2');
 require('dotenv').config();
