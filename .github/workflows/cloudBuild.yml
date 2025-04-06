@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: hotel_green
     env:
-      IMAGE_NAME_FRONTEND: gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
-      IMAGE_NAME_BACKEND: gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:latest
+      IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/site:latest
     steps:
       # Git checkout
       - name: Checkout
@@ -23,35 +22,18 @@ jobs:
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      # Install pack (buildpacks CLI)
-      - name: Install pack
-        run: |
-          curl -sSL https://github.com/buildpacks/pack/releases/download/v0.23.0/pack-v0.23.0-linux.x86_64.tgz | tar -xz -C /usr/local/bin
+      # gcloud configure docker
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet
 
-      # Build frontend image
-      - name: Build frontend image with buildpacks
-        run: |
-          cd frontend
-          pack build $IMAGE_NAME_FRONTEND --builder gcr.io/buildpacks/nodejs:v1
+      # build image
+      - name: Build Docker image
+        run: docker build -t $IMAGE_NAME .
 
-      # Build backend image
-      - name: Build backend image with buildpacks
-        run: |
-          cd backend
-          pack build $IMAGE_NAME_BACKEND --builder gcr.io/buildpacks/nodejs:v1
+      # push image to registry
+      - name: Push Docker image
+        run: docker push $IMAGE_NAME
 
-      # Push frontend image to registry
-      - name: Push frontend Docker image
-        run: docker push $IMAGE_NAME_FRONTEND
-
-      # Push backend image to registry
-      - name: Push backend Docker image
-        run: docker push $IMAGE_NAME_BACKEND
-
-      # Deploy frontend image to Google Cloud Run
-      - name: Deploy frontend Docker image
-        run: gcloud run deploy frontend --image $IMAGE_NAME_FRONTEND --region us-central1 --memory 128Mi --min-instances 0 --max-instances 1 --platform managed --port 80 --allow-unauthenticated
-
-      # Deploy backend image to Google Cloud Run
-      - name: Deploy backend Docker image
-        run: gcloud run deploy backend --image $IMAGE_NAME_BACKEND --region us-central1 --memory 128Mi --min-instances 0 --max-instances 1 --platform managed --port 80 --allow-unauthenticated
+      # deploy image
+      - name: Deploy Docker image
+        run: gcloud run deploy site --image $IMAGE_NAME --region us-central1 --memory 128Mi --min-instances 0 --max-instances 1 --platform managed --port 80 --allow-unauthenticated
