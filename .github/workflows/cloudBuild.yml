@@ -30,11 +30,15 @@ jobs:
 
       # Build frontend image
       - name: Build frontend image with buildpacks
-        run: pack build $IMAGE_NAME_FRONTEND --path frontend --builder gcr.io/buildpacks/nodejs:v1
+        run: |
+          cd frontend
+          pack build $IMAGE_NAME_FRONTEND --builder gcr.io/buildpacks/nodejs:v1
 
       # Build backend image
       - name: Build backend image with buildpacks
-        run: pack build $IMAGE_NAME_BACKEND --path backend --builder gcr.io/buildpacks/nodejs:v1
+        run: |
+          cd backend
+          pack build $IMAGE_NAME_BACKEND --builder gcr.io/buildpacks/nodejs:v1
 
       # Push frontend image to registry
       - name: Push frontend Docker image
