@@ -1,6 +1,12 @@
+import React from 'react'
 import { Link } from 'react-router-dom'; //import para usar rotas
 import { useEffect, useState } from 'react' //import para recuperar dados do back
 import { API_URL } from '../../url';
+
+///////////////////////IMPORT DOS COMPONENTES + CSS//////////////////////////////
+import "./home.css"
+import HeaderComponente from '../../componetes/header/headerComponente';
+//////////////////////////////////////////////////////////////////////////
 
 
 function HomePage() {
@@ -15,7 +21,9 @@ function HomePage() {
   // }, []);
 
     return (
-      <div>
+      
+      <div class="body">
+        <HeaderComponente></HeaderComponente>
         Teste conexão com o banco de dados<br />
         <div>
           {/* Aqui você pode colocar mais conteúdo depois
