@@ -25,7 +25,7 @@ li{
 
 #logo_img{
     height: 45px;
-    width: 50px;
+    width: 55px;
     margin-bottom: 3px;
     margin-right: -8px;
 }
@@ -44,10 +44,15 @@ li{
     align-items: center;     
 }
 
-.login_button{
-    padding: 3px;
+#login_button{
+    padding: 5px;
     border-radius: 10px;
     font-size: 8px; 
+    border: 2px solid #f5f5dc;
+    background-color: #f5f5dc;
+    color: #8b4513;
+    font-size: 9px;
+    font-weight: bolder;
 }
 
 .menu_button{

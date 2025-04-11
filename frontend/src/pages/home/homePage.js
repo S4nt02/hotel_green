@@ -22,7 +22,7 @@ function HomePage() {
 
     return (
       
-      <div class="body">
+      <div>
         <HeaderComponente></HeaderComponente>
         Teste conexão com o banco de dados<br />
         <div>
@@ -31,8 +31,6 @@ function HomePage() {
           <li key={dados.id}>{dados.nome}</li>))}  */}
         </div>
         <div>
-          {/* //link da rota */}
-          <Link to="/login"><h1>ir para página de login</h1></Link> 
         </div>
       </div>
     );

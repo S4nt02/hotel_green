@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { use } from 'react'
 import "./header.css"
 import { Link, useNavigate } from 'react-router-dom'
+import MenuLateral from '../menu_lateral/menuLateral';
+import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react' //import para recuperar dados do back
+
 
 
 
@@ -10,6 +14,20 @@ function HeaderComponente(){
     const goToLoginPage = () => {
       navigate('/login');
     };
+
+    const location = useLocation()
+    const [ mostartButton , setButton] = useState(true)
+    useEffect(() => {
+        if (location.pathname == "/login"){
+            setButton(false)
+        }
+        else{
+            setButton(true)
+        }
+    }, [location])
+
+  
+
 
     return(
         <header>
@@ -22,8 +40,8 @@ function HeaderComponente(){
                 </li>
                 <li>
                     <div class="login_menu">
-                        <button class="login_button" onClick={goToLoginPage}>LOGIN</button>
-                        <button class="menu_button">///</button>
+                        {mostartButton && <button id="login_button" onClick={goToLoginPage}>LOGIN</button>}
+                        <MenuLateral></MenuLateral>
                     </div>
                 </li>
              </ul>

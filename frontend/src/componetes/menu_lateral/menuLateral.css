@@ -1,0 +1,47 @@
+.menu{
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    z-index: 1001;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -250px; /* Escondido inicialmente */
+    width: 150px;
+    height: 100vh;
+    background-color: #f5f5dc;
+    padding-top: 60px;
+    transition: 0.3s;
+    z-index: 1000;
+}
+
+.sidebar.open {
+    right: 0; /* Mostra o menu */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    display: block;
+    justify-content: left;
+    padding: 0;
+}
+
+.sidebar ul li {
+    display: block;
+    justify-content: left;
+    margin: 5px;
+}
+
+.sidebar ul li a {
+    color: #8b4513;
+    text-decoration: none;
+}
+
+
+  
