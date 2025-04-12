@@ -8,7 +8,6 @@
 .page{
     position: relative; /* necessário para posicionar .overlay corretamente */
     background-color: #2e8b57;
-    background-image: url("./entrada_hotel.jpg");
     background-size: cover;            /* pode trocar "auto" por "cover" para cobrir tudo */
     background-position: center;
     background-repeat: no-repeat;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "./header.css";
+import logoWhite from '../../assets/logo_white.png'
 import { useNavigate, useLocation } from 'react-router-dom';
 import MenuLateral from '../menu_lateral/menuLateral';
 
@@ -28,7 +29,7 @@ function HeaderComponente() {
       <ul className="navbar">
         <li>
           <div className="logo_nome">
-            <img src='/imagens/logo_white.png' id='logo_img' alt="logo" />
+            <img src={logoWhite} id='logo_img' alt="logo" />
             <a href='/'><h1 className="hotel_name">HOTEL GREEN GARDEN</h1></a>
           </div>
         </li>

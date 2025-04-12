@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { API_URL } from '../../url';
+import entradaImg from '../../assets/entrada_hotel.jpg'
 
 ///////////////////////IMPORT DOS COMPONENTES + CSS//////////////////////////////
 import "./login.css"
@@ -44,7 +45,7 @@ function LoginPage(){
 
     return(
         <>
-            <main className="page">
+            <main className="page" style={{ backgroundImage: `url(${entradaImg})` }}>
                 <div className="overlay"></div>
                 <HeaderComponente className="header_login"></HeaderComponente>
                 <main className='alinhar_login'>

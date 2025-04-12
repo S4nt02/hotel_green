@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />s
+        <Route path="/login" element={<LoginPage />} />
         <Route path='/cadastro' element={<CadastroPage/>}/>
       </Routes>
    </Router>
