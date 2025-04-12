@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 app.use(express.json());
-app.use(express.static('./frontend/build'));
+app.use(express.static('/frontend/build'));
 
 const port = process.env.PORT || 8080; 
 
