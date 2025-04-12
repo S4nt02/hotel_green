@@ -1,53 +1,50 @@
-import React, { use } from 'react'
-import "./header.css"
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useRef } from 'react';
+import "./header.css";
+import { useNavigate, useLocation } from 'react-router-dom';
 import MenuLateral from '../menu_lateral/menuLateral';
-import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react' //import para recuperar dados do back
 
+function HeaderComponente() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const headerRef = useRef(null);
 
+  const [mostrarButton, setButton] = useState(true);
 
+  useEffect(() => {
+    if (headerRef.current) {
+      if (location.pathname === "/login") {
+        setButton(false);
+        headerRef.current.style.backgroundColor = "transparent";
+      } else {
+        setButton(true);
+        headerRef.current.style.backgroundColor = "#2e8b57";
+      }
+    }
+  }, [location]);
 
-function HeaderComponente(){
-
-    const navigate = useNavigate();
-    const goToLoginPage = () => {
-      navigate('/login');
-    };
-
-    const location = useLocation()
-    const [ mostartButton , setButton] = useState(true)
-    useEffect(() => {
-        if (location.pathname == "/login"){
-            setButton(false)
-        }
-        else{
-            setButton(true)
-        }
-    }, [location])
-
-  
-
-
-    return(
-        <header>
-             <ul class="navbar">
-                <li>
-                    <div class="logo_nome">
-                        <img src='/imagens/logo_white.png' id='logo_img'></img>
-                        <h1 class="hotel_name">HOTEL GREEN GARDEN</h1>
-                    </div>
-                </li>
-                <li>
-                    <div class="login_menu">
-                        {mostartButton && <button id="login_button" onClick={goToLoginPage}>LOGIN</button>}
-                        <MenuLateral></MenuLateral>
-                    </div>
-                </li>
-             </ul>
-        </header>
-    )
+  return (
+    <header ref={headerRef} className="padrao_header">
+      {mostrarButton && <div className="overlay"></div>}
+      <ul className="navbar">
+        <li>
+          <div className="logo_nome">
+            <img src='/imagens/logo_white.png' id='logo_img' alt="logo" />
+            <a href='/'><h1 className="hotel_name">HOTEL GREEN GARDEN</h1></a>
+          </div>
+        </li>
+        <li>
+          <div className="login_menu">
+            {mostrarButton && (
+              <button id="login_button" onClick={() => navigate('/login')}>
+                LOGIN
+              </button>
+            )}
+            <MenuLateral />
+          </div>
+        </li>
+      </ul>
+    </header>
+  );
 }
 
-
-export default HeaderComponente
+export default HeaderComponente;

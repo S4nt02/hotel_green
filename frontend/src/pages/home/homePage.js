@@ -21,8 +21,7 @@ function HomePage() {
   // }, []);
 
     return (
-      
-      <div>
+      <>
         <HeaderComponente></HeaderComponente>
         Teste conexão com o banco de dados<br />
         <div>
@@ -30,9 +29,9 @@ function HomePage() {
           {dados.map((dados) => ( //coamndo igual o ngfor do angular percorre o json por meio de chave falor e exibe na tela, usar nome da variavel que foi atribuido o valor
           <li key={dados.id}>{dados.nome}</li>))}  */}
         </div>
-        <div>
-        </div>
-      </div>
+      
+      </>
+
     );
   }
   

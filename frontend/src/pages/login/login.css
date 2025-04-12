@@ -1,4 +1,79 @@
 *{
     margin: 0px;
     padding: 0px;
+
+
+}
+
+.page{
+    position: relative; /* necessário para posicionar .overlay corretamente */
+    background-color: #2e8b57;
+    background-image: url("./entrada_hotel.jpg");
+    background-size: cover;            /* pode trocar "auto" por "cover" para cobrir tudo */
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(30, 100, 60, 0.8); /* ou #2e8b57cc */
+    z-index: 1;
+}
+
+.alinhar_login{
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login_section{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    width: 200px;
+    height: auto;
+    background-color: #f5f5dc;
+    color: #8b4513;
+    z-index: 2;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.login_section h6{
+    margin: 5px;
+    font-size: 8px;
+    text-align: center;
+}
+
+
+.cadastro_login{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.login_section input{
+    width: auto;
+    border-radius: 5px;
+    margin: 5px;
+    border: 1pt solid #8b4513;
+    padding: 4px;
+    font-size: 8px;
+}
+
+.login_section button{
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 8px;
+    color: #FFFFFF;
+    background-color: #2e8b57;
+    border: 0px
 }

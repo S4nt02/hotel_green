@@ -1,6 +1,5 @@
 //////////////////////// CLOUD BACK -> FRONT //////////////////////////////////////////
 const path = require('path');
-const cors = require('cors');
 const express = require('express');
 const app = express();
 app.use(express.json());
@@ -11,7 +10,9 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
-app.use(cors());
+
+const cors = require('cors');
+app.use(cors())
 ////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////// Conexão com banco de dados ///////////////////////////////
@@ -47,3 +48,24 @@ bd.connect(err => {
 //       res.json(results);//resposta da query
 //     });
 //   });
+
+app.post('/login', (req, res) => {
+    console.log(req.body)
+    const { email , senha } = req.body;
+
+    console.log(email)
+    console.log(senha)
+    const sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
+  
+    bd.query(sql, [email, senha], (err, result) => { 
+        console.log(result)
+      if (err) return res.status(500).json({ erro: err });
+  
+      if (result.length > 0) {
+        res.json({ logado: true, usuario: result[0] });
+      } else {
+        res.json({ logado: false });
+      }
+    });
+  });
+  
