@@ -1,19 +1,23 @@
+*{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
 .menu{
     top: 20px;
-    right: 20px;
+    right: 50px;
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 40px;
     z-index: 1001;
     cursor: pointer;
-    margin: 10px;
+    margin: 40px;
 }
 
 .sidebar {
     position: fixed;
     top: 0;
     right: -250px; /* Escondido inicialmente */
-    width: 150px;
+    width: 180px;
     height: 100vh;
     background-color: #f5f5dc;
     padding-top: 60px;
@@ -30,12 +34,14 @@
     display: block;
     justify-content: left;
     padding: 0;
+    margin-top: 60px;
 }
 
 .sidebar ul li {
     display: block;
     justify-content: left;
-    margin: 5px;
+    margin: 10px;
+    font-size: 20px;
 }
 
 .sidebar ul li a {

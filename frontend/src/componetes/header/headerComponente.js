@@ -29,7 +29,7 @@ function HeaderComponente() {
       <ul className="navbar">
         <li>
           <div className="logo_nome">
-            <img src={logoWhite} id='logo_img' alt="logo" />
+            <img src={logoWhite} id='logo_img' alt="logo"/>
             <h1 className="hotel_name" href="/">HOTEL GREEN GARDEN</h1>
           </div>
         </li>

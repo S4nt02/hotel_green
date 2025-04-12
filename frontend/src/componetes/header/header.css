@@ -43,8 +43,8 @@ li{
 }
 
 #logo_img{
-    height: 45px;
-    width: 55px;
+    height: 120px;
+    width: 150px;
     margin-bottom: 3px;
     margin-right: -8px;
 }
@@ -54,6 +54,8 @@ li{
     font-size: 10px;
     justify-items: center;
     text-align: center;
+    font-size: 25px;
+    
     
 }
 
@@ -64,13 +66,12 @@ li{
 }
 
 #login_button{
-    padding: 5px;
-    border-radius: 10px;
-    font-size: 8px; 
+    padding: 10px;
+    border-radius: 20px; 
     border: 2px solid #f5f5dc;
-    background-color: #f5f5dc;
-    color: #8b4513;
-    font-size: 9px;
+    background-color: #8b4513;
+    color: #f5f5dc;
+    font-size: 20px;
     font-weight: bolder;
 }
 
@@ -78,4 +79,6 @@ li{
     background-color: #2e8b57;
     color: #FFFFFF;
     border: none;
+
 }
+

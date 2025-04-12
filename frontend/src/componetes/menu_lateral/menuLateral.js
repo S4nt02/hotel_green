@@ -24,9 +24,11 @@ function MenuLateral(){
 
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <ul>
+                    <li><a href="/">Cadastro</a></li>
                     <li><a href="/">Acomodações</a></li>
-                    <li><a href="/sobre">Reservas</a></li>
-                    <li><a href="/contato">Sobre Nós</a></li>
+                    <li><a href="/">Reservas</a></li>
+                    <li><a href="/">Sobre nós</a></li>
+                    <li><a href="/">Sair</a></li>
                 </ul>
             </div>
         </>
