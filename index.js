@@ -1,18 +1,19 @@
 //////////////////////// CLOUD BACK -> FRONT //////////////////////////////////////////
 const path = require('path');
 const express = require('express');
+const cors = require('cors');
 const app = express();
 app.use(express.json());
 app.use(express.static('frontend/build'));
-
-const port = process.env.PORT || 8080;
+app.use(cors())
+const port = process.env.PORT || 8080; 
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
 
-const cors = require('cors');
-app.use(cors())
+
+
 ////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////// Conexão com banco de dados ///////////////////////////////
