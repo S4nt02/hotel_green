@@ -4,14 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 app.use(express.json());
-
-app.use(express.static(path.join(__dirname, 'frontend/build')));
-
-// Rota para o fallback caso as URLs não correspondam a arquivos estáticos
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
-});
-
+app.use(express.static('frontend/build'));
 app.use(cors())
 const port = process.env.PORT || 8080; 
 
