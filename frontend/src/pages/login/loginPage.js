@@ -55,7 +55,7 @@ function LoginPage(){
                         <input type='password' id='senha'></input>
                         <h6>esqueceu sua senha?</h6>
                         <div className='cadastro_login'>
-                            <button id='cadastro'>CADASTRE-SE</button>
+                            <Link to="/cadastro"><button id='cadastro'>CADASTRE-SE</button></Link>
                             <button id='login' onClick={fazerLogin}>LOGIN</button>
                         </div>
                     </div>  
