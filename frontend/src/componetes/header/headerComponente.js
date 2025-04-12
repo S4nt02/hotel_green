@@ -30,7 +30,7 @@ function HeaderComponente() {
         <li>
           <div className="logo_nome">
             <img src={logoWhite} id='logo_img' alt="logo" />
-            <a href='/'><h1 className="hotel_name">HOTEL GREEN GARDEN</h1></a>
+            <h1 className="hotel_name">HOTEL GREEN GARDEN</h1>
           </div>
         </li>
         <li>
