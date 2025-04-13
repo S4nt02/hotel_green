@@ -1,0 +1,13 @@
+steps:
+  - uses: actions/checkout@v2
+  - name: Install dependencies
+    run: npm install --prefix frontend
+
+  - name: Build React app
+    run: npm run build --prefix frontend
+
+  - name: Install backend dependencies
+    run: npm install
+
+  - name: Deploy to Cloud Run
+    run: gcloud run deploy ...
