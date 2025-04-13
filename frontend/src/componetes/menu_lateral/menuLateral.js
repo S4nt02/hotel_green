@@ -1,3 +1,4 @@
+import React from 'react';
 
 import { FaBars } from 'react-icons/fa'; 
 import { useEffect, useState } from 'react' //import para recuperar dados do back

@@ -10,6 +10,17 @@ app.use(express.json());
 
 // Serve o React build
 app.use(express.static(path.join(__dirname, 'frontend', 'build')));
+// Deve vir **por último**: rota para React SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+});
+
+// Inicia o servidor
+const port = process.env.PORT || 8080; 
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});
+
 
 // Conecta ao banco de dados
 const bd = mysql.createConnection({
@@ -43,13 +54,4 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Deve vir **por último**: rota para React SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
-});
 
-// Inicia o servidor
-const port = process.env.PORT || 8080; 
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
