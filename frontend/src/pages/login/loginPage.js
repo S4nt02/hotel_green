@@ -12,15 +12,29 @@ function LoginPage(){
 
     const [usuario, setUsuario] = useState("")
     const [senha, setSenha] = useState("")
+    const [erroUsuario, setErroUsuario] = useState("")
+    const [erroSenha, setErroSenha] = useState("")
+    const [erroLogin, setErroLoin] = useState("")
 
     const fazerLogin = async () => {
-        // Obtendo diretamente os valores dos campos de entrada
-        const usuario = document.getElementById('usuario').value;
-        const senha = document.getElementById('senha').value;
-    
-        console.log("Email:", usuario);
-        console.log("Senha:", senha);
-    
+        console.log("chamando a função")
+        console.log(usuario)
+        console.log(senha)
+        
+
+        if(!usuario.trim()){
+            setErroUsuario("Por favor insira o nome de usuário")
+        }
+
+        if(!senha.trim()){
+            setErroSenha("Por favor insira sua senha")
+            return
+        }
+
+        if (!usuario.trim() || !senha.trim()) {
+            return;
+        }
+        
         try {
             const resposta = await fetch("http://localhost:8080/login", {
                 method: "POST",
@@ -35,7 +49,7 @@ function LoginPage(){
             if (data.logado) {
                 alert("Login realizado com sucesso!");
             } else {
-                alert("E-mail ou senha incorretos.");
+                setErroLoin("E-mail ou senha incorretos.")
             }
         } catch (error) {
             console.error("Erro ao fazer login:", error);
@@ -51,8 +65,24 @@ function LoginPage(){
                 <main className='alinhar_login'>
                     <div className='login_section'>
                         <h6>Digite seu email e senha para prosseguir</h6>
-                        <input type='text' id='usuario'></input>
-                        <input type='password' id='senha'></input>
+                        {erroLogin && <label className='erro' onChange={ () => {if(erroUsuario) setErroUsuario(""); if (erroSenha) setErroSenha("")}}>{erroLogin}</label>}
+                        <input type='email' 
+                            id='usuario' 
+                            placeholder='Digite seu Email' 
+                            value={usuario} 
+                            onChange={(e) => {setUsuario(e.target.value);
+                                if (erroUsuario) setErroUsuario("")
+                            }}>
+                        </input>
+                        {erroUsuario && <label className='erro'>{erroUsuario}</label>}
+                        <input type='password' 
+                            id='senha' 
+                            placeholder='Digite sua Senha' 
+                            value={senha} 
+                            onChange={(e) => {setSenha(e.target.value);
+                            if (erroSenha) setErroSenha("")}}>
+                        </input>
+                        {erroSenha && <label className='erro'>{erroSenha}</label>}
                         <h6>esqueceu sua senha?</h6>
                         <div className='cadastro_login'>
                             <Link to="/cadastro"><button id='cadastro'>CADASTRE-SE</button></Link>

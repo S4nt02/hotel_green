@@ -25,11 +25,10 @@ html, body {
 
 }
 
-.corpo_central, .conteudo1_hotel, .conteudo2_hotel, .conteudo3_hotel, .sobre {
+.conteudo1_hotel, .conteudo2_hotel, .conteudo3_hotel, .sobre {
     position: relative; /* Para que o conteúdo fique acima da sobreposição */
     z-index: 2; /* Garante que o conteúdo fique acima da sobreposição */
     color: white; /* Cor do texto para melhor contraste */
-    padding: 20px; /* Adiciona um pouco de espaço ao redor do conteúdo */
 }
 
 h1, h4, h3 {
@@ -88,7 +87,7 @@ img{
     display: flex;
     width: 400px;
     height: 400px;
-    border-radius: 100px;
+    border-radius: 40px;
 }
 
 #fachada_img{
@@ -102,7 +101,9 @@ img{
 .conteudo2_hotel,
 .conteudo3_hotel{
     display: inline-flex;
-    padding: 120px;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
 
 
 }
@@ -112,7 +113,6 @@ img{
 .conteudo3_hotel h3,
 .sobre h3{
     padding: 40px;
-    margin-top: 20px;
     text-align: justify;
     color: #f5f5dc;
     font-size: 23px;

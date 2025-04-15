@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "./header.css";
 import logoWhite from '../../assets/logo_white.png'
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import MenuLateral from '../menu_lateral/menuLateral';
 
 function HeaderComponente() {
@@ -30,7 +30,7 @@ function HeaderComponente() {
         <li>
           <div className="logo_nome">
             <img src={logoWhite} id='logo_img' alt="logo"/>
-            <h1 className="hotel_name" href="/">HOTEL GREEN GARDEN</h1>
+            <Link to={"/"}><h1 className="hotel_name" href="*">HOTEL GREEN GARDEN</h1></Link>
           </div>
         </li>
         <li>
