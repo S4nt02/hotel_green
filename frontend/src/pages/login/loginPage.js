@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { API_URL } from '../../url';
-import entradaImg from '../../assets/entrada_hotel.jpg'
-
+import entradaImg from '../../assets/entrada_hotel.jpg';
+import Rodape from '../../componetes/rodape/rodape';
 ///////////////////////IMPORT DOS COMPONENTES + CSS//////////////////////////////
 import "./login.css"
 import HeaderComponente from '../../componetes/header/headerComponente';
@@ -83,15 +83,16 @@ function LoginPage(){
                             if (erroSenha) setErroSenha("")}}>
                         </input>
                         {erroSenha && <label className='erro'>{erroSenha}</label>}
-                        <h6>esqueceu sua senha?</h6>
+                        <Link to="/recover_senha"><h6>esqueceu sua senha?</h6></Link>
                         <div className='cadastro_login'>
                             <Link to="/cadastro"><button id='cadastro'>CADASTRE-SE</button></Link>
                             <button id='login' onClick={fazerLogin}>LOGIN</button>
                         </div>
-                    </div>  
+                    </div>
                 </main>
-
             </main>
+            
+            <Rodape></Rodape>
         </>
     )
 }

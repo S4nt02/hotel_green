@@ -11,6 +11,7 @@ import fachada from '../../assets/entrada_hotel.jpg'
 ///////////////////////IMPORT DOS COMPONENTES + CSS//////////////////////////////
 import "./home.css"
 import HeaderComponente from '../../componetes/header/headerComponente';
+import Rodape from '../../componetes/rodape/rodape';
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -96,7 +97,7 @@ function HomePage() {
 
           </label>
       
-
+        <Rodape></Rodape>
         </main>
     </>
   )
