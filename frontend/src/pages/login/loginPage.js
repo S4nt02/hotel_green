@@ -65,7 +65,9 @@ function LoginPage(){
                 <main className='alinhar_login'>
                     <div className='login_section'>
                         <h6>Digite seu email e senha para prosseguir</h6>
-                        {erroLogin && <label className='erro' onChange={ () => {if(erroUsuario) setErroUsuario(""); if (erroSenha) setErroSenha("")}}>{erroLogin}</label>}
+                        {erroLogin && <label className='erro' onChange={ () => {if(erroUsuario) setErroUsuario(""); if (erroSenha) setErroSenha("")
+                            
+                        }}>{erroLogin}</label>}
                         <input type='email' 
                             id='usuario' 
                             placeholder='Digite seu Email' 

@@ -15,7 +15,7 @@ form{
     width: 100%;
 }
 
-.informacoePessoais{
+.informacoePessoais, .nacionalidade_documento{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -23,6 +23,7 @@ form{
     width: 100%;
     border: 1px solid #d5d5d5;
     border-radius: 10px;
+    margin: 15px;
 }
 
 .alinhar_content{
