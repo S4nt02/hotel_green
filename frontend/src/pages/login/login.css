@@ -1,8 +1,6 @@
 *{
     margin: 0px;
     padding: 0px;
-
-
 }
 
 .page{
@@ -11,7 +9,7 @@
     background-size: cover;            /* pode trocar "auto" por "cover" para cobrir tudo */
     background-position: center;
     background-repeat: no-repeat;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
 }
 
@@ -26,10 +24,10 @@
 }
 
 .alinhar_login{
-    margin-top: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 130px;
 }
 
 .login_section{

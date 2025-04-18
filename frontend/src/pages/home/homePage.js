@@ -29,7 +29,7 @@ function HomePage() {
   return(
     <>
         <main className="pagina">
-            <HeaderComponente></HeaderComponente>
+          <HeaderComponente></HeaderComponente>
 
           <div class = "corpo_central" style={{ backgroundImage: `url(${entradaImg})` }}>
             <div className="over"></div>
@@ -93,12 +93,9 @@ function HomePage() {
               Green Garden. Onde conforto e natureza se encontram.</h3> 
           </div>
           <hr/>
-          <label>
-
-          </label>
-      
-        <Rodape></Rodape>
+          <Rodape></Rodape>
         </main>
+        
     </>
   )
 }
