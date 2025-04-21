@@ -13,10 +13,6 @@ app.use(express.json());
 // Serve o React build
 app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
-// Rota para React SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
-});
 
 // Inicia o servidor
 const port = process.env.PORT || 8080; 
@@ -106,4 +102,301 @@ app.post('/recover_senha', (req, res) => {
       res.json({ existe: false });
     }
   });
+});
+
+/////API CORREIOS BUSCAR CEP/////////////////
+
+app.get('/api/cep/:cep', async (req, res) => {
+  const { cep } = req.params;
+
+  try {
+    const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const dados = await resposta.json();
+
+    if (dados.erro) {
+      return res.json({ erro: "CEP não encontrado" });
+    }
+
+    res.json(dados);
+  } catch (er) {
+    res.json({ erro: "Erro ao buscar CEP" });
+  }
+});
+
+
+///////////////////////SALVAR DADOS DO CADASTRO NO BANCO///////////////////////
+
+
+// Rota para salvar os dados do cadastro com verificação de duplicidade
+app.post('/api/cadastro', (req, res) => {
+  const {
+    nome,
+    dtNascimento,
+    nomeMae,
+    nomePai,
+    email,
+    senha,
+    cpf_rg,
+    passaporte,
+    telefone,
+    cep,
+    logradouro,
+    numero,
+    bairro,
+    cidade,
+    estado,
+    pais
+  } = req.body;
+
+  // 1. Formata a data para o formato aceito pelo MySQL (YYYY-MM-DD)
+  const formatarData = (data) => {
+    if (!data) return null;
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const dataNascimentoFormatada = formatarData(dtNascimento);
+
+  // 2. Define qual documento será salvo (CPF/RG ou Passaporte)
+  const documento = cpf_rg && cpf_rg.trim() !== '' ? cpf_rg : passaporte;
+
+  const verificaSql = `SELECT * FROM usuarios WHERE documento = ? OR email = ?`;
+
+  bd.query(verificaSql, [documento, email], (err, result) => {
+    if (err) {
+      console.error('Erro ao verificar cadastro:', err);
+      return res.status(500).json({ erro: 'Erro ao verificar cadastro', detalhes: err });
+    }
+
+    if (result.length > 0) {
+      return res.status(400).json({ erro: 'Documento ou Email já cadastrado!' });
+    }
+
+    const sql = `INSERT INTO usuarios 
+      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, telefone, cep, logradouro, numero, bairro, cidade, estado, pais) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const valores = [
+      nome,
+      dataNascimentoFormatada,
+      nomeMae,
+      nomePai,
+      email,
+      senha,
+      documento,
+      telefone,
+      cep,
+      logradouro,
+      numero,
+      bairro,
+      cidade,
+      estado,
+      pais
+    ];
+
+    bd.query(sql, valores, (err, result) => {
+      if (err) {
+        console.error('Erro ao salvar cadastro:', err);
+        return res.status(500).json({ erro: 'Erro ao salvar cadastro', detalhes: err });
+      }
+      res.status(201).json({ sucesso: true, mensagem: 'Cadastro salvo com sucesso!' });
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Rota para React SPA SEMPRE DEIXAR NO FINAL
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
 });

@@ -8,12 +8,14 @@ import "./cadastro.css"
 import { useForm} from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { useNavigate } from 'react-router-dom'
 
 
 
 
 function CadastroPage(){
+    const navigate =  useNavigate()
+
     const [nacionalidade, setNacionalidade] = useState("brasileiro")
     const [documento, setDocumento] = useState("CPF")
     const [cep, setCep] = useState("")
@@ -204,6 +206,7 @@ function CadastroPage(){
     const enviarFormulario = async (dados) => {      
         console.log("chamando a função")
         console.log(`dados ${JSON.stringify(dados)}`)
+        
 
         try{
           const cadastrar = await fetch(`${API_URL}/api/cadastro`, {
@@ -215,11 +218,12 @@ function CadastroPage(){
           })
 
           if(!cadastrar.ok){
-
+            //definir erros do alerta
           }
+          navigate('/perfil')
         }
         catch (erro){
-          
+          //definir erros do alerta
         }
     }
 

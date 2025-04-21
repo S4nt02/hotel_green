@@ -16,7 +16,11 @@ function HeaderComponente() {
       if (location.pathname === "/login") {
         setButton(false);
         headerRef.current.style.backgroundColor = "transparent";
-      } else {
+      } 
+      else if(location.pathname === "/admin"){
+        setButton(false)
+      }
+      else {
         setButton(true);
         headerRef.current.style.backgroundColor = "#2e8b57";
       }

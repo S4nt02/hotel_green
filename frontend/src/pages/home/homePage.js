@@ -16,15 +16,6 @@ import Rodape from '../../componetes/rodape/rodape';
 
 
 function HomePage() {
-  // //busca pelos dados no back precisa estar dentro da função//
-  // const [dados, setDados] = useState([]); //define dados como um array vazio setdados é usado para atualizar o valor de dados, substituir dados pelo item da consulta
-  // //useeffect é a chamada da api onde iremos bucar os dados na rota definida no backedn
-  // useEffect(() => {
-  //   fetch(`${API_URL}/sua-rota`) //definição da rota da api
-  //   .then((res) => res.json())
-  //   .then((data) => setDados(data)) //uso do set para atribuir valor a variavel
-  //   .catch((err) => console.error('Erro ao buscar dados:', err)); //mensagem de erro
-  // }, []);
 
   return(
     <>
