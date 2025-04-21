@@ -287,14 +287,14 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Lock size={18}/> Senha
                                     </label>
-                                    <input type='password' placeholder='' {...register("senha")}></input>
+                                    <input type='password' placeholder='Digite sua senha' {...register("senha")}></input>
                                     {errors.senha && <p>{errors.senha.message}</p>}
                                 </div>
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Lock size={18}/> Confirmar Senha
                                     </label>
-                                    <input type='password' placeholder='' {...register("confirmarSenha")}></input>
+                                    <input type='password' placeholder='Confirme sua senha' {...register("confirmarSenha")}></input>
                                     {errors.confirmarSenha && <p>{errors.confirmarSenha.message}</p>}
                                 </div>
                             </div>
@@ -303,15 +303,15 @@ function CadastroPage(){
                         <div className='nacionalidade_documento'>
                             <h5>Nacionalidade e Documentação</h5>
                             <hr></hr>
-                            <div>
+                            <div class = 'nacionalidade'>
                                 <label className='alinhar_itens'>
                                     <Flag size={18} /> Nacionalidade 
                                 </label>
-                                <div>
+                                <div className='opcao_1'>
                                     <input type='radio'name='nacionalidade'  value='brasileiro'  onChange={verificarNacionalidade}  checked={nacionalidade === "brasileiro"} />
                                     <label>Brasileiro</label>
                                 </div>
-                                <div>
+                                <div className='opcao_2'>
                                     <input type='radio' name='nacionalidade'  value='estrangeiro'  onChange={verificarNacionalidade}  checked={nacionalidade === "estrangeiro"} />
                                     <label>Estrangeiro</label>
                                 </div>
@@ -320,21 +320,21 @@ function CadastroPage(){
                             <div>
                                 {nacionalidade === "brasileiro"  && 
                                 <div>
-                                    <div>
+                                    <div className='documentos'>
                                         <label className='alinhar_itens'>
                                             <IdCard size={18} /> Documento
                                         </label>
-                                        <div>
+                                        <div className='opcao_1'>
                                             <input type='radio'name='documento' value="CPF" checked={documento === "CPF"} onChange={selecionarDocumento}/>
                                             <label>CPF</label>
                                         </div>
-                                        <div>
+                                        <div className='opcao_2'>
                                             <input type='radio' name='documento' value="RG" checked={documento === "RG"} onChange={selecionarDocumento} />
                                             <label>RG</label>
                                         </div>
                                         {errors.documento && <p>{errors.documento.message}</p>}
                                     </div>
-                                    <div>
+                                    <div class = 'resposta'>
                                         <label className='alinhar_itens'>
                                             <IdCard size={18}/> Número do {documento}
                                         </label>
@@ -344,7 +344,7 @@ function CadastroPage(){
 
                                 </div>}
                                 { nacionalidade === "estrangeiro" && 
-                                    <div>
+                                    <div class = 'resposta'>
                                         <label className='alinhar_itens'>
                                         <FileText size={18}/> Número do Passaporte
                                         </label>
@@ -359,7 +359,7 @@ function CadastroPage(){
                             <h5>Endereço e contato</h5>
                             <hr></hr>
                             <div className='alinhar_contato_endereco'>
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Phone size={18}/>Número de Telefone
                                     </label>
@@ -367,7 +367,7 @@ function CadastroPage(){
                                     {errors.telefone && <p>{errors.telefone.message}</p>}
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <MapPin size={18}/>CEP
                                     </label>
@@ -389,7 +389,7 @@ function CadastroPage(){
                                     {errors.cep && <p>{errors.cep.message}</p>}
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Home size={18}/>Logradouro
                                     </label>
@@ -397,7 +397,7 @@ function CadastroPage(){
                                     {errors.logradouro && <p>{errors.logradouro.message}</p>}
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <MapPinHouse size={18}/>Número
                                     </label>
@@ -405,14 +405,14 @@ function CadastroPage(){
                                     {errors.numero && <p>{errors.numero.message}</p>}
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Building size={18}/>Complemento
                                     </label>
                                     <input type='text' placeholder='Apartamento, bloco, etc'></input>
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Landmark size={18}/> Bairro
                                     </label>
@@ -420,7 +420,7 @@ function CadastroPage(){
                                     {errors.bairro && <p>{errors.bairro.message}</p>}
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Building2 size={18}/>Cidade
                                     </label>
@@ -428,7 +428,7 @@ function CadastroPage(){
                                     {errors.cidade && <p>{errors.cidade.message}</p>}
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <MapPin size={18}/>Estado
                                     </label>
@@ -436,7 +436,7 @@ function CadastroPage(){
                                     {errors.estado && <p>{errors.estado.message}</p>}
                                 </div>
 
-                                <div>
+                                <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Flag size={18}/>País
                                     </label>

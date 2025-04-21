@@ -1,85 +1,105 @@
 *{
-    margin: 0px;
-    padding: 0px;
-}
-
-.form_content{
-    display: flex;
-    justify-content: center;
-    justify-self: center;
-    padding: 20px;
-    width: 60%;
+    margin: 0;
+    padding: 0;
 }
 
 form{
     width: 100%;
 }
 
-.informacoePessoais, .nacionalidade_documento, .contato_endereco{
+.form_content {
     display: flex;
-    flex-direction: column;
+    justify-self: center;
+    padding: 25px;
+    width: 50%;
+}
+
+h5{
+    display: flex;
+    color: #2e8b57;
+    font-size: 25px;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    border: 1px solid #d5d5d5;
-    border-radius: 10px;
-    margin: 15px;
+    padding: 7px;
 }
 
-.alinhar_content{
-    display: inline-flex;
-    justify-content: space-evenly;
-    width: 100%;
-}
-
-.edit_label_input{
+hr{
     display: flex;
+    width: 60%;
+    justify-self: center;
+    background-color: #8b4513;
+}
+
+.informacoePessoais, .nacionalidade_documento, .contato_endereco{
+    width: 100%;
     flex-direction: column;
-    justify-content: left;
-    margin: 10px;
+    align-items: center;
+    background-color: #f5f5dc;
+    margin: 15px;
+    border-radius: 20px;
+    border-style: double;
+    border-color: #8b4513;
+
 }
 
 .alinhar_itens{
-    font-size: 14px;
-    font-weight: 500;
-    color: #1f2937;
-    display: flex;
+    display: inline-block;
+    font-size: 18px;
+    color: #8b4513;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 2px;
+    padding-left: 20px;
+    margin-top: 20px;
+
+
+
 }
 
-.alinhar_contato_endereco {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px 40px; /* espaço vertical e horizontal */
-    justify-content: space-evenly;
-    width: 80%;
-    
-}
-  
 
-.alinhar_contato_endereco div {
+.edit_label_input{
+
+    width: 60%;
+        
+
+}
+
+.edit_label_input input{
+    display: block;
+    width: 40%;
+    border-radius: 10px;
+    border-style: double;
+    border-color: #8b4513;
+    background-color: #f5f5dc;
+        
+
+}
+
+.nacionalidade{
+    flex-direction: column;
+}
+
+.opcao_1, .opcao_2{
+    display: inline-flex;
+    ;
+}
+
+.edit_opcoes{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    width: 100%;
 }
 
-.alinhar_contato_endereco input {
-    margin: 3px;
-    padding: 10px 12px;
-    background-color: #f1f5f9;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
-    transition: 0.2s ease;
+.resposta input{
+    display: flex;
+    width: 30%;
+    border-radius: 10px;
+    border-style: double;
+    border-color: #8b4513;
+    background-color: #f5f5dc;
 }
-  
-.alinhar_contato_endereco input:focus {
-    border-color: #60a5fa;
-    background-color: #fff;
-    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4);
+
+button{
+    display: flex;
+    justify-self: center;
+    color: #f5f5dc;
+    background-color: #8b4513;
 }
+
+
