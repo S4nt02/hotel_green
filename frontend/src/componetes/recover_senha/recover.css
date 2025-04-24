@@ -29,7 +29,7 @@
     align-items: center;
 }
 
-input {
+.recover_input {
     width: 100%;
     padding: 10px;
     font-size: 16px;
@@ -38,7 +38,7 @@ input {
     border: 1px solid #ccc;
 }
 
-button {
+.srecover_button {
     width: auto;
     padding: 10px;
     font-size: 16px;

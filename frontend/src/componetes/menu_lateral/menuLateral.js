@@ -2,12 +2,16 @@ import React from 'react';
 
 import { FaBars } from 'react-icons/fa'; 
 import { useEffect, useState } from 'react' //import para recuperar dados do back
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom'
+import { useAuth } from '../../context/authContext';
+
 
 import "./menuLateral.css"
+import { API_URL } from '../../url';
 
 function MenuLateral(){
-
+    const {id, autorizacao} = useAuth()
+    const { logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false)
     const abrirMenu = () => setIsOpen(!isOpen)
     const [infosMenu, setInfosMenu] = useState("padrao")
@@ -21,7 +25,10 @@ function MenuLateral(){
         color_menu = "#ffffff"
     }
     useEffect( () => {
-        if(location.pathname === "/admin"){
+        console.log('menu lateral')
+        console.log(id)
+        console.log(autorizacao)
+        if(autorizacao !== null){
             setInfosMenu('admin')
         }
         else{
@@ -30,6 +37,11 @@ function MenuLateral(){
         }
     }, [] )
 
+    const sair = async () => {
+        console.log('chamando sair')
+        await  logout(); 
+        console.log('logout executado');
+      };
 
     return(
         <>
@@ -37,21 +49,22 @@ function MenuLateral(){
 
             {infosMenu === "" && <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <ul>
-                    <li><a href="/">Acomodações</a></li>
-                    <li><a href="/">Reservas</a></li>
-                    <li><a href="/">Sobre nós</a></li>
-                    <li><a href="/">Sair</a></li>
+                    <li>Acomodações</li>
+                    <li>Reservas</li>
+                    <li>Sobre nós</li>
+                    <li><button onClick={sair}>SAIR</button></li>
                 </ul>
             </div>}
 
             {infosMenu === "admin" && <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <ul>
                     <Link to="/funcionario"><li><a>Funcionários</a></li></Link>
-                    <li><a href="/">Hospedes</a></li>
-                    <li><a href="/">Reservas</a></li>
-                    <li><a href="/">Quartos</a></li>
-                    <li><a href="/">Itens</a></li>
-                    <li><a href="/">Consumo</a></li>
+                    <li>Hospedes</li>
+                    <li>Reservas</li>
+                    <li>Quartos</li>
+                    <li>Itens</li>
+                    <li>Consumo</li>
+                    <li><button onClick={sair}>SAIR</button></li>
                 </ul>
             </div> }
         </>

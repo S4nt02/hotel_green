@@ -7,7 +7,37 @@ require('dotenv').config();
 
 
 const app = express();
-app.use(cors());
+
+const whitelist = [
+  'http://localhost:8080',            // ambiente local
+  'https://hotel-green-915114613175.us-central1.run.app'     // produção
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // permitir requisições sem origin (como Postman)
+    if (whitelist.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
+const session = require('express-session');
+app.use(session({
+  secret: 'minha-chave-secreta',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    maxAge: 24000 * 60 * 60
+  }
+}));
+
+
 app.use(express.json());
 
 // Serve o React build
@@ -40,17 +70,69 @@ bd.connect(err => {
 // Rota de login
 app.post('/login', (req, res) => {
   const { email, senha } = req.body;
-  const sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
+  console.log(`email:${email}`)
+  console.log(`senha:${senha}`)
 
-  bd.query(sql, [email, senha], (err, result) => { 
-    if (err) return res.status(500).json({ erro: err });
+  const sql = `
+    SELECT id, email, NULL AS autorizacao, 'usuario' AS tipo
+    FROM usuarios 
+    WHERE email = ? AND senha = ?
+    UNION
+    SELECT id, email, autorizacao, 'funcionario' AS tipo
+    FROM funcionarios 
+    WHERE email = ? AND senha = ?
+  `;
+
+  bd.query(sql, [email, senha, email, senha], (err, result) => {
+    if (err) {
+      console.error('Erro no SQL:', err);
+      return res.status(500).json({ erro: err });
+    }
+
     if (result.length > 0) {
-      res.json({ logado: true, usuario: result[0] });
+      req.session.userId = result[0].id;
+      req.session.autorizacao = result[0].autorizacao || null;
+      console.log(req.session.userId)
+      console.log(req.session.autorizacao)
+
+      req.session.save(() => {
+        res.json({ logado: true, usuario: result[0] });
+      });
     } else {
       res.json({ logado: false });
     }
   });
+
 });
+
+app.get('/auth/verify', (req, res) => {
+  console.log(req.session.userId)
+  if (req.session.userId) {
+    // O usuário está logado
+    res.json({
+      autenticado: true,
+      id: req.session.userId,
+      autorizacao : req.session.autorizacao,
+    });
+  } else {
+    // O usuário não está logado
+    res.json({ autenticado: false });
+  }
+});
+
+app.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ erro: 'Erro ao encerrar a sessão' });
+    }
+    res.clearCookie('connect.sid'); // limpa o cookie da sessão
+    res.json({ mensagem: 'Sessão encerrada com sucesso' });
+  });
+});
+
+
+
+
 
 // Cria o transporte do nodemailer para envio de emails
 const transporter = nodemailer.createTransport({
@@ -145,7 +227,8 @@ app.post('/api/cadastro', (req, res) => {
     bairro,
     cidade,
     estado,
-    pais
+    pais,
+    nacionalidade,
   } = req.body;
 
   // 1. Formata a data para o formato aceito pelo MySQL (YYYY-MM-DD)
@@ -176,8 +259,8 @@ app.post('/api/cadastro', (req, res) => {
     }
 
     const sql = `INSERT INTO usuarios 
-      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, telefone, cep, logradouro, numero, bairro, cidade, estado, pais) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, telefone, cep, logradouro, numero, bairro, cidade, estado, pais, nacionalidade) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const valores = [
       nome,
@@ -194,7 +277,8 @@ app.post('/api/cadastro', (req, res) => {
       bairro,
       cidade,
       estado,
-      pais
+      pais,
+      nacionalidade
     ];
 
     bd.query(sql, valores, (err, result) => {

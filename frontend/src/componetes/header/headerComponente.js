@@ -3,8 +3,10 @@ import "./header.css";
 import logoWhite from '../../assets/logo_white.png'
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import MenuLateral from '../menu_lateral/menuLateral';
+import { useAuth } from '../../context/authContext';
 
 function HeaderComponente() {
+  const {id, logout, autorizacao} = useAuth()
   const navigate = useNavigate();
   const location = useLocation();
   const headerRef = useRef(null);
@@ -12,12 +14,15 @@ function HeaderComponente() {
   const [mostrarButton, setButton] = useState(true);
 
   useEffect(() => {
+    console.log('header')
+    console.log(id)
+    console.log(autorizacao)
     if (headerRef.current) {
       if (location.pathname === "/login") {
         setButton(false);
         headerRef.current.style.backgroundColor = "transparent";
       } 
-      else if(location.pathname === "/admin"){
+      else if(id !== null){
         setButton(false)
       }
       else {

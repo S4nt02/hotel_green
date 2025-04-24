@@ -99,6 +99,8 @@ function CadastroPage(){
           .refine(s => s.trim().length > 0, {
             message: "Por favor confirme sua senha"
           }),
+        nacionalidade : z.string().optional(),
+        cpf_rg : z.string().optional(),
         passaporte: z.string().optional(), // precisa estar aqui como string normal
         telefone: z.string()
           .refine(telefone => telefone.trim().length > 0, {
@@ -139,7 +141,7 @@ function CadastroPage(){
       })
 
       .refine(data => {
-        if (data.nacionalidade === "estrangeiro") {
+        if (nacionalidade === "estrangeiro") {
           return data.passaporte && data.passaporte.trim().length > 0
         }
         return true;
@@ -149,7 +151,7 @@ function CadastroPage(){
       })
 
       .refine(data => {
-        if (data.nacionalidade === "brasileiro") {
+        if (nacionalidade === "brasileiro") {
           return data.cep && data.cep.trim().length > 0; 
         }
         return true;
@@ -159,38 +161,53 @@ function CadastroPage(){
     })
 
     .refine(async (data) => {
-      if (data.nacionalidade === "brasileiro") {
-        if (!data.cpf_rg || data.cpf_rg.trim() === "") return false;
-        const isValid = await validarCPF_RG(data.cpf_rg);
-        return isValid;
-      }
-      return true; // se não for brasileiro, tudo bem
+      if (nacionalidade === "brasileiro") {
+
+        if (!cpf_rg || cpf_rg.trim() === "") return false;
+        const isValid = await validarCPF_RG(cpf_rg);
+        return isValid;  }
+      return true; 
     }, {
-      message: "CPF/RG é obrigatório e precisa ser válido para brasileiros",
-      path: ["cpf_rg"]  // aponta para o campo com erro
+      message: `${documento} é obrigatório e precisa ser válido para brasileiros`,
+      path: ["cpf_rg"] 
     });
-      
+    
       
     ///////////////validação de CPF//////////////////
     const validarCPF_RG = (cpf_rg) => {
-    if(documento === 'CPF') {
-        cpf_rg = cpf_rg.replace(/[^\d]/g, "");
-        if(cpf_rg.length !== 11 || /^(\d)\1{10}$/.test(cpf_rg)) return false;
+      console.log(cpf_rg)
+      if (!cpf_rg) return false; // Se cpf_rg for undefined ou null, retorna false imediatamente.
+    
+      // Se o documento for CPF
+      if (documento === 'CPF') {
+        cpf_rg = cpf_rg.replace(/[^\d]/g, ""); // Remove caracteres não numéricos
+    
+        // Verifica se o CPF tem 11 dígitos e não é uma sequência repetitiva
+        if (cpf_rg.length !== 11 || /^(\d)\1{10}$/.test(cpf_rg)) return false;
+    
+        // Calcula os dígitos verificadores do CPF
         let sum = 0;
         for (let i = 0; i < 9; i++) sum += parseInt(cpf_rg[i]) * (10 - i);
         let firstVerifier = 11 - (sum % 11);
         firstVerifier = (firstVerifier === 10 || firstVerifier === 11) ? 0 : firstVerifier;
+    
         sum = 0;
         for (let i = 0; i < 10; i++) sum += parseInt(cpf_rg[i]) * (11 - i);
         let secondVerifier = 11 - (sum % 11);
         secondVerifier = (secondVerifier === 10 || secondVerifier === 11) ? 0 : secondVerifier;
+    
+        // Compara os dígitos verificadores calculados com os do CPF
         return cpf_rg[9] === firstVerifier.toString() && cpf_rg[10] === secondVerifier.toString();
-    }
-    if (documento === 'RG') {
-        // Adicione a lógica de validação de RG
-    }
-    return true; // Caso não seja nem CPF nem RG
-};
+      }
+    
+      // Lógica para validar RG (ainda não implementada)
+      if (documento === 'RG') {
+        // Adicione a lógica de validação de RG aqui, se necessário
+      }
+    
+      return true; // Se não for nem CPF nem RG, retorna true
+    };
+    
     //////////////////////////////////////////////////////////////
     
     ////////////////////////ENIO FORMULARIO///////////////////////
@@ -203,9 +220,11 @@ function CadastroPage(){
         resolver: zodResolver(validar)
     })
 
-    const enviarFormulario = async (dados) => {      
+    const enviarFormulario = async (dados) => {     
+        dados.nacionalidade = nacionalidade 
         console.log("chamando a função")
         console.log(`dados ${JSON.stringify(dados)}`)
+        console.log(`dados ${JSON.stringify(dados.nacionalidade)}`)
         
 
         try{
@@ -249,52 +268,52 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <User size={18}/> Nome Completo
                                     </label>
-                                    <input type='text' id='nomeCompleto' placeholder='Digite seu nome completo' {...register("nome")}></input>
+                                    <input type='text' className='cadastro_input' id='nomeCompleto' placeholder='Digite seu nome completo' {...register("nome")}></input>
                                     {errors.nome && <p>{errors.nome.message}</p>}
                                 </div>
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Calendar size={18} />Data de Nascimento
                                     </label>
-                                    <input type='date' id='dtNascimento' {...register('dtNascimento')} inputMode='numeric' pattern='[0-9]*'></input>
+                                    <input type='date' className='cadastro_input' id='dtNascimento' {...register('dtNascimento')} inputMode='numeric' pattern='[0-9]*'></input>
                                     {errors.dtNascimento && <p>{errors.dtNascimento.message}</p>}
                                 </div>
-                            </div>
-                            <div className='alinhar_content'>
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <User size={18}/> Nome da Mãe
                                     </label>
-                                    <input type='text' id='nomeMae' placeholder='Digite o nome da mãe completo' {...register("nomeMae")}></input>
+                                    <input type='text' className='cadastro_input' id='nomeMae' placeholder='Digite o nome da mãe completo' {...register("nomeMae")}></input>
                                     {errors.nomeMae && <p>{errors.nomeMae.message}</p>}
                                 </div>
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <User size={18}/> Nome do Pai
                                     </label>
-                                    <input type='text' id='nomePai' placeholder='Digite o nome do pai completo' {...register("nomePai")}></input>
+                                    <input type='text' className='cadastro_input' id='nomePai' placeholder='Digite o nome do pai completo' {...register("nomePai")}></input>
                                 </div>
-                            </div>
-                            <div className='alinhar_content'>
+
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Mail size={18}/> Email
                                     </label>
-                                    <input type='mail' placeholder='Digite seu email' {...register("email")}></input>
+                                    <input type='mail' className='cadastro_input' placeholder='Digite seu email' {...register("email")}></input>
                                     {errors.email && <p>{errors.email.message}</p>}
                                 </div>
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Lock size={18}/> Senha
                                     </label>
-                                    <input type='password' placeholder='Digite sua senha' {...register("senha")}></input>
+                                    <input type='password' className='cadastro_input' placeholder='Digite sua senha' {...register("senha")}></input>
                                     {errors.senha && <p>{errors.senha.message}</p>}
+                                </div>
+                                <div className='edit_label_input'>
+
                                 </div>
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Lock size={18}/> Confirmar Senha
                                     </label>
-                                    <input type='password' placeholder='Confirme sua senha' {...register("confirmarSenha")}></input>
+                                    <input type='password' className='cadastro_input' placeholder='Confirme sua senha' {...register("confirmarSenha")}></input>
                                     {errors.confirmarSenha && <p>{errors.confirmarSenha.message}</p>}
                                 </div>
                             </div>
@@ -307,11 +326,11 @@ function CadastroPage(){
                                 <label className='alinhar_itens'>
                                     <Flag size={18} /> Nacionalidade 
                                 </label>
-                                <div className='opcao_1'>
+                                <div className='opcao'>
                                     <input type='radio'name='nacionalidade'  value='brasileiro'  onChange={verificarNacionalidade}  checked={nacionalidade === "brasileiro"} />
                                     <label>Brasileiro</label>
                                 </div>
-                                <div className='opcao_2'>
+                                <div className='opcao'>
                                     <input type='radio' name='nacionalidade'  value='estrangeiro'  onChange={verificarNacionalidade}  checked={nacionalidade === "estrangeiro"} />
                                     <label>Estrangeiro</label>
                                 </div>
@@ -319,16 +338,16 @@ function CadastroPage(){
                             </div>
                             <div>
                                 {nacionalidade === "brasileiro"  && 
-                                <div>
+                                <div className='documento_brasil'>
                                     <div className='documentos'>
                                         <label className='alinhar_itens'>
                                             <IdCard size={18} /> Documento
                                         </label>
-                                        <div className='opcao_1'>
+                                        <div className='opcao'>
                                             <input type='radio'name='documento' value="CPF" checked={documento === "CPF"} onChange={selecionarDocumento}/>
                                             <label>CPF</label>
                                         </div>
-                                        <div className='opcao_2'>
+                                        <div className='opcao'>
                                             <input type='radio' name='documento' value="RG" checked={documento === "RG"} onChange={selecionarDocumento} />
                                             <label>RG</label>
                                         </div>
@@ -338,7 +357,19 @@ function CadastroPage(){
                                         <label className='alinhar_itens'>
                                             <IdCard size={18}/> Número do {documento}
                                         </label>
-                                        <input type='text' placeholder={`Digite seu número de ${documento}`} {...register("cpf_rg")}  onChange={(e) => validarCPF_RG(setCPF_RG(e.target.value))}  inputMode='numeric' pattern='[0-9]*'></input>
+                                        <input
+                                          type='text'
+                                          className='cadastro_input'
+                                          placeholder={`Digite seu número de ${documento}`}
+                                          {...register("cpf_rg")}
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            setCPF_RG(value); // Atualiza o estado com o valor
+                                            validarCPF_RG(value); // Passa o valor diretamente para a validação
+                                          }}
+                                          inputMode='numeric'
+                                          pattern='[0-9]*'
+                                        />
                                         {errors.cpf_rg && <p>{errors.cpf_rg.message}</p>}
                                     </div>
 
@@ -348,7 +379,7 @@ function CadastroPage(){
                                         <label className='alinhar_itens'>
                                         <FileText size={18}/> Número do Passaporte
                                         </label>
-                                        <input type='text' placeholder='Diite seu número de passaporte'  onChange={(e) => setPassaporte(e.target.value)} {...register("passaporte")} ></input>
+                                        <input type='text' className='cadastro_input' placeholder='Diite seu número de passaporte'  onChange={(e) => setPassaporte(e.target.value)} {...register("passaporte")} ></input>
                                         {errors.passaporte && <p>{errors.passaporte.message}</p>}
                                     </div>
                                 }
@@ -363,7 +394,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Phone size={18}/>Número de Telefone
                                     </label>
-                                    <input type='text' placeholder='Número de telefone com DDD' {...register("telefone")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Número de telefone com DDD' {...register("telefone")}></input>
                                     {errors.telefone && <p>{errors.telefone.message}</p>}
                                 </div>
 
@@ -371,7 +402,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <MapPin size={18}/>CEP
                                     </label>
-                                    <input type='text' placeholder='Digite seu CEP' 
+                                    <input type='text' className='cadastro_input' placeholder='Digite seu CEP' 
                                       {...register("cep")}
                                       onBlur={(e) => {
                                         const novoCep = e.target.value;
@@ -393,7 +424,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Home size={18}/>Logradouro
                                     </label>
-                                    <input type='text' placeholder='Nome da rua' value={dadosEndereco.logradouro} {...register("logradouro")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Nome da rua' value={dadosEndereco.logradouro} {...register("logradouro")}></input>
                                     {errors.logradouro && <p>{errors.logradouro.message}</p>}
                                 </div>
 
@@ -401,7 +432,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <MapPinHouse size={18}/>Número
                                     </label>
-                                    <input type='text' placeholder='Número' {...register("numero")} inputMode='numeric' pattern='[0-9]*'></input>
+                                    <input type='text' className='cadastro_input' placeholder='Número' {...register("numero")} inputMode='numeric' pattern='[0-9]*'></input>
                                     {errors.numero && <p>{errors.numero.message}</p>}
                                 </div>
 
@@ -409,14 +440,14 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Building size={18}/>Complemento
                                     </label>
-                                    <input type='text' placeholder='Apartamento, bloco, etc'></input>
+                                    <input type='text' className='cadastro_input' placeholder='Apartamento, bloco, etc'></input>
                                 </div>
 
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Landmark size={18}/> Bairro
                                     </label>
-                                    <input type='text' placeholder='Bairro' value={dadosEndereco.bairro} {...register("bairro")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Bairro' value={dadosEndereco.bairro} {...register("bairro")}></input>
                                     {errors.bairro && <p>{errors.bairro.message}</p>}
                                 </div>
 
@@ -424,7 +455,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Building2 size={18}/>Cidade
                                     </label>
-                                    <input type='text' placeholder='Cidade' value={dadosEndereco.localidade} {...register("cidade")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Cidade' value={dadosEndereco.localidade} {...register("cidade")}></input>
                                     {errors.cidade && <p>{errors.cidade.message}</p>}
                                 </div>
 
@@ -432,7 +463,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <MapPin size={18}/>Estado
                                     </label>
-                                    <input type='text' placeholder='Estado' value={dadosEndereco.estado} {...register("estado")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Estado' value={dadosEndereco.estado} {...register("estado")}></input>
                                     {errors.estado && <p>{errors.estado.message}</p>}
                                 </div>
 
@@ -440,14 +471,14 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Flag size={18}/>País
                                     </label>
-                                    <input type='text' placeholder='País' {...register("pais")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='País' {...register("pais")}></input>
                                     {errors.pais && <p>{errors.pais.message}</p>}
                                 </div>
 
                             </div>
                         </div>
-                        <div>
-                            <button type='submit'>ENVIAR</button>
+                        <div >
+                            <button type='submit' className='cadastro_button'>ENVIAR</button>
                         </div>
                     </form>
                 </div>

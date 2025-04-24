@@ -73,13 +73,13 @@ function RecoverPage() {
           </div>
           <div className='alinhar_modal_content'>
             <h2>Recuperar Senha</h2>
-            <input
+            <input className='recover_input'
               type="email"
               placeholder="Digite o email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button onClick={verificarEmail}  disabled={carregando}>
+            <button onClick={verificarEmail}  disabled={carregando} className='recover_button'>
               {carregando ? 'Enviando...' : 'Enviar nova senha'}
             </button>
             <p style={tipoMensagem === 'sucesso' ? estilosMensagem.sucesso : estilosMensagem.erro}>

@@ -22,9 +22,9 @@ h5{
     padding: 7px;
 }
 
-hr{
+.form_content hr{
     display: flex;
-    width: 60%;
+    width: 80%;
     justify-self: center;
     background-color: #8b4513;
 }
@@ -32,13 +32,21 @@ hr{
 .informacoePessoais, .nacionalidade_documento, .contato_endereco{
     width: 100%;
     flex-direction: column;
-    align-items: center;
     background-color: #f5f5dc;
     margin: 15px;
     border-radius: 20px;
     border-style: double;
     border-color: #8b4513;
+    padding: 20px;
 
+}
+
+.alinhar_content{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+    width: 100%;
+    justify-content: center;
 }
 
 .alinhar_itens{
@@ -46,24 +54,21 @@ hr{
     font-size: 18px;
     color: #8b4513;
     align-items: center;
-    padding-left: 20px;
+
     margin-top: 20px;
-
-
-
 }
 
 
 .edit_label_input{
-
-    width: 60%;
-        
-
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    
 }
 
 .edit_label_input input{
-    display: block;
-    width: 40%;
+    width: 70%;
     border-radius: 10px;
     border-style: double;
     border-color: #8b4513;
@@ -73,12 +78,17 @@ hr{
 }
 
 .nacionalidade{
-    flex-direction: column;
+   display: flex;
+   flex-direction: column;
+   align-items: left;
 }
 
-.opcao_1, .opcao_2{
-    display: inline-flex;
-    ;
+.opcao{
+    display: flex;
+    width: auto;
+    color: #8b4513;
+    font-size: 18px;
+    margin: 5px;
 }
 
 .edit_opcoes{
@@ -86,20 +96,54 @@ hr{
     flex-direction: column;
 }
 
+.resposta{
+    margin-left: 40px;
+}
+
 .resposta input{
     display: flex;
-    width: 30%;
+    width: 70%;
     border-radius: 10px;
     border-style: double;
     border-color: #8b4513;
     background-color: #f5f5dc;
+
 }
 
-button{
+.cadastro_button{
     display: flex;
     justify-self: center;
+    justify-content: center;
     color: #f5f5dc;
     background-color: #8b4513;
+    width: 50%;
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    font-weight: 500;
 }
 
+.cadastro_input{
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
 
+.documento_brasil{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+    width: 100%;
+    justify-content: center;
+}
+
+.alinhar_contato_endereco{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+    width: 100%;
+    justify-content: center;
+}
