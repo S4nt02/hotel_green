@@ -14,7 +14,7 @@ function MenuLateral(){
     const { logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false)
     const abrirMenu = () => setIsOpen(!isOpen)
-    const [infosMenu, setInfosMenu] = useState("padrao")
+    const [infosMenu, setInfosMenu] = useState("")
     const location = useLocation()
     
     let color_menu = "#ffffff"

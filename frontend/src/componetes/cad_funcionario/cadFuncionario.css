@@ -1,0 +1,151 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+form{
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form_content {
+    display: flex;
+    justify-content: center;
+    padding: 25px;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+h5{
+    display: flex;
+    color: #2e8b57;
+    font-size: 25px;
+    justify-content: center;
+    padding: 7px;
+}
+
+.form_content hr{
+    display: flex;
+    width: 80%;
+    justify-self: center;
+    background-color: #8b4513;
+}
+
+.informacoePessoais, .nacionalidade_documento, .contato_endereco{
+    width: 100%;
+    flex-direction: column;
+    background-color: #f5f5dc;
+    margin: 15px;
+    border-radius: 20px;
+    border-style: double;
+    border-color: #8b4513;
+    padding: 20px;
+
+}
+
+.alinhar_content{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+    width: 100%;
+    justify-content: center;
+}
+
+.alinhar_itens{
+    display: inline-block;
+    font-size: 18px;
+    color: #8b4513;
+    align-items: center;
+
+    margin-top: 20px;
+}
+
+
+.edit_label_input{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    
+}
+
+.edit_label_input input{
+    width: 70%;
+    border-radius: 10px;
+    border-style: double;
+    border-color: #8b4513;
+    background-color: #f5f5dc;
+        
+
+}
+
+.nacionalidade{
+   display: flex;
+   flex-direction: column;
+   align-items: left;
+}
+
+.opcao{
+    display: flex;
+    width: auto;
+    color: #8b4513;
+    font-size: 18px;
+    margin: 5px;
+}
+
+.edit_opcoes{
+    display: flex;
+    flex-direction: column;
+}
+
+.resposta{
+    margin-left: 40px;
+}
+
+.resposta input{
+    display: flex;
+    width: 70%;
+    border-radius: 10px;
+    border-style: double;
+    border-color: #8b4513;
+    background-color: #f5f5dc;
+
+}
+
+.cadastro_button{
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    color: #f5f5dc;
+    background-color: #8b4513;
+    width: 50%;
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    font-weight: 500;
+}
+
+.cadastro_input{
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.documento_brasil{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+    width: 100%;
+    justify-content: center;
+}
+
+.alinhar_contato_endereco{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+    width: 100%;
+    justify-content: center;
+}

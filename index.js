@@ -224,6 +224,7 @@ app.post('/api/cadastro', (req, res) => {
     cep,
     logradouro,
     numero,
+    complemento,
     bairro,
     cidade,
     estado,
@@ -274,6 +275,7 @@ app.post('/api/cadastro', (req, res) => {
       cep,
       logradouro,
       numero,
+      complemento,
       bairro,
       cidade,
       estado,
@@ -290,6 +292,155 @@ app.post('/api/cadastro', (req, res) => {
     });
   });
 });
+
+
+////////////////////// RECUPERA TODOS OS FUNCIONARIOS ///////////////////////////////
+
+app.post('/funcionarios', (req, res) => {
+  const sql = 'SELECT * FROM funcionarios ORDER BY id';
+
+  bd.query(sql, (err, result, fields) => {
+    console.log("Erro:", err);
+    console.log("Resultado:", result);
+    console.log("Fields:", fields);
+  
+    if (err) {
+      return res.status(500).json({ erro: 'Erro ao buscar funcionários' });
+    }
+  
+    res.json(result);
+  });
+  
+});
+
+//////////////////////////////////////////////////////
+
+app.post('/excluir_funcionarios' , (req, res) =>{
+  const {id} = req.body
+
+  const sql = 'DELETE FROM funcionarios WHERE id = ?'
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    else{
+      res.json({excluido: true})
+    }
+  })
+})
+
+/////////////////////////////////////////////////////////
+
+///////////////////CADASTRO FUNCIONARIO//////////////////
+app.post('/api/cadFuncionario', (req, res) => {
+  const {
+    nome,
+    dtNascimento,
+    nomeMae,
+    nomePai,
+    email,
+    senha,
+    cpf_rg,
+    cargo,
+    autorizacao,
+    telefone,
+    cep,
+    logradouro,
+    numero,
+    complemento,
+    bairro,
+    cidade,
+    estado,
+    pais,
+  } = req.body;
+
+  // 1. Formata a data para o formato aceito pelo MySQL (YYYY-MM-DD)
+  const formatarData = (data) => {
+    if (!data) return null;
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const dataNascimentoFormatada = formatarData(dtNascimento);
+
+  const verificaSql = `SELECT * FROM funcionarios WHERE documento = ? OR email = ?`;
+
+  bd.query(verificaSql, [documento, email], (err, result) => {
+    if (err) {
+      console.error('Erro ao verificar cadastro:', err);
+      return res.status(500).json({ erro: 'Erro ao verificar cadastro', detalhes: err });
+    }
+
+    if (result.length > 0) {
+      return res.status(400).json({ erro: 'Documento ou Email já cadastrado!' });
+    }
+
+    const sql = `INSERT INTO usuarios 
+      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, cargo, autorizacao, telefone, cep, logradouro, numero, bairro, cidade, estado, pais, nacionalidade) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+
+    const valores = [
+      nome,
+      dataNascimentoFormatada,
+      nomeMae,
+      nomePai,
+      email,
+      senha,
+      documento,
+      cargo,
+      autorizacao,
+      telefone,
+      cep,
+      logradouro,
+      numero,
+      complemento,
+      bairro,
+      cidade,
+      estado,
+      pais,
+    ];
+
+    bd.query(sql, valores, (err, result) => {
+      if (err) {
+        console.error('Erro ao salvar cadastro:', err);
+        return res.status(500).json({ erro: 'Erro ao salvar cadastro', detalhes: err });
+      }
+      res.status(201).json({ sucesso: true, mensagem: 'Cadastro salvo com sucesso!' });
+    });
+  });
+});
+
+/////////////////BUSCAR CARGOS//////////////////////
+
+app.get('/cargos', (req, res) => {
+  const sql = 'SELECT * FROM cargos ORDER BY id';
+  bd.query(sql, (err, result) => {
+    if (err) return res.status(500).json({ erro: 'Erro ao buscar cargos' });
+    res.json(result);
+  });
+});
+
+app.post('/cadastroCargo', (req, res) =>{
+  const {cargo} = req.body
+
+  const sql = 'INSERT INTO cargos (nome) values (?)';
+
+  const valores = [cargo]
+
+  bd.query(sql, valores, (err, result) =>{
+    if(err){
+      console.error("Erro ao cadastrar cargo:", err);
+      return res.status(500).json({erro: "Erro ao cadastrar", detalhes: err})
+    }
+
+    res.status(201).json({cadastrado : true})
+
+  })
+})
 
 
 

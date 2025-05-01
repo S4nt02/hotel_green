@@ -116,6 +116,7 @@ function CadastroPage(){
           .refine(numero => numero.trim().length > 0, {
             message: "Número é obrigatório"
           }),
+        complemento : z.string().optional(),
         bairro: z.string()
           .refine(bairro => bairro.trim().length > 0, {
             message: "Bairro é obrigatório"
@@ -424,7 +425,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Home size={18}/>Logradouro
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='Nome da rua' value={dadosEndereco.logradouro} {...register("logradouro")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Nome da rua' value={dadosEndereco.logradouro} {...register("logradouro")} onChange={() => {}}></input>
                                     {errors.logradouro && <p>{errors.logradouro.message}</p>}
                                 </div>
 
@@ -440,14 +441,14 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Building size={18}/>Complemento
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='Apartamento, bloco, etc'></input>
+                                    <input type='text' className='cadastro_input' placeholder='Apartamento, bloco, etc'{...register("complemento")} ></input>
                                 </div>
 
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Landmark size={18}/> Bairro
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='Bairro' value={dadosEndereco.bairro} {...register("bairro")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Bairro' value={dadosEndereco.bairro} {...register("bairro")} onChange={() => {}}></input>
                                     {errors.bairro && <p>{errors.bairro.message}</p>}
                                 </div>
 
@@ -455,7 +456,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Building2 size={18}/>Cidade
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='Cidade' value={dadosEndereco.localidade} {...register("cidade")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Cidade' value={dadosEndereco.localidade} {...register("cidade")} onChange={() => {}}></input>
                                     {errors.cidade && <p>{errors.cidade.message}</p>}
                                 </div>
 
@@ -463,7 +464,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <MapPin size={18}/>Estado
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='Estado' value={dadosEndereco.estado} {...register("estado")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Estado' value={dadosEndereco.estado} {...register("estado")} onChange={() => {}}></input>
                                     {errors.estado && <p>{errors.estado.message}</p>}
                                 </div>
 
@@ -471,7 +472,7 @@ function CadastroPage(){
                                     <label className='alinhar_itens'>
                                         <Flag size={18}/>País
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='País' {...register("pais")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='País' {...register("pais")} onChange={() => {}}></input>
                                     {errors.pais && <p>{errors.pais.message}</p>}
                                 </div>
 
