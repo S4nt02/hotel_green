@@ -29,7 +29,7 @@ function CadFuncionario (){
         const resposta = await fetch(`${API_URL}/cargos`);
         const data = await resposta.json()
 
-        if(!data.ok){
+        if(!resposta.ok){
           setCargo([])
           setErroCargo(true)
         }
@@ -104,9 +104,16 @@ function CadFuncionario (){
           .refine(s => s.trim().length > 0, {
             message: "Por favor confirme sua senha"
           }),
-//validação cpf cargo, autorizcao e cep
-        cargo: z.string().min(1, "Selecione um cargo válido"),
-        autorizacao: z.string().min(1, "Selecione um cargo válido"),
+        documento: z
+          .string()
+          .refine((val) => val.trim().length > 0, {
+            message: "CPF é obrigatório"
+          })
+          .refine((val) => validarCPF_RG(val), {
+            message: "CPF inválido"
+          }),
+        cargo: z.coerce.number().min(1, "Selecione um cargo válido"),
+        autorizacao: z.coerce.number().min(1, "Selecione um cargo válido"),
 
         telefone: z.string()
           .refine(telefone => telefone.trim().length > 0, {
@@ -154,14 +161,6 @@ function CadFuncionario (){
         message: "CEP é obrigatório"
     })
 
-    .refine(async (data) => {
-      if (!cpf_rg || cpf_rg.trim() === "") return false;
-      const isValid = await validarCPF_RG(cpf_rg);
-      return isValid;  
-    }, {
-      message: `CPF é obrigatório e precisa ser válido`,
-      path: ["cpf_rg"] 
-    });
     
       
     ///////////////validação de CPF//////////////////
@@ -300,7 +299,7 @@ function CadFuncionario (){
                                     type='text'
                                     className='cadastro_input'
                                     placeholder={`Digite seu número de CPF`}
-                                    {...register("cpf_rg")}
+                                    {...register("documento")}
                                     onChange={(e) => {
                                       const value = e.target.value;
                                       setCPF_RG(value); // Atualiza o estado com o valor
@@ -324,28 +323,28 @@ function CadFuncionario (){
                         <div className='nacionalidade_documento'>
                             <h5>Cargo e Autorização</h5>
                             <hr></hr>
-                            <div className='alinhar_content'>
+                              <div className='alinhar_content'>
+                                    <div className='edit_label_input'>
+                                        <label className='alinhar_itens'>
+                                            <UserCog2 size={18}/>Cargo
+                                        </label>
+                                        <select id='cargo' {...(register('cargo'))}>
+                                          {cargos.map(cargos => (
+                                            <option key={cargos.id} value={(Number(cargos.id))} selected>
+                                              {cargos.nome}
+                                            </option> 
+                                          ))}
+                                        </select>
+                                        {errors.cargo && <p>{errors.cargo.message}</p>}
+                                        {erroCargo && <p>Erro ao carregar os cargos</p>}
+                                    </div>
                                 <div className='edit_label_input'>
-                                    <label className='alinhar_itens'>
-                                        <UserCog2 size={18}/>Cargo
-                                    </label>
-                                    <select id='cargo' {...(register)} placeholder="Selecione um caro para o funcionário">
-                                      {cargos.map(cargos => (
-                                        <option key={cargos.id} value={cargos.id}>
-                                          {cargos.nome}
-                                        </option>
-                                      ))}
-                                    </select>
-                                    {errors.cargo && <p>{errors.cargo.message}</p>}
-                                    {erroCargo && <p>Erro ao carregar os cargos</p>}
-                                </div>
-                                <div className='edit_label_input'>
-                                  <label className='alinhar_itens' {...(register)}>
+                                  <label className='alinhar_itens' >
                                     <KeyRound size={18}/>Autorização
                                   </label>
-                                  <select id='autorizacao' placeholder="Selecione o nível de autorização">
-                                    <option value='2' selected>Autorização Padrão</option>
-                                    <option value="1">Controle Total</option>
+                                  <select id='autorizacao' placeholder="Selecione o nível de autorização" {...(register('autorizacao'))}>
+                                    <option value={"2"} selected>Autorização Padrão</option>
+                                    <option value={"1"}>Controle Total</option>
                                   </select>
                                 </div>
                             </div>

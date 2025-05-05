@@ -260,8 +260,8 @@ app.post('/api/cadastro', (req, res) => {
     }
 
     const sql = `INSERT INTO usuarios 
-      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, telefone, cep, logradouro, numero, bairro, cidade, estado, pais, nacionalidade) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, telefone, cep, logradouro, numero, complemento bairro, cidade, estado, pais, nacionalidade) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const valores = [
       nome,
@@ -341,7 +341,7 @@ app.post('/api/cadFuncionario', (req, res) => {
     nomePai,
     email,
     senha,
-    cpf_rg,
+    documento,
     cargo,
     autorizacao,
     telefone,
@@ -379,9 +379,9 @@ app.post('/api/cadFuncionario', (req, res) => {
       return res.status(400).json({ erro: 'Documento ou Email já cadastrado!' });
     }
 
-    const sql = `INSERT INTO usuarios 
-      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, cargo, autorizacao, telefone, cep, logradouro, numero, bairro, cidade, estado, pais, nacionalidade) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+    const sql = `INSERT INTO funcionarios 
+      (nome, dtNascimento, nomeMae, nomePai, email, senha, documento, cargo_id, autorizacao, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado, pais) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const valores = [
       nome,
