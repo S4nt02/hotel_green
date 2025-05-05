@@ -8,6 +8,7 @@ import PerfilPage from './pages/perfil/perfilPage';
 import AdminHome from './pages/admin_home/adminHome';
 import FuncionarioPage from './pages/funcionario/funcionarioPage';
 import { AuthProvider } from './context/authContext';
+import CadastroQuartos from './pages/cadastro_quartos/cadquartos';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path='/perfil' element={<PerfilPage/>}/>
           <Route path='/admin' element={<AdminHome/>}/>
           <Route path='/funcionario' element={<FuncionarioPage/>}/>
+          <Route path="/cadastro_quartos" element={<CadastroQuartos />} />
         </Routes>
       </AuthProvider>
 
