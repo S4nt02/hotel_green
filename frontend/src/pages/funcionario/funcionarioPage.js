@@ -28,17 +28,26 @@ function FuncionarioPage () {
   useEffect(() => {
     const buscarFuncionarios = async () => {
       try {
-        const resposta = await fetch(`${API_URL}/funcionarios` , {
+        const resposta = await fetch(`${API_URL}/funcionarios`, {
           method: 'POST'
         });
         const dados = await resposta.json();
-        setFuncionarios(dados);
+        console.log("DADOS RECEBIDOS:", dados); // Veja o formato
+        if (Array.isArray(dados)) {
+          setFuncionarios(dados);
+        } else if (Array.isArray(dados.funcionarios)) {
+          setFuncionarios(dados.funcionarios);
+        } else {
+          console.error("Formato inesperado:", dados);
+        }
       } catch (erro) {
         console.error("Erro ao buscar funcionários:", erro);
       }
     };
+  
     buscarFuncionarios();
   }, []);
+  
 
 
   const abrirexcluirOpen = (id) => {
