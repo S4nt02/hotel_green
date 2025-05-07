@@ -16,7 +16,6 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="" element={<HomePage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path='/cadastro' element={<CadastroPage/>}/>

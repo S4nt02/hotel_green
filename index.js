@@ -51,21 +51,17 @@ app.listen(port, () => {
 });
 
 // Conecta ao banco de dados
-const bd = mysql.createConnection({
+const bd = mysql.createPool({
   host: '34.27.45.81',
   user: 'root',
   password: 'hotelgreen',
   database: 'hotel_green',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
   connectTimeout: 10000,
 });
 
-bd.connect(err => {
-  if (err) {
-    console.error('Erro ao conectar no banco:', err);
-    return;
-  }
-  console.log('Conectado ao MySQL!');
-});
 
 // Rota de login
 app.post('/login', (req, res) => {
