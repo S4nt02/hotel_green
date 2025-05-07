@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import HeaderComponente from '../../componetes/header/headerComponente';
 
 function App() {
+    ///// Adicionar verificações de login e autorização//////
+
+
     const [formSelecionado, setFormSelecionado] = useState(null);
     const handleSelecionarFormulario = (formId) => setFormSelecionado(formId);
 
     //////////////////////// TIPOS DE ACOMODAÇÕES ///////////////////////////
-    const [codquarto, setcodquarto] = useState("");
+    const [nomeQuarto, setNomeQuarto] = useState("");
     const [quantquarto, setquantquarto] = useState("");
     const [descricao, setdescricao] = useState("");
     const [diaria, setdiaria] = useState("");
@@ -20,7 +23,7 @@ function App() {
     const [andar, setandar] = useState("");
     const [tiposcomod, settiposcomod] = useState("");
 
-    function onSave(event) {
+    function onSaveQuarto(event) {
         event.preventDefault();
         console.log("numero:", numerocomod);
         console.log("Andar:", andar)
@@ -38,9 +41,9 @@ function App() {
     setListaComodidades(novaLista);
   };
 
-  function onSave(event) {
+  function onSaveTpAcomodacao(event) {
     event.preventDefault();
-    console.log("Código:", codquarto);
+    console.log("Nome", nomeQuarto);
     console.log("Quantidade:", quantquarto);
     console.log("Descrição:", descricao);
     console.log("Diaria:", diaria);
@@ -56,18 +59,18 @@ function App() {
 
   const tiposAcomodacoes = () => (
     <>
-      <form onSubmit={onSave} className="acomodacoes">
+      <form onSubmit={onSaveTpAcomodacao} className="acomodacoes">
         <h2>Tipos de Acomodações</h2>
         <h4>Adicionar tipo de Acomodação</h4>
 
         <div className='codigoQuarto'>
-          <label className='codigo'>Código</label>
+          <label className='codigo'>Nome acomodação</label>
           <input
             type="text"
             placeholder="Produto"
             required
-            value={codquarto}
-            onChange={event => setcodquarto(event.target.value)}
+            value={nomeQuarto}
+            onChange={event => setNomeQuarto(event.target.value)}
           />
         </div>
 
@@ -157,7 +160,7 @@ function App() {
 
   const acomodacoes = () => (
     <>
-      <form onSubmit={onSave} className="tiposacomodacoes">
+      <form onSubmit={onSaveQuarto} className="tiposacomodacoes">
         <h2>Acomodações</h2>
         <div className="numacomodacoes">
           <label>Número da acomodação:</label>
@@ -186,6 +189,7 @@ function App() {
           Tipos de acomodações
             
           </label>
+          {/* {trazer tp dados do tp acomodacoes} */}
           <select>
             <option>Apartamento de luxo</option>
             <option>Apartamento de luxo especial</option>

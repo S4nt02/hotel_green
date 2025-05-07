@@ -15,7 +15,7 @@ const whitelist = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // permitir requisições sem origin (como Postman)
+    if (!origin) return callback(null, true); 
     if (whitelist.includes(origin)) {
       return callback(null, true);
     } else {
@@ -33,7 +33,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: false,
-    maxAge: 24000 * 60 * 60
+    maxAge: 60000 * 60 * 60
   }
 }));
 

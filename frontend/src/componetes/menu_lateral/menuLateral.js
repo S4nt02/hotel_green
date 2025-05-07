@@ -61,7 +61,7 @@ function MenuLateral(){
                     <Link to="/funcionario"><li><a>Funcionários</a></li></Link>
                     <li>Hospedes</li>
                     <li>Reservas</li>
-                    <li>Quartos</li>
+                    <Link to="/cadastro_quartos"><li>Quartos</li></Link>
                     <li>Itens</li>
                     <li>Consumo</li>
                     <li><button onClick={sair}>SAIR</button></li>

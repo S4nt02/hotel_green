@@ -13,6 +13,8 @@ function FuncionarioPage () {
   const [isOpen, setIsOpen] = useState(false)
   const [cadCargoOpen, setCargoOpen] = useState(false)
   const [funcionarios, setFuncionarios] = useState([])
+  const [excluirOpen, setExcluirOpen] = useState(false)
+  const [idFuncionario, setIdFuncionario] = useState("")
   const [mesangem, setMensagem] = useState("")
 
   const abrirModal  = () => {
@@ -24,38 +26,47 @@ function FuncionarioPage () {
   }
 
   useEffect(() => {
-    const buscarFuncionarios = async () => {
-      try {
-        const resposta = await fetch(`${API_URL}/funcionarios` , {
-          method: 'POST'
-        });
-        const dados = await resposta.json();
-        setFuncionarios(dados);
-      } catch (erro) {
-        console.error("Erro ao buscar funcionários:", erro);
-      }
-    };
-    console.log(funcionarios)
-    buscarFuncionarios();
+    buscarFuncionarios()
   }, []);
 
 
+  const abrirexcluirOpen = (id) => {
+    setExcluirOpen(!excluirOpen)
+    setIdFuncionario(id)
+    console.log(id)
+  }
 
+  const buscarFuncionarios = async () => {
+    try {
+      const resposta = await fetch(`${API_URL}/funcionarios` , {
+        method: 'POST'
+      });
+      const dados = await resposta.json();
+      setFuncionarios(dados);
+    } catch (erro) {
+      console.error("Erro ao buscar funcionários:", erro);
+    }
+  };
+  console.log(funcionarios)
+  buscarFuncionarios()
 
   const excluirFuncionario = async () =>{
-    const id = funcionarios.id
+    const id = idFuncionario
+    console.log(idFuncionario)
     try{
-      const excluir =  await fetch(`${API_URL}/excluir_funcionario` , {
+      const excluir =  await fetch(`${API_URL}/excluir_funcionarios` , {
         method :'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({id}),
       }) 
-      const excluido = await excluir.json();
+      const data = await excluir.json();
 
-      if(excluido === true){
+      if(data.excluido === true){
         setMensagem("Funcionario excluido")
+        setIdFuncionario("")
+        await buscarFuncionarios()
       }
     }
     catch{
@@ -74,16 +85,48 @@ function FuncionarioPage () {
           <button onClick={abrirModal}>CADASTRAR FUNCIONARIO</button>
           <button onClick={abrirCadCargo}>Cadastrar cargo</button>
         </div>
+        <div className="exibir_funcionarios_content">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Documento</th>
+              <th>Telefone</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {funcionarios.map((funcionario) => (
+              <tr key={funcionario.id}>
+                <td>{funcionario.id}</td> 
+                <td>{funcionario.nome}</td>
+                <td>{funcionario.email}</td>
+                <td>{funcionario.documento}</td>
+                <td>{funcionario.telefone}</td>
+                <td>
+                  <button onClick={() => abrirexcluirOpen(funcionario.id)}>Excluir</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-        {funcionarios.map((funcionario) => (
-          <div>
-            <li key={funcionario.id}>
-              {funcionario.id} - {funcionario.nome}
-            </li>
-            <button onClick={excluirFuncionario}></button>
-          </div>
 
-        ))}
+        </div>
+          {excluirOpen && (
+            <div className="modal-overlay">
+              <div className="excluir_content">
+                <h4 onClick={() => abrirexcluirOpen("")}></h4>
+                <h4>Deseja realmente excluir este funcioanrio</h4>
+                <div>
+                  <button onClick={excluirFuncionario}>Excluir</button>
+                  <button onClick={() => abrirexcluirOpen("")}>Cancelar</button>
+                </div>
+              </div>
+            </div>
+          )}
         {isOpen && (
           <div className="modal-overlay">
             <div className="modal-content">

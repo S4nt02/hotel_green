@@ -7,11 +7,11 @@ form{
     width: 100%;
 }
 
-.form_content {
+.form_content_cad {
     display: flex;
     justify-self: center;
     padding: 25px;
-    width: 50%;
+    width: 60%;
 }
 
 h5{

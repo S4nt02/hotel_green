@@ -259,7 +259,7 @@ function CadastroPage(){
         <>
             <main>
                 <HeaderComponente></HeaderComponente>
-                <div className='form_content'>
+                <div className='form_content_cad'>
                     <form onSubmit={handleSubmit(enviarFormulario, onError)}>
                         <div className='informacoePessoais'>
                             <h5>Informações Pessoais</h5>
