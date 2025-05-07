@@ -46,9 +46,9 @@ function FuncionarioPage () {
     } catch (erro) {
       console.error("Erro ao buscar funcionários:", erro);
     }
+    console.log(funcionarios)
   };
-  console.log(funcionarios)
-  buscarFuncionarios()
+  
 
   const excluirFuncionario = async () =>{
     const id = idFuncionario
