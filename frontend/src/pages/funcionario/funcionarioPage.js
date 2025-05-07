@@ -26,7 +26,19 @@ function FuncionarioPage () {
   }
 
   useEffect(() => {
-    buscarFuncionarios()
+    const buscarFuncionarios = async () => {
+      try {
+        const resposta = await fetch(`${API_URL}/funcionarios` , {
+          method: 'POST'
+        });
+        const dados = await resposta.json();
+        setFuncionarios(dados);
+      } catch (erro) {
+        console.error("Erro ao buscar funcionários:", erro);
+      }
+    };
+    console.log(funcionarios)
+    buscarFuncionarios();
   }, []);
 
 
@@ -36,19 +48,7 @@ function FuncionarioPage () {
     console.log(id)
   }
 
-  const buscarFuncionarios = async () => {
-    try {
-      const resposta = await fetch(`${API_URL}/funcionarios` , {
-        method: 'POST'
-      });
-      const dados = await resposta.json();
-      setFuncionarios(dados);
-    } catch (erro) {
-      console.error("Erro ao buscar funcionários:", erro);
-    }
-    console.log(funcionarios)
-  };
-  
+
 
   const excluirFuncionario = async () =>{
     const id = idFuncionario
@@ -66,7 +66,6 @@ function FuncionarioPage () {
       if(data.excluido === true){
         setMensagem("Funcionario excluido")
         setIdFuncionario("")
-        await buscarFuncionarios()
       }
     }
     catch{
