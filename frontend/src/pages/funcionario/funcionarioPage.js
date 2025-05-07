@@ -37,7 +37,6 @@ function FuncionarioPage () {
         console.error("Erro ao buscar funcionários:", erro);
       }
     };
-    console.log(funcionarios)
     buscarFuncionarios();
   }, []);
 
@@ -66,6 +65,7 @@ function FuncionarioPage () {
       if(data.excluido === true){
         setMensagem("Funcionario excluido")
         setIdFuncionario("")
+        setExcluirOpen(false)
       }
     }
     catch{
