@@ -55,3 +55,48 @@
     width: 20%;
     height: 20%;
 }
+
+.botoes{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    margin: 20px 0;
+}
+
+button{
+    color: #f5f5dc;
+    background-color: #8b4513;
+    border-radius: 20px;
+    border-style: double;
+    border-color: #f5f5dc;
+    font-size: 16px;
+    padding: 8px;
+}
+
+.botoes h2{
+    font-size: 35px;
+}
+
+
+.table_content{
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+
+}
+
+table{
+    border-collapse: separate;
+    border-spacing: 20px 10px;
+    background-color: #f5f5dc;
+    border-radius: 20px;
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 30px;
+ 
+}
+
+th, td{
+    font-size: 20px;
+}

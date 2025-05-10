@@ -89,12 +89,16 @@ function FuncionarioPage () {
     <>
       <HeaderComponente />
       <main className="main-content">
-        <div>
-          <button onClick={abrirModal}>CADASTRAR FUNCIONARIO</button>
-          <button onClick={abrirCadCargo}>Cadastrar cargo</button>
+        <div className="botoes">
+          <h2>funcionários</h2>
+          <div className="botoes-direita">
+            <button onClick={abrirModal}>CADASTRAR FUNCIONÁRIO</button>
+            <button onClick={abrirCadCargo}>CADASTRAR CARGO</button>
+          </div>
         </div>
         <div className="exibir_funcionarios_content">
-        <table>
+        <div className="table_content">
+          <table aria-label="dados">
           <thead>
             <tr>
               <th>ID</th>
@@ -120,7 +124,7 @@ function FuncionarioPage () {
             ))}
           </tbody>
         </table>
-
+        </div>
 
         </div>
           {excluirOpen && (
