@@ -438,6 +438,91 @@ app.post('/cadastroCargo', (req, res) =>{
   })
 })
 
+app.post('/api/editarFuncionario', (req, res) =>{
+  const {
+    nome,
+    dtNascimento,
+    nomeMae,
+    nomePai,
+    email,
+    senha,
+    documento,
+    cargo,
+    autorizacao,
+    telefone,
+    cep,
+    logradouro,
+    numero,
+    complemento,
+    bairro,
+    cidade,
+    estado,
+    pais,
+    id,
+  } = req.body;
+
+  const formatarData = (data) => {
+    if (!data) return null;
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const dataNascimentoFormatada = formatarData(dtNascimento)
+
+  const sql = `UPDATE funcionarios SET 
+    nome = ?,
+    dtNascimento = ?,
+    nomeMae = ?,
+    nomePai = ?,
+    email = ?,
+    senha = ?,
+    documento = ?,
+    cargo_id = ?,
+    autorizacao = ?,
+    telefone = ?,
+    cep = ?,
+    logradouro = ?,
+    numero = ?,
+    complemento = ?,
+    bairro = ?,
+    cidade = ?,
+    estado = ?,
+    pais = ? WHERE id = ? `;
+
+  valores = [
+    nome,
+    dataNascimentoFormatada,
+    nomeMae,
+    nomePai,
+    email,
+    senha,
+    documento,
+    cargo,
+    autorizacao,
+    telefone,
+    cep,
+    logradouro,
+    numero,
+    complemento,
+    bairro,
+    cidade,
+    estado,
+    pais,
+    id,
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if (err) {
+      console.error('Erro ao atualizar cadastro:', err);
+      return res.status(500).json({ erro: 'Erro ao atualizar cadastro', detalhes: err });
+    }
+    res.status(201).json({ editado : true, mensagem: 'Funcionario atualizado com sucesso' });
+  });
+})
+
 
 
 

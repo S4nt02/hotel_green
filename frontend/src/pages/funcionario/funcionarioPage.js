@@ -5,6 +5,7 @@ import React, { use, useState, useEffect } from 'react';
 import "./funcionarioPage.css"
 
 import { API_URL } from "../../url";
+import { array } from "zod";
 
 
 
@@ -16,35 +17,47 @@ function FuncionarioPage () {
   const [excluirOpen, setExcluirOpen] = useState(false)
   const [idFuncionario, setIdFuncionario] = useState("")
   const [mesangem, setMensagem] = useState("")
+  const [funcionarioParaEditar, setFuncionarioParaEditar] = useState([])
+  const [editarOpen, setEditarOpen] = useState(false)
 
   const abrirModal  = () => {
     setIsOpen(!isOpen)
+    buscarFuncionarios()
+  }
+
+  const modalEditar = () => {
+    setEditarOpen(!editarOpen)
+    if(editarOpen == false){{
+      setFuncionarioParaEditar([])
+    }}
+    buscarFuncionarios()
   }
 
   const abrirCadCargo = () =>{
     setCargoOpen(!cadCargoOpen)
   }
 
-  useEffect(() => {
-    const buscarFuncionarios = async () => {
-      try {
-        const resposta = await fetch(`${API_URL}/funcionarios`, {
-          method: 'POST'
-        });
-        const dados = await resposta.json();
-        console.log("DADOS RECEBIDOS:", dados); // Veja o formato
-        if (Array.isArray(dados)) {
-          setFuncionarios(dados);
-        } else if (Array.isArray(dados.funcionarios)) {
-          setFuncionarios(dados.funcionarios);
-        } else {
-          console.error("Formato inesperado:", dados);
-        }
-      } catch (erro) {
-        console.error("Erro ao buscar funcionários:", erro);
+  const buscarFuncionarios = async () => {
+    try {
+      const resposta = await fetch(`${API_URL}/funcionarios`, {
+        method: 'POST'
+      });
+      const dados = await resposta.json();
+      console.log("DADOS RECEBIDOS:", dados); // Veja o formato
+      if (Array.isArray(dados)) {
+        setFuncionarios(dados);
+      } else if (Array.isArray(dados.funcionarios)) {
+        setFuncionarios(dados.funcionarios);
+      } else {
+        console.error("Formato inesperado:", dados);
       }
-    };
-  
+    } catch (erro) {
+      console.error("Erro ao buscar funcionários:", erro);
+    }
+    console.log(funcionarios)
+  };
+
+  useEffect(() => {
     buscarFuncionarios();
   }, []);
   
@@ -54,6 +67,7 @@ function FuncionarioPage () {
     setExcluirOpen(!excluirOpen)
     setIdFuncionario(id)
     console.log(id)
+    
   }
 
 
@@ -81,19 +95,26 @@ function FuncionarioPage () {
       setMensagem("Erro ao excluir funcionario")
     }
     
-    
+    buscarFuncionarios()
 
   }
+
+  const editarFuncionario  = (idFuncionarioParaEditar) => {
+    console.log("chamando editar")
+    setFuncionarioParaEditar( funcionarios.find(item => item.id === idFuncionarioParaEditar))
+    setEditarOpen(true)
+  }
+
 
   return(
     <>
       <HeaderComponente />
       <main className="main-content">
         <div className="botoes">
-          <h2>funcionários</h2>
+          <h2>Lista de Funcionários</h2>
           <div className="botoes-direita">
-            <button onClick={abrirModal}>CADASTRAR FUNCIONÁRIO</button>
-            <button onClick={abrirCadCargo}>CADASTRAR CARGO</button>
+            <button onClick={abrirModal} className="button_funcionario">CADASTRAR FUNCIONÁRIO</button>
+            <button onClick={abrirCadCargo} className="button_funcionario">CADASTRAR CARGO</button>
           </div>
         </div>
         <div className="exibir_funcionarios_content">
@@ -118,6 +139,7 @@ function FuncionarioPage () {
                 <td>{funcionario.documento}</td>
                 <td>{funcionario.telefone}</td>
                 <td>
+                  <button onClick={() => editarFuncionario(funcionario.id)}>Editar</button>
                   <button onClick={() => abrirexcluirOpen(funcionario.id)}>Excluir</button>
                 </td>
               </tr>
@@ -148,6 +170,17 @@ function FuncionarioPage () {
             </div>
           </div>
         )}
+
+        {editarOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <button onClick={modalEditar} className="fechar-cad-funcioanrio">FECHAR</button>
+              <h2>Editar funcionario</h2>
+              <CadFuncionario dadosFuncionarioParaEditar={funcionarioParaEditar}/>
+            </div>
+          </div>
+        )}
+
         {cadCargoOpen && (
           <div className="modal-overlay">
             <div className="modal-cargo-content">

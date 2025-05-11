@@ -13,7 +13,7 @@ import { KeyRound } from 'lucide-react';
 
 
 
-function CadFuncionario (){
+function CadFuncionario ({dadosFuncionarioParaEditar}){
     const navigate =  useNavigate()
 
     const [cep, setCep] = useState("")
@@ -22,6 +22,11 @@ function CadFuncionario (){
     const [cpf_rg, setCPF_RG] = useState("")
     const [cargos, setCargo] = useState([])
     const [erroCargo, setErroCargo] = useState(false)
+    const [dadosFuncionario, setDadosFuncionario] = useState(() => dadosFuncionarioParaEditar || {})
+    const [editar, setEditar] = useState(false)
+    const [idFuncionario, setIdFuncionario] = useState()
+    const [mensagem, setMensagem] = useState("")
+    const [alertas, setAlertas] = useState(false)
 
     
     const buscarCargo = async() =>{
@@ -202,6 +207,7 @@ function CadFuncionario (){
         register,
         handleSubmit,
         setValue,
+        reset,
         formState: { errors }
     } = useForm({
         resolver: zodResolver(validar)
@@ -210,24 +216,54 @@ function CadFuncionario (){
     const enviarFormulario = async (dados) => {     
         console.log("chamando a função")
         console.log(`dados ${JSON.stringify(dados)}`)
+        console.log(alertas)
+        setAlertas(true)
+        console.log(alertas)
         
+        if(editar){
+          try{
+            dados.id = idFuncionario
+            const cadastrar = await fetch(`${API_URL}/api/editarFuncionario`, {
+              method : 'POST',
+              headers : {
+                'Content-Type' : "application/json"
+              },
+              body : JSON.stringify(dados)
+            })
 
-        try{
-          const cadastrar = await fetch(`${API_URL}/api/cadFuncionario`, {
-            method : 'POST',
-            headers : {
-              'Content-Type' : "application/json"
-            },
-            body : JSON.stringify(dados)
-          })
+            if(!cadastrar.editado){
+              setMensagem("Erro ao atualizar o cadastro do Funcionário")
+            }
 
-          if(!cadastrar.ok){
-            //definir erros do alerta
+            setMensagem("Cadastro do funcionario atualizado com sucesso")
           }
+          catch (erro){
+            setMensagem("Erro ao atualizar o cadastro do Funcionário")
+          } 
         }
-        catch (erro){
-          //definir erros do alerta
+        else{
+          try{
+            const cadastrar = await fetch(`${API_URL}/api/cadFuncionario`, {
+              method : 'POST',
+              headers : {
+                'Content-Type' : "application/json"
+              },
+              body : JSON.stringify(dados)
+            })
+
+            if(!cadastrar.sucesso){
+              setMensagem("Erro ao cadastrar do Funcionário")
+            }
+
+            setMensagem("Funcionário cadastrado com sucesso")
+          }
+          catch (erro){
+            setMensagem("Erro ao cadastrar do Funcionário")
+      
+          } 
         }
+
+
     }
 
     const onError = (errors) => {
@@ -235,9 +271,45 @@ function CadFuncionario (){
       console.log(errors);
     };
 
+    const formatDate = (date) => {
+      const data = new Date(date);
+      return data.toISOString().split('T')[0]; // Retorna apenas a parte da data (YYYY-MM-DD)
+    };
+
     useEffect(() => {
       buscarCargo();
-    }, []);
+      
+      if (dadosFuncionarioParaEditar) {
+        setDadosFuncionario(dadosFuncionarioParaEditar);
+        setIdFuncionario(dadosFuncionarioParaEditar.id)
+        
+        setEditar(true)
+        
+
+        reset({
+          nome : dadosFuncionario.nome || "",
+          dtNascimento : formatDate(dadosFuncionario.dtNascimento) || "",
+          nomeMae : dadosFuncionario.nomeMae || "",
+          nomePai : dadosFuncionario.nomePai || "",
+          email : dadosFuncionario.email || "",
+          senha : dadosFuncionario.senha || "",
+          confirmarSenha: dadosFuncionario.senha || "",
+          documento : dadosFuncionario.documento || "",
+          cargo : dadosFuncionario.cargo_id || "",
+          autorizacao : dadosFuncionario.autorizacao || "",
+          telefone : dadosFuncionario.telefone || "",
+          cep : dadosFuncionario.cep || "",
+          logradouro : dadosFuncionario.logradouro || "",
+          numero : dadosFuncionario.numero || "",
+          complemento : dadosFuncionario.complemento || "",
+          bairro : dadosFuncionario.bairro || "",
+          cidade : dadosFuncionario.cidade || "",
+          estado : dadosFuncionario.estado || "",
+          pais : dadosFuncionario.pais || "",
+        })
+        
+      }
+    }, [dadosFuncionarioParaEditar]);
 
     /////////////////////////////////////////////////////////////////
 
@@ -253,7 +325,7 @@ function CadFuncionario (){
                                     <label className='alinhar_itens'>
                                         <User size={18}/> Nome Completo
                                     </label>
-                                    <input type='text' className='cadastro_input' id='nomeCompleto' placeholder='Digite seu nome completo' {...register("nome")}></input>
+                                    <input type='text' className='cadastro_input' id='nomeCompleto'  placeholder='Digite seu nome completo' {...register("nome")}></input>
                                     {errors.nome && <p>{errors.nome.message}</p>}
                                 </div>
                                 <div className='edit_label_input'>
@@ -274,21 +346,21 @@ function CadFuncionario (){
                                     <label className='alinhar_itens'>
                                         <User size={18}/> Nome do Pai
                                     </label>
-                                    <input type='text' className='cadastro_input' id='nomePai' placeholder='Digite o nome do pai completo' {...register("nomePai")}></input>
+                                    <input type='text' className='cadastro_input' id='nomePai'  placeholder='Digite o nome do pai completo' {...register("nomePai")}></input>
                                 </div>
 
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Mail size={18}/> Email
                                     </label>
-                                    <input type='mail' className='cadastro_input' placeholder='Digite seu email' {...register("email")}></input>
+                                    <input type='mail' className='cadastro_input'  placeholder='Digite seu email' {...register("email")}></input>
                                     {errors.email && <p>{errors.email.message}</p>}
                                 </div>
                                 <div className='edit_label_input'>
                                     <label className='alinhar_itens'>
                                         <Lock size={18}/> Senha
                                     </label>
-                                    <input type='password' className='cadastro_input' placeholder='Digite sua senha' {...register("senha")}></input>
+                                    <input type='password' className='cadastro_input'  placeholder='Digite sua senha' {...register("senha")}></input>
                                     {errors.senha && <p>{errors.senha.message}</p>}
                                 </div>
                                 <div className='edit_label_input'>
@@ -299,6 +371,7 @@ function CadFuncionario (){
                                     type='text'
                                     className='cadastro_input'
                                     placeholder={`Digite seu número de CPF`}
+                                    
                                     {...register("documento")}
                                     onChange={(e) => {
                                       const value = e.target.value;
@@ -314,7 +387,7 @@ function CadFuncionario (){
                                     <label className='alinhar_itens'>
                                         <Lock size={18}/> Confirmar Senha
                                     </label>
-                                    <input type='password' className='cadastro_input' placeholder='Confirme sua senha' {...register("confirmarSenha")}></input>
+                                    <input type='password' className='cadastro_input' placeholder='Confirme sua senha'  {...register("confirmarSenha")}></input>
                                     {errors.confirmarSenha && <p>{errors.confirmarSenha.message}</p>}
                                 </div>
                             </div>
@@ -324,26 +397,32 @@ function CadFuncionario (){
                             <h5>Cargo e Autorização</h5>
                             <hr></hr>
                               <div className='alinhar_content'>
-                                    <div className='edit_label_input'>
-                                        <label className='alinhar_itens'>
-                                            <UserCog2 size={18}/>Cargo
-                                        </label>
-                                        <select id='cargo' {...(register('cargo'))}>
-                                          {cargos.map(cargos => (
-                                            <option key={cargos.id} value={(Number(cargos.id))} selected>
-                                              {cargos.nome}
-                                            </option> 
-                                          ))}
-                                        </select>
-                                        {errors.cargo && <p>{errors.cargo.message}</p>}
-                                        {erroCargo && <p>Erro ao carregar os cargos</p>}
-                                    </div>
+                                <div className='edit_label_input'>
+                                  <label className='alinhar_itens'>
+                                    <UserCog2 size={18}/> Cargo
+                                  </label>
+                                  <select 
+                                    id='cargo' 
+                                    {...register('cargo', { valueAsNumber: true })}
+                                    value={dadosFuncionario?.cargo_id || ""} // Define o valor selecionado com base no cargo do funcionário
+                                  >
+                                    <option value="">Selecione um cargo</option>
+                                    {cargos.map(cargo => (
+                                      <option key={cargo.id} value={cargo.id}>
+                                        {cargo.nome}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {errors.cargo && <p>{errors.cargo.message}</p>}
+                                  {erroCargo && <p>Erro ao carregar os cargos</p>}
+                                </div>
+
                                 <div className='edit_label_input'>
                                   <label className='alinhar_itens' >
                                     <KeyRound size={18}/>Autorização
                                   </label>
-                                  <select id='autorizacao' placeholder="Selecione o nível de autorização" {...(register('autorizacao'))}>
-                                    <option value={"2"} selected>Autorização Padrão</option>
+                                  <select id='autorizacao'  placeholder="Selecione o nível de autorização" {...(register('autorizacao'))}>
+                                    <option value={"2"} >Autorização Padrão </option>
                                     <option value={"1"}>Controle Total</option>
                                   </select>
                                 </div>
@@ -358,7 +437,7 @@ function CadFuncionario (){
                                     <label className='alinhar_itens'>
                                         <Phone size={18}/>Número de Telefone
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='Número de telefone com DDD' {...register("telefone")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='Número de telefone com DDD'  {...register("telefone")}></input>
                                     {errors.telefone && <p>{errors.telefone.message}</p>}
                                 </div>
 
@@ -396,7 +475,7 @@ function CadFuncionario (){
                                     <label className='alinhar_itens'>
                                         <MapPinHouse size={18}/>Número
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='Número' {...register("numero")} inputMode='numeric' pattern='[0-9]*'></input>
+                                    <input type='text' className='cadastro_input' placeholder='Número'  {...register("numero")} inputMode='numeric' pattern='[0-9]*'></input>
                                     {errors.numero && <p>{errors.numero.message}</p>}
                                 </div>
 
@@ -435,17 +514,30 @@ function CadFuncionario (){
                                     <label className='alinhar_itens'>
                                         <Flag size={18}/>País
                                     </label>
-                                    <input type='text' className='cadastro_input' placeholder='País' {...register("pais")}></input>
+                                    <input type='text' className='cadastro_input' placeholder='País'  {...register("pais")}></input>
                                     {errors.pais && <p>{errors.pais.message}</p>}
                                 </div>
 
                             </div>
                         </div>
                         <div >
-                            <button type='submit' className='cadastro_button'>ENVIAR</button>
+                            {editar == false &&<button type='submit' className='cadastro_button'>Finalizar Cadastro</button>}
+                            {editar == true &&<button type='submit' className='cadastro_button'>Salvar Dados</button>}
                         </div>
                     </form>
                 </div>
+
+                {alertas && (
+                  <div className='modal-overlay'>
+                    <div className='modal-alerta'>
+                      <p onClick={() => setAlertas(false)}>X</p>
+                      <div>
+                        <p className='mensagem-alerta'>{mensagem}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
         </>
     )
 }
