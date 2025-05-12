@@ -4,7 +4,7 @@ const cors = require('cors');
 const mysql = require('mysql2');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
-import { MySQLConnector } from '@google-cloud/sql-connector';
+// import { MySQLConnector } from '@google-cloud/sql-connector';
 
 const app = express();
 
@@ -51,26 +51,26 @@ app.listen(port, () => {
 });
 
 // Conecta ao banco de dados localhost
-// const bd = mysql.createPool({
-//   host: '34.27.45.81',
-//   user: 'root',
-//   password: 'hotelgreen',
-//   database: 'hotel_green',
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0,
-//   connectTimeout: 10000,
-// });
+const bd = mysql.createPool({
+  host: '34.27.45.81',
+  user: 'root',
+  password: 'hotelgreen',
+  database: 'hotel_green',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 10000,
+});
 
 // Conexão BD produção
-const connector = new MySQLConnector()
+// const connector = new MySQLConnector()
 
-const bd = connector.getPool({
-  instanceConnectionName: 'hotel-green-455600:us-central1:hotel-green-bd',
-  database: 'hotel_green',
-  user: 'admin',
-  password: 'admin',
-})
+// const bd = connector.getPool({
+//   instanceConnectionName: 'hotel-green-455600:us-central1:hotel-green-bd',
+//   database: 'hotel_green',
+//   user: 'admin',
+//   password: 'admin',
+// })
 
 
 // Rota de login
