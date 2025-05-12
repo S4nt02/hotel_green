@@ -5,7 +5,7 @@ import { API_URL } from '../../url';
 import HeaderComponente from '../../componetes/header/headerComponente';
 import { User, Phone, MapPin, Calendar, Flag, Home, Mail, IdCard, FileText, Lock, MapPinHouse, Building2, Landmark, Building, Map, UserCog2 } from 'lucide-react';
 import "./cadFuncionario.css"
-import { useForm} from 'react-hook-form';
+import { set, useForm} from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom'
@@ -236,6 +236,8 @@ function CadFuncionario ({dadosFuncionarioParaEditar}){
             }
 
             setMensagem("Cadastro do funcionario atualizado com sucesso")
+            setDadosFuncionario({})
+            
           }
           catch (erro){
             setMensagem("Erro ao atualizar o cadastro do Funcionário")
