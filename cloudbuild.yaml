@@ -1,0 +1,38 @@
+steps:
+  # Passo 1: Construir a imagem Docker
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/$SERVICE_NAME:$SHORT_SHA', '.']
+    id: 'build-image'
+
+  # Passo 2: Enviar a imagem para o Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/$SERVICE_NAME:$SHORT_SHA']
+    id: 'push-image'
+
+  # Passo 3: Implantar o serviço Cloud Run com o proxy
+  - name: 'gcr.io/google-cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '$SERVICE_NAME'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/$SERVICE_NAME:$SHORT_SHA'
+      - '--region'
+      - 'us-central1' # SUBSTITUA PELA SUA REGIÃO DO CLOUD RUN (ex: southamerica-east1)
+      - '--add-cloudsql-instances'
+      - 'hotel-green-455600:us-central1:hotel-green-bd' # SEU CONNECTION NAME CORRETO
+      - '--set-env-vars'
+      - 'DB_USER=${_DB_USER},DB_PASSWORD=${_DB_PASSWORD},DB_NAME=${_DB_NAME}'
+    id: 'deploy-service'
+    waitFor: ['push-image']
+
+substitutions:
+  _SERVICE_NAME: 'hotel-green' # SUBSTITUA PELO NOME DESEJADO PARA SEU SERVIÇO CLOUD RUN
+  _DB_USER: 'root'          # SEU USUÁRIO DO BANCO DE DADOS (CONSIDERE USAR SECRETS)
+  _DB_PASSWORD: 'hotel_green'      # SUA SENHA DO BANCO DE DADOS (CONSIDERE USAR SECRETS)
+  _DB_NAME: 'hotel_green'          # NOME DO SEU BANCO DE DADOS
+
+options:
+  env:
+    - 'CLOUDSDK_COMPUTE_REGION=us-central1' # SUBSTITUA PELA SUA REGIÃO DO CLOUD RUN (ex: southamerica-east1)
