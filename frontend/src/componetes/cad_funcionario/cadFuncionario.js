@@ -407,7 +407,6 @@ function CadFuncionario ({dadosFuncionarioParaEditar}){
                                   <select 
                                     id='cargo' value={watch('cargo') || ""}
                                     {...register('cargo')}
-                                    
                                   >
                                     <option value="">Selecione um cargo</option>
                                     {cargos.map(cargo => (
