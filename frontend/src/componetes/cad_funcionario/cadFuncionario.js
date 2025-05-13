@@ -208,6 +208,7 @@ function CadFuncionario ({dadosFuncionarioParaEditar}){
         handleSubmit,
         setValue,
         reset,
+        watch,
         formState: { errors }
     } = useForm({
         resolver: zodResolver(validar)
@@ -404,9 +405,9 @@ function CadFuncionario ({dadosFuncionarioParaEditar}){
                                     <UserCog2 size={18}/> Cargo
                                   </label>
                                   <select 
-                                    id='cargo' 
-                                    {...register('cargo', { valueAsNumber: true })}
-                                    value={dadosFuncionario?.cargo_id || ""} // Define o valor selecionado com base no cargo do funcionário
+                                    id='cargo' value={watch('cargo') || ""}
+                                    {...register('cargo')}
+                                    
                                   >
                                     <option value="">Selecione um cargo</option>
                                     {cargos.map(cargo => (

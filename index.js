@@ -51,25 +51,28 @@ app.listen(port, () => {
 });
 
 // Conecta ao banco de dados localhost
+// const bd = mysql.createPool({
+//   host: '34.27.45.81',
+//   user: 'root',
+//   password: 'hotelgreen',
+//   database: 'hotel_green',
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+//   connectTimeout: 10000,
+// });
+
+// Conexão BD produção
 const bd = mysql.createPool({
-  host: '34.27.45.81',
-  user: 'root',
-  password: 'hotelgreen',
-  database: 'hotel_green',
+  host: '/cloudsql/hotel-green-455600:us-central1:hotel-green-bd', // Use o socket Unix
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
   connectTimeout: 10000,
 });
-
-// Conexão BD produção
-// const connector = new MySQLConnector()
-
-// const bd = connector.getPool({
-//   instanceConnectionName: 'hotel-green-455600:us-central1:hotel-green-bd',
-//   database: 'hotel_green',
-//   user: 'admin',
-//   password: 'admin',
 // })
 
 

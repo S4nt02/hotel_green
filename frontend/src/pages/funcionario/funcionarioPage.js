@@ -116,6 +116,8 @@ function FuncionarioPage () {
             <button onClick={abrirModal} className="button_funcionario">CADASTRAR FUNCIONÁRIO</button>
             <button onClick={abrirCadCargo} className="button_funcionario">CADASTRAR CARGO</button>
           </div>
+
+          
         </div>
         <div className="exibir_funcionarios_content">
         <div className="table_content">
