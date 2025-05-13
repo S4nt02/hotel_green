@@ -64,7 +64,8 @@ app.listen(port, () => {
 
 // Conexão BD produção
 const bd = mysql.createPool({
-  host: '/cloudsql/hotel-green-455600:us-central1:hotel-green-bd', // Use o socket Unix
+  host: '34.27.45.81', // Conecta-se ao proxy localmente
+  port: 3306,       // Porta padrão do MySQL
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
