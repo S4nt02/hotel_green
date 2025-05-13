@@ -69,6 +69,7 @@ const bd = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  socketPath: '/cloudsql/hotel-green-455600:us-central1:hotel-green-bd',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
