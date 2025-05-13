@@ -64,7 +64,7 @@ app.listen(port, () => {
 
 // Conexão BD produção
 const bd = mysql.createPool({
-  host: '34.27.45.81', // Conecta-se ao proxy localmente
+  host: '10.84.208.3', // Conecta-se ao proxy localmente
   port: 3306,       // Porta padrão do MySQL
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
