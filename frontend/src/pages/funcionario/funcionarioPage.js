@@ -63,11 +63,9 @@ function FuncionarioPage () {
   
 
 
-  const abrirexcluirOpen = (id) => {
+  const abrirexcluirOpen =  (id) => {
     setExcluirOpen(!excluirOpen)
-    setIdFuncionario(id)
-    console.log(id)
-    
+    setIdFuncionario(id) 
   }
 
 
@@ -154,7 +152,6 @@ function FuncionarioPage () {
           {excluirOpen && (
             <div className="modal-overlay">
               <div className="excluir_content">
-                <h4 onClick={() => abrirexcluirOpen("")}></h4>
                 <h4>Deseja realmente excluir este funcioanrio</h4>
                 <div>
                   <button onClick={excluirFuncionario}>Excluir</button>
@@ -191,6 +188,7 @@ function FuncionarioPage () {
             </div>
           </div>
         )}
+
       </main>
     </>
   )

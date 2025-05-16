@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HeaderComponente from '../../componetes/header/headerComponente';
+import CadTipoQuarto from '../../componetes/cadTipoQuarto/cadTipoQuarto';
+import CadAcomodacoes from '../../componetes/cadAcomodacao/cadAcomodacao';
+import { API_URL } from '../../url';
+import "./cadquartos.css"
 
 function App() {
     ///// Adicionar verificações de login e autorização//////
@@ -8,210 +12,129 @@ function App() {
     const [formSelecionado, setFormSelecionado] = useState(null);
     const handleSelecionarFormulario = (formId) => setFormSelecionado(formId);
 
-    //////////////////////// TIPOS DE ACOMODAÇÕES ///////////////////////////
-    const [nomeQuarto, setNomeQuarto] = useState("");
-    const [quantquarto, setquantquarto] = useState("");
-    const [descricao, setdescricao] = useState("");
-    const [diaria, setdiaria] = useState("");
-    const [adultos, setadultos] = useState("");
-    const [criancas, setcriancas] = useState("");
-    const [comodidadeAtual, setComodidadeAtual] = useState("");
-    const [listaComodidades, setListaComodidades] = useState([]);
+    const [dadosAcomodacao, setDadosAcomodacao]  = useState([])
+    const [dadosTpQuarto, setDadosTpQuarto] = useState([])
+    const [dadosAcomodacaoEditar, setDadosAcomodacaoEditar] = useState([])
+    const [dadosTpQuartoEditar, setDadosTpQuartoEditar] = useState([])
+    const [desejaExcluirTpQuartoOpen, setDesejaExcluirTpQuarto] = useState(false)
+    const [desejaExcluirAcomodacaoOpen, setDesejaExcluirAcomodacao] = useState(false)
+    const [idTpQuarto, setIdTpQuarto] = useState("")
+    const [idAcomodacao, setIdAcomodacao] = useState("")
 
-  //////////////////////// ACOMODAÇÕES ///////////////////////////
-    const [numerocomod, setnumerocomod] = useState("");
-    const [andar, setandar] = useState("");
-    const [tiposcomod, settiposcomod] = useState("");
+    useEffect(() => {
+      buscarAcomodacoes();
+      buscarTpQuarto();
+    },[])
 
-    function onSaveQuarto(event) {
-        event.preventDefault();
-        console.log("numero:", numerocomod);
-        console.log("Andar:", andar)
+    const buscarTpQuarto = async () => {
+      try{
+          const buscarTiposQuartos = await fetch(`${API_URL}/api/buscarTipoQuartos`,)
+          const dados = await buscarTiposQuartos.json()
+
+          if(!buscarTiposQuartos.ok){
+              
+          }
+
+          setDadosTpQuarto(dados)
       }
-
-  const adicionarComodidade = () => {
-    if (comodidadeAtual.trim() !== "") {
-      setListaComodidades([...listaComodidades, comodidadeAtual]);
-      setComodidadeAtual("");
+      catch(erro){
+          
+      }
     }
-  };
 
-  const removerComodidade = (index) => {
-    const novaLista = listaComodidades.filter((_, i) => i !== index);
-    setListaComodidades(novaLista);
-  };
+    const buscarAcomodacoes = async () => {
+      try{
+        const buscarAcomodacoes = await fetch(`${API_URL}/api/buscarAcomodacoes`,)
+        const dados = await buscarAcomodacoes.json()
 
-  function onSaveTpAcomodacao(event) {
-    event.preventDefault();
-    console.log("Nome", nomeQuarto);
-    console.log("Quantidade:", quantquarto);
-    console.log("Descrição:", descricao);
-    console.log("Diaria:", diaria);
-    console.log("Adultos:" , adultos);
-    console.log("criancas:", criancas);
-    console.log("Comodidades:", listaComodidades);
+        if(!buscarAcomodacoes.ok){
+              
+        }
 
-    console.log("Numero:", numerocomod);
-    console.log("Andar:", andar);
-    console.log("Tipos:", tiposcomod);
-    console.log("Diaria:", diaria);
-  }
+          setDadosAcomodacao(dados)
+      }
+      catch(erro){
+          
+      }
+    }
 
-  const tiposAcomodacoes = () => (
-    <>
-      <form onSubmit={onSaveTpAcomodacao} className="acomodacoes">
-        <h2>Tipos de Acomodações</h2>
-        <h4>Adicionar tipo de Acomodação</h4>
+    const editarTpQuarto = (idTpQuarto) => {
+      const dados = dadosTpQuarto.find(item => item.id === idTpQuarto);
+      // Criar nova referência
+      setDadosTpQuartoEditar({ ...dados });
+    }
 
-        <div className='codigoQuarto'>
-          <label className='codigo'>Nome acomodação</label>
-          <input
-            type="text"
-            placeholder="Produto"
-            required
-            value={nomeQuarto}
-            onChange={event => setNomeQuarto(event.target.value)}
-          />
-        </div>
 
-        <div className='quantidade'>
-          <label>Quantidade Total</label>
-          <input
-            type="text"
-            placeholder="Produto"
-            required
-            value={quantquarto}
-            onChange={event => setquantquarto(event.target.value)}
-          />
-        </div>
 
-        <label>Descrição</label><br />
-        <textarea
-          value={descricao}
-          onChange={event => setdescricao(event.target.value)}
-          placeholder="Descreva o tipo de acomodação"
-          rows={4}
-          cols={50}
-          style={{ resize: 'vertical', padding: '8px' }}
-        /><br />
+    const editarAcomodacao = (idAcomodacao) => {
+      const dados = dadosAcomodacao.find(item => item.id === idAcomodacao);
+      setDadosAcomodacaoEditar({ ...dados });
+    }
 
-        {/* Seção de Comodidades */}
-        <div className='comodidades'>
-          <label>Comodidades</label>
-          <input
-            type="text"
-            placeholder="Ex: TV, Frigobar..."
-            value={comodidadeAtual}
-            onChange={event => setComodidadeAtual(event.target.value)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault(); // Impede o envio do form
-                  adicionarComodidade();
-                }
-              }}
-          />
-          <button type="button" onClick={adicionarComodidade}>Adicionar</button>
 
-          {/* Lista de comodidades exibidas dinamicamente */}
-          <ul>
-            {listaComodidades.map((item, index) => (
-              <li key={index}>
-                {item}
-                <button type="button" onClick={() => removerComodidade(index)}> X
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+    const excluirAcomodacao = async () =>{
+      console.log("Chamando")
+      const id = idAcomodacao
+      console.log(id)
+      try{
+        const excluirAcomodacao = await fetch(`${API_URL}/api/excluirAcomodacao`, {
+          method : `POST`,
+          headers : {
+            'Content-Type' : 'application/json'          
+          },
+          body : JSON.stringify({id})
+        })
 
-        <div className='diaria'>
-          <label>Preço da Diária (R$)</label>
-          <input 
-          type="number" 
-          placeholder="0" 
-          value={diaria}
-          onChange={event => setdiaria(event.target.value)}
+        const dados = await excluirAcomodacao.json()
+
+        if(dados.excluido === true){
+
+        }
+      }
+      catch{
         
-          />
-        </div>
-        <div className='adultos'>
-          <label>Número de Adultos</label>
-          <input 
-          type="number" 
-          placeholder="0"
-          value={adultos}
-          onChange={event => setadultos(event.target.value)}
-          />
-        </div>
+      }
+      buscarAcomodacoes()
+      setIdAcomodacao("")
+    }
 
-        <div className='criancas'>
-          <label>Número de Crianças</label>
-          <input 
-          type="number" 
-          placeholder="0" 
-          value={criancas}
-          onChange={event => setcriancas(event.target.value)}
-          />
-        </div>
-        <button type='submit' className='cad_quartos'>Adicionar</button>
-      </form>
-    </>
-  );
+    const excluirTpQuarto = async () => {
+      const id = idTpQuarto
+      console.log("Chamando")
+      console.log(id)
+      try{
+        const excluirTpQuarto = await fetch(`${API_URL}/api/excluirTpQuarto`, {
+          method : `POST`,
+          headers : {
+            'Content-Type' : 'application/json'          
+          },
+          body : JSON.stringify({id})
+        })
 
-  const acomodacoes = () => (
-    <>
-      <form onSubmit={onSaveQuarto} className="tiposacomodacoes">
-        <h2>Acomodações</h2>
-        <div className="numacomodacoes">
-          <label>Número da acomodação:</label>
-          <input 
-          type="text" 
-          placeholder="Ex: 101" 
-          value={numerocomod}
-          onChange={event => setnumerocomod(event.target.value)}
-          />
-        </div>
+        const dados = await excluirTpQuarto.json()
+        console.log(dados)
 
-        <div>
-          <label>Andar</label>
-          <input 
-          type="number" 
-          placeholder="Ex: 1" 
-          value={andar}
-          onChange={event => setandar(event.target.value)} 
-          />
-        </div>
+        if(dados.excluido === true){
 
-        <div className="tiposacomodacoes">
-          <label 
-          value = {tiposcomod}
-          onChange={event => settiposcomod(event.target.value)}>
-          Tipos de acomodações
-            
-          </label>
-          {/* {trazer tp dados do tp acomodacoes} */}
-          <select>
-            <option>Apartamento de luxo</option>
-            <option>Apartamento de luxo especial</option>
-            <option>Suíte especial</option>
-            <option>Suíte master</option>
-          </select>
-        </div>
-
-        <div className="unidades">
-          <label>Unidade do Hotel</label>
-          <select>
-            <option>Gramado</option>
-            <option>Canoas</option>
-            <option>Santa Maria</option>
-            <option>Pelotas</option>
-          </select>
-        </div>
+        }
+      }
+      catch{
         
-        <button type='submit' className='cad_acomodacoes'>Adicionar acomodação</button>
-      </form>
-    </>
-  );
+      }
+      buscarTpQuarto()
+      setIdTpQuarto("")
+    }
+
+    const desejaExcluirTpQuarto = (id) =>{
+       setDesejaExcluirTpQuarto(!desejaExcluirTpQuartoOpen)
+       setIdTpQuarto(id)  
+    }
+
+    const desejaExcluirAcomodacao = async (id) =>{
+      setDesejaExcluirAcomodacao(!desejaExcluirAcomodacaoOpen)
+      setIdAcomodacao(id)
+
+    }
 
   return (
     <>
@@ -224,11 +147,72 @@ function App() {
           <input type="button" value="Quartos" onClick={() => handleSelecionarFormulario(2)} />
 
           <div style={{ marginTop: '20px' }}>
-            {formSelecionado === 1 && tiposAcomodacoes()}
-            {formSelecionado === 2 && acomodacoes()}
+            {formSelecionado === 1 && (
+              <>              
+              <CadTipoQuarto dadosTipoQuartoParaEditar={dadosTpQuartoEditar} aoAlterar={buscarTpQuarto}></CadTipoQuarto>
+              <div>
+                {dadosTpQuarto.map(tpQuarto =>(
+                  <div>
+                    <div>
+                      <h1>{tpQuarto.nomeAcomodacao}</h1>
+                    </div>
+                    <div>
+                      Diaria-{tpQuarto.vlDiaria}
+                    </div>
+                    <div>
+                      Quantidade Hospedes<br></br>
+                      Adutlos-{tpQuarto.quantidade_adultos}<br></br>
+                      Criancar-{tpQuarto.quantidade_criancas}
+                      <button onClick={() => editarTpQuarto(tpQuarto.id)}>EDITAR</button>
+                      <button onClick={() => desejaExcluirTpQuarto(tpQuarto.id)}>EXCLUIR</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              </>
+
+              )}
+            {formSelecionado === 2 && (
+              <>
+                <CadAcomodacoes dadosAcomodacaoParaEditar = {dadosAcomodacaoEditar} aoAlterar={buscarAcomodacoes}></CadAcomodacoes>
+                <div>
+                  {dadosAcomodacao.map(acomodacao => {
+                    const tpQuarto = dadosTpQuarto.find(t => t.id === acomodacao.tpAcomodacao);
+                    return (
+                      <div key={acomodacao.id} className='exibirAcomodacoes'>
+                        <h1>Número quarto - {acomodacao.numAcomodacao}</h1>
+                        <h1>Andar - {acomodacao.num_andar}</h1>
+                        <h1>Tipo de quarto - {tpQuarto.nomeAcomodacao}</h1>
+                        <button onClick={() => editarAcomodacao(acomodacao.id)}>EDITAR</button>
+                        <button onClick={() => desejaExcluirAcomodacao(acomodacao.id)}>EXCLUIR</button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>
+      {desejaExcluirTpQuartoOpen && (
+        <div className='excluir-overlay'>
+          <div className='excluir-content'>
+            <p>Deseja realmente excluir</p>
+            <button onClick={excluirTpQuarto}>Sim</button>
+            <button onClick={desejaExcluirTpQuarto}>não</button>
+          </div>
+        </div>
+      )}
+
+      {desejaExcluirAcomodacaoOpen && (
+        <div className='exlcuir-overlay'>
+          <div className='excluir-content'>
+            <p>Deseja realmente excluir</p>
+            <button onClick={excluirAcomodacao}>Sim</button>
+            <button onClick={desejaExcluirAcomodacao}>não</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -539,15 +539,225 @@ app.post('/api/editarFuncionario', (req, res) =>{
 })
 
 
+///////////CADASTRO TP QUARTO//////////////////
+
+app.post('/api/cadastrarTpQuarto', (req, res) =>{
+  const {
+    unidade_hotel,
+    nomeAcomodacao,
+    quantidade_total,
+    descricao,
+    comodidades,
+    vlDiaria,
+    quantidade_adultos,
+    quantidade_criancas,
+  } = req.body
+
+  const comodidadesFormatado = Array.isArray(comodidades)
+    ? JSON.stringify(comodidades)
+    : comodidades;
+
+  const sql = `INSERT INTO tipo_acomodacao 
+    (unidade_hotel, nomeAcomodacao, quantidade_total, descricao, comodidades, vlDiaria, quantidade_adultos, quantidade_criancas) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  const valores = [
+    unidade_hotel,
+    nomeAcomodacao,
+    quantidade_total,
+    descricao,
+    comodidadesFormatado,
+    vlDiaria,
+    quantidade_adultos,
+    quantidade_criancas,
+  ]
+  
+  bd.query(sql, valores, (err, result) =>{
+    if(err){
+        console.error('Erro ao salvar cadastro:', err);
+        return res.status(500).json({ erro: 'Erro ao salvar cadastro', detalhes: err });
+    }
+    res.status(201).json({ sucesso: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
+
+
+////////EDITAR TP QUARTO/////////
+app.post('/api/editarTpQuarto', (req, res) =>{
+  const {
+    unidade_hotel,
+    nomeAcomodacao,
+    quantidade_total,
+    descricao,
+    comodidades,
+    vlDiaria,
+    quantidade_adultos,
+    quantidade_criancas,
+    id
+  } = req.body
+
+  const comodidadesFormatado = Array.isArray(comodidades)
+    ? JSON.stringify(comodidades)
+    : comodidades;
+
+  const sql = `UPDATE tipo_acomodacao SET
+    unidade_hotel = ?,
+    nomeAcomodacao = ?, 
+    quantidade_total = ?, 
+    descricao = ?, 
+    comodidades = ?, 
+    vlDiaria = ?, 
+    quantidade_adultos = ?, 
+    quantidade_criancas = ? WHERE id = ?
+    `;
+
+  const valores = [
+    unidade_hotel,
+    nomeAcomodacao,
+    quantidade_total,
+    descricao,
+    comodidadesFormatado,
+    vlDiaria,
+    quantidade_adultos,
+    quantidade_criancas,
+    id
+  ]
+  
+  bd.query(sql, valores, (err, result) =>{
+    if(err){
+        console.error('Erro ao salvar cadastro:', err);
+        return res.status(500).json({ erro: 'Erro ao salvar cadastro', detalhes: err });
+    }
+    res.status(201).json({editado: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
 
 
 
+/////BUSCAR TP QUARTO//////////
+
+app.get('/api/buscarTipoQuartos', (req, res) => {
+  const sql = 'SELECT * FROM tipo_acomodacao ORDER BY id';
+  bd.query(sql, (err, result) => {
+    if (err) return res.status(500).json({ erro: 'Erro ao buscar tipo de quartos' });
+    res.json(result);
+  });
+});
 
 
 
+////CADASTRAR ACOMODAÇÂO/////////
+
+app.post('/api/cadastrarAcomodacao', (req, res) => {
+  const {
+    numAcomodacao,
+    num_andar,
+    tpAcomodacao,
+    unidade_hotel,
+  } = req.body
+
+  const sql = `INSERT INTO acomodacoes 
+  (numAcomodacao, num_andar, tpAcomodacao, unidade_hotel)
+  VALUES (?, ?, ?, ?) `
+
+  const valores = [
+    numAcomodacao,
+    num_andar,
+    tpAcomodacao,
+    unidade_hotel
+  ]
+
+  bd.query(sql, valores, (err, result) =>{
+    if(err){
+      console.error('Erro ao salvar cadastro:', err);
+      return res.status(500).json({ erro: 'Erro ao salvar cadastro', detalhes: err });
+    }
+    res.status(201).json({ sucesso: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
 
 
+//////////EDITAR ACOMODAÇÂO////////////////////
+app.post('/api/editarAcomodacao', (req, res) => {
+  const {
+    numAcomodacao,
+    num_andar,
+    tpAcomodacao,
+    unidade_hotel,
+    id
+  } = req.body
 
+  const sql = `UPDATE acomodacoes SET
+  numAcomodacao = ?, 
+  num_andar = ?, 
+  tpAcomodacao = ?, 
+  unidade_hotel = ?
+   WHERE id = id`
+
+  const valores = [
+    numAcomodacao,
+    num_andar,
+    tpAcomodacao,
+    unidade_hotel,
+    id
+  ]
+
+  bd.query(sql, valores, (err, result) =>{
+    if(err){
+      console.error('Erro ao salvar cadastro:', err);
+      return res.status(500).json({ erro: 'Erro ao salvar cadastro', detalhes: err });
+    }
+    res.status(201).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
+
+//////////BUSCAR ACOMODAÇÔES///////////////////
+
+app.get('/api/buscarAcomodacoes', (req, res) => {
+  const sql = 'SELECT * FROM acomodacoes ORDER BY id';
+  bd.query(sql, (err, result) => {
+    if (err) return res.status(500).json({ erro: 'Erro ao buscar acomodações' });
+    res.json(result);
+  });
+});
+
+
+//////////EXCLUIR TPQUARTO///////////////////
+
+
+app.post('/api/excluirTpQuarto' , (req, res) =>{
+  const {id} = req.body
+
+  const sql = 'DELETE FROM tipo_acomodacao WHERE id = ?'
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    else{
+      res.json({excluido: true})
+    }
+  })
+})
+
+
+//////////EXCLUIR ACOMODAÇÔES////////////////
+
+
+app.post('/api/excluirAcomodacao' , (req, res) =>{
+  const {id} = req.body
+
+  const sql = 'DELETE FROM acomodacoes WHERE id = ?'
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    else{
+      res.json({excluido: true})
+    }
+  })
+})
 
 
 
