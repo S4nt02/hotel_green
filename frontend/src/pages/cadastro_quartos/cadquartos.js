@@ -24,6 +24,7 @@ function App() {
     useEffect(() => {
       buscarAcomodacoes();
       buscarTpQuarto();
+      handleSelecionarFormulario(1)
     },[])
 
     const buscarTpQuarto = async () => {

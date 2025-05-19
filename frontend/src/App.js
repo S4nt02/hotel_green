@@ -9,6 +9,7 @@ import AdminHome from './pages/admin_home/adminHome';
 import FuncionarioPage from './pages/funcionario/funcionarioPage';
 import { AuthProvider } from './context/authContext';
 import CadastroQuartos from './pages/cadastro_quartos/cadquartos';
+import Itens from './pages/itens/itens';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path='/admin' element={<AdminHome/>}/>
           <Route path='/funcionario' element={<FuncionarioPage/>}/>
           <Route path="/cadastro_quartos" element={<CadastroQuartos />} />
+          <Route path="/itens" element={<Itens/>}/>
         </Routes>
       </AuthProvider>
 

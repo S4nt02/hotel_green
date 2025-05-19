@@ -760,9 +760,71 @@ app.post('/api/excluirAcomodacao' , (req, res) =>{
 })
 
 
+//////////////CADASTRO CATEGORIA //////////////////
+
+app.post('/api/cadCategoria', (req, res) =>{
+  const {categoria} = req.body
+
+  const sql = `INSERT INTO categoria_itens (nomeCategoria) VALUES (?)`
+
+  const valores = [
+    categoria
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: 'Erro ao salvar categoria', detalhes: err });
+    }
+    res.status(201).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
+
+////////////////BUSCAR CATEGORIA////////////////////////
+
+app.get('/api/buscarCategoria', (req, res) => {
+    const sql = 'SELECT * FROM categoria_itens ORDER BY id';
+    bd.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ erro: 'Erro ao buscar tipo de quartos' });
+      res.json(result);
+    });
+})
+
+//////////////EXCLUIR CATEGORIA//////////////////////////
+
+app.post('/api/excluirCategoria', (req, res) => {
+  const {id} = req.body
+  
+  const sql = 'DELETE FROM categoria_itens WHERE id = ?'
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    else{
+      res.json({excluido: true})
+    }
+  })
+})
 
 
+///////////EDITAR CATEGORIA/////////////////////////////
+app.post('/api/editarCategoria', (req, res) =>{
+  const {categoria, id} = req.body
 
+  const sql = `UPDATE categoria_itens SET  nomeCategoria = ? WHERE id = ?`
+
+  const valores = [
+    categoria,
+    id
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: 'Erro ao salvar categoria', detalhes: err });
+    }
+    res.status(201).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
 
 
 
