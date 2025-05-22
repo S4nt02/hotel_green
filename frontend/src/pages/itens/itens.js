@@ -6,6 +6,7 @@ import { set, useForm} from 'react-hook-form';
 import { API_URL } from '../../url';
 import HeaderComponente from '../../componetes/header/headerComponente';
 import CadCategoria from '../../componetes/cad_categoria/cad_categoria';
+import CadItens from '../../componetes/cad_itens/cadItens';
 
 function Itens (){
 
@@ -17,6 +18,7 @@ function Itens (){
     },[])
 
     return(
+        
         <>
             <main>
                 <HeaderComponente/>
@@ -27,7 +29,7 @@ function Itens (){
                 </div>
                 {formSelecionado == 1 && (
                     <>
-                    
+                        <CadItens/>
                     </>
                 )}
 

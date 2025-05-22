@@ -827,8 +827,41 @@ app.post('/api/editarCategoria', (req, res) =>{
 })
 
 
+////////////////////ADICIONAR ITEM////////////////////////
+
+app.post('/api/adicionarItem', (req, res) => {
+  let { nomeItem, categoria, preco } = req.body;
+
+  // Converte vírgula para ponto
+  if (typeof preco === 'string') {
+    preco = parseFloat(preco.replace(',', '.'));
+  }
+
+  console.log('DADOS RECEBIDOS:', { nomeItem, categoria, preco }); // 👈 IMPORTANTE
+
+  const sql = `INSERT INTO itens (nomeItem, categoria, preco) VALUES (?, ?, ?)`;
+  const valores = [nomeItem, categoria, preco];
+
+  bd.query(sql, valores, (err, result) => {
+    if (err) {
+      console.error('ERRO SQL:', err); // 👈 MOSTRA ERRO NO TERMINAL
+      return res.status(500).json({ erro: 'Erro ao salvar item', detalhes: err });
+    }
+    res.status(201).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' });
+  });
+});
 
 
+
+///////////////BUSCAR ITEM//////////////////////////
+
+app.get('/api/buscarItens', (req, res) => {
+    const sql = 'SELECT * FROM itens ORDER BY id';
+    bd.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ erro: 'Erro ao buscar tipo de quartos' });
+      res.json(result);
+    });
+})
 
 
 
