@@ -864,9 +864,110 @@ app.get('/api/buscarItens', (req, res) => {
 })
 
 
+////////////////EXCLUIR ITEM////////////////////////
+
+app.post('/api/excluirItem', (req, res) => {
+  const {id} = req.body
+  
+  const sql = 'DELETE FROM itens WHERE id = ?'
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    else{
+      res.json({excluido: true})
+    }
+  })
+})
+
+/////////EDITAR ITEM///////////////////////////////
+
+app.post('/api/editarItem', (req, res) =>{
+  const {nomeItem, categoria, preco, id} = req.body
+
+  const sql = `UPDATE itens SET nomeItem = ?, categoria = ?, preco = ? WHERE id = ?`
+
+  const valores = [
+    nomeItem,
+    categoria,
+    preco,
+    id
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: 'Erro ao salvar categoria', detalhes: err });
+    }
+    res.status(201).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
+
+//////////////////////////CADASTRO UNIDADE///////////////////////////
+
+app.post('/api/cadUnidade', (req, res) =>{
+  const {unidade} = req.body
+
+  const sql = `INSERT INTO unidades (nomeUnidade) VALUES (?)`
+
+  const valores = [
+    unidade
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: 'Erro ao salvar unidade', detalhes: err });
+    }
+    res.status(201).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
+
+////////////////BUSCAR UNIDADE////////////////////////
+
+app.get('/api/buscarUnidade', (req, res) => {
+    const sql = 'SELECT * FROM unidades ORDER BY id';
+    bd.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ erro: 'Erro ao buscar unidades' });
+      res.json(result);
+    });
+})
+
+//////////////EXCLUIR UNIDADE//////////////////////////
+
+app.post('/api/excluirUnidade', (req, res) => {
+  const {id} = req.body
+  
+  const sql = 'DELETE FROM unidades WHERE id = ?'
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    else{
+      res.json({excluido: true})
+    }
+  })
+})
 
 
+///////////EDITAR UNIDADE/////////////////////////////
+app.post('/api/editarUnidade', (req, res) =>{
+  const {unidade, id} = req.body
 
+  const sql = `UPDATE unidades SET  nomeUnidade = ? WHERE id = ?`
+
+  const valores = [
+    unidade,
+    id
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: 'Erro ao salvar unidade', detalhes: err });
+    }
+    res.status(201).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' })
+  })
+})
 
 
 

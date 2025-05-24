@@ -4,6 +4,7 @@ import CadTipoQuarto from '../../componetes/cadTipoQuarto/cadTipoQuarto';
 import CadAcomodacoes from '../../componetes/cadAcomodacao/cadAcomodacao';
 import { API_URL } from '../../url';
 import "./cadquartos.css"
+import CadUnidade from '../../componetes/cad_unidade/cadUnidade';
 
 function App() {
     ///// Adicionar verificações de login e autorização//////
@@ -146,6 +147,7 @@ function App() {
           <h4>Gerenciamento dos tipos de acomodações</h4>
           <input type="button" value="Tipos de acomodações" onClick={() => handleSelecionarFormulario(1)} />
           <input type="button" value="Quartos" onClick={() => handleSelecionarFormulario(2)} />
+          <input type='button'  value="Unidades"onClick={() => handleSelecionarFormulario(3)}/>
 
           <div style={{ marginTop: '20px' }}>
             {formSelecionado === 1 && (
@@ -190,6 +192,12 @@ function App() {
                     );
                   })}
                 </div>
+              </>
+            )}
+
+            {formSelecionado === 3 && (
+              <>
+                <CadUnidade/>
               </>
             )}
           </div>

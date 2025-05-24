@@ -6,14 +6,24 @@ import { set, useForm} from 'react-hook-form';
 import { API_URL } from '../../url';
 import { Key } from 'lucide-react';
 import {CirclePlus, Search} from 'lucide-react'
+import "./cadItens.css"
+
 
 function CadItens () {
     const [itemOpen, setItemOpen] = useState(false)
     const [categorias, setCategorias] = useState([])
     const [itens, setItens] = useState([])
+    const [excluirOpen, setExcluirOpen] = useState(false)
+    const [idItem, setIdItem] = useState(null)
+    const [editar, setEditar] = useState(false)
 
     const abrirAdicionarItem = () => {
         setItemOpen(!itemOpen)
+    }
+
+    const excluirModal = (id) => {
+        setExcluirOpen(!excluirOpen)
+        setIdItem(id)
     }
 
 
@@ -32,24 +42,59 @@ function CadItens () {
 
     const cadastroItem = async (dados) => {
         console.log(JSON.stringify(dados))
-        try{
-            const adicionarItem = await fetch(`${API_URL}/api/adicionarItem`, {
-                method : `POST`,
-                headers : {
-                    'Content-Type' : 'application/json'
-                },
-                body : JSON.stringify(dados)
-            })
 
-            if(!adicionarItem.sucesso){
+        if(editar === true){
+            dados.id = idItem
+                try{
+                    const adicionarItem = await fetch(`${API_URL}/api/editarItem`, {
+                        method : `POST`,
+                        headers : {
+                            'Content-Type' : 'application/json'
+                        },
+                        body : JSON.stringify(dados)
+                    })
+
+                    if(!adicionarItem.sucesso){
+
+                    }
+
+                    reset({
+                        nomeItem :"",
+                        categoria : "",
+                        preco : ""
+                    })
+
+                }
+                catch{
+
+            } 
+        }
+        else{
+            try{
+                const adicionarItem = await fetch(`${API_URL}/api/adicionarItem`, {
+                    method : `POST`,
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify(dados)
+                })
+
+                if(!adicionarItem.sucesso){
+
+                }
+
+                reset({
+                    nomeItem :"",
+                    categoria : "",
+                    preco : ""
+                })
 
             }
+            catch{
 
-
+            } 
         }
-        catch{
 
-        }
 
         buscarItens()
     }
@@ -64,6 +109,45 @@ function CadItens () {
         catch{
 
         }
+    }
+
+    const excluirItem = async () => {
+    
+        const id = idItem
+        
+        try{
+            const excluirItem = await fetch(`${API_URL}/api/excluirItem`,{
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({id})
+            })
+
+            const data = await excluirItem.json()
+
+            if(data.excluido === true){
+                setIdItem(null)
+                setExcluirOpen(false)
+            }
+        }
+        catch{
+            
+        }
+        buscarItens()
+    }
+
+    const editarItem = async (item) =>{
+        console.log(item)
+        setItemOpen(true)
+        setIdItem(item.id)
+        setEditar(true)
+        reset({
+            nomeItem : item.nomeItem,
+            categoria : item.categoria,
+            preco : item.preco
+        })
+
     }
 
     const validarItem = z.object({
@@ -126,7 +210,7 @@ function CadItens () {
                         {errors.preco && <p>{errors.preco.message}</p>}  
                     </div>
                     <button onClick={abrirAdicionarItem}>Cancelar</button>
-                    <button type='submit'>Adicionar</button>
+                    <button type='submit'>{editar === true ? "Editar" : "Adicionar"}</button>
                 </form>
             </div>)}
 
@@ -136,8 +220,25 @@ function CadItens () {
                     <p>Item-{item.nomeItem}</p>
                     <p>Categoria-{item.categoria}</p>
                     <p>Preço-{item.preco}</p>
+                    <button onClick={() => excluirModal(item.id)}>Excluir</button>
+                    <button onClick={() => editarItem(item)}>Editar</button>
                 </div>
             ))}
+
+            {excluirOpen && (
+                <div className='overlay'> 
+                    <div className='alert-modal'>
+                        <div>
+                            <p>Deseja excluir esse item</p>
+
+                        </div>
+                        <div>
+                            <button onClick={excluirItem}>Excluir</button>
+                            <button onClick={excluirModal}>Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     )
 }

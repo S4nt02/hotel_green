@@ -15,6 +15,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
     const [editar, setEditar] = useState(false)
     const [alertOpen, setAlertModal] = useState(false)
     const [alertMensagem, setAlertMensagem] = useState("")
+    const [unidades, setUnidades] = useState([])
 
     const adicionarComodidade = () => {
         
@@ -36,6 +37,18 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
         }
     };
 
+    const buscarUnidade = async () => {
+        try{
+            const buscarUnidade = await fetch(`${API_URL}/api/buscarUnidade`)
+            const dados = await buscarUnidade.json()
+
+            setUnidades(dados)
+        }
+        catch{
+
+        }
+
+    }
 
 
 
@@ -150,6 +163,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
         if (listaComodidades.length > 0) {
             clearErrors("comodidades");
         }
+        buscarUnidade()
     }, [listaComodidades]);
 
     // Inicializa o formulário uma única vez quando for edição
@@ -209,10 +223,9 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                         {...register('unidade_hotel')}
                     >
                         <option value={""}>Selecione uma Unidade</option>
-                        <option value={1}>Gramado</option>
-                        <option value={2}>Canoas</option>
-                        <option value={3}>Santa Maria</option>
-                        <option value={4}>Pelotas</option>
+                        {unidades.map(unidade => (
+                            <option key={unidade.id} value={unidade.id}>{unidade.nomeUnidade}</option>
+                        ))}
                         
                     </select>
                     {errors.unidade_hotel && <p>{errors.unidade_hotel.message}</p>}

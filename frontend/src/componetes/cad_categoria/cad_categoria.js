@@ -6,6 +6,7 @@ import { set, useForm} from 'react-hook-form';
 import { API_URL } from '../../url';
 import { Key } from 'lucide-react';
 import {CirclePlus} from 'lucide-react'
+import "./cad_categoria.css"
 
 function CadCategoria (){
 
@@ -13,11 +14,18 @@ function CadCategoria (){
     const [idEditando, setIdEditando] = useState(null);
     const [valueEdit, setValueEdit] = useState('')
     const [categOpen, setAdicionarCateg] = useState(false)
+    const [excluirOpen, setExcluirOpen] = useState(false)
+    const [idCategoria, setIdCategoria] = useState(null)
 
     const validarCategoria = z.object({
         categoria : z.string().min(1, {message : "O campo categoria não pode ser vazio"})
     })
 
+
+    const excluirModal = (id) => {
+        setExcluirOpen(!excluirOpen)
+        setIdCategoria(id)
+    }
 
     const {
         register,
@@ -101,7 +109,8 @@ function CadCategoria (){
     };
 
 
-    const excluirCategoria = async (id) => {
+    const excluirCategoria = async () => {
+        const id = idCategoria
         try{
             const excluirCategoria = await fetch(`${API_URL}/api/excluirCategoria`, {
                 method : 'POST',
@@ -114,6 +123,8 @@ function CadCategoria (){
             if(excluirCategoria.excluido){
 
             }
+
+            setExcluirOpen(false)
         }   
         catch{
 
@@ -140,10 +151,10 @@ function CadCategoria (){
             {categOpen && (<div>
                 <form onSubmit={handleSubmit(cadastrarCategoria, onError)}>
                     <label>Adicionar Categoria</label>
-                    <input type='text' placeholder='Nome da categoria' {...register("categoria")}></input>
-                    <button onClick={adicionarCategoria}>Cancelar</button>
-                    <button type='submit'>Adicionar</button>
-                    {errors.categoria && <p>{errors.categoria.message}</p>}
+                        <input type='text' placeholder='Nome da categoria' {...register("categoria")}></input>
+                        <button onClick={adicionarCategoria}>Cancelar</button>
+                        <button type='submit'>Adicionar</button>
+                        {errors.categoria && <p>{errors.categoria.message}</p>}
                 </form>
             </div>)}
             <div>
@@ -174,11 +185,26 @@ function CadCategoria (){
                             setValueEdit(categoria.nomeCategoria);
                             }}>Editar
                         </button>
-                        <button onClick={() => excluirCategoria(categoria.id)}>Excluir</button>
+                        <button onClick={() => excluirModal(categoria.id)}>Excluir</button>
                     </>
                     )}
                 </div>
                 ))}
+
+                {excluirOpen && (
+                    <div className='overlay'> 
+                        <div className='alert-modal'>
+                            <div>
+                                <p>Deseja excluir esse item</p>
+
+                            </div>
+                            <div>
+                                <button onClick={excluirCategoria}>Excluir</button>
+                                <button onClick={excluirModal}>Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     )
