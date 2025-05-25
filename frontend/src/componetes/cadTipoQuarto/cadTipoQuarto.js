@@ -99,6 +99,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                             quantidade_adultos : "" ,
                             quantidade_criancas : "" ,
                         });
+                        setListaComodidades([])
                 }
                 else{
                     setAlertMensagem("Erro ao editar tipo de acomodação")
@@ -130,6 +131,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                             quantidade_adultos : "" ,
                             quantidade_criancas : "" ,
                         });
+                        setListaComodidades([])
                 }
                 else{
                     setAlertMensagem("Erro ao cadastrar tipo de acomodação")
@@ -203,6 +205,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                 quantidade_adultos : "" ,
                 quantidade_criancas : "" ,
         });
+        setListaComodidades([])
     };
 
     const alertModal = () => {
@@ -332,8 +335,8 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
             </form>
 
             {alertOpen && (
-                <div className='overlay-modal'>
-                    <div className='alert-modal'>
+                <div className='overlay-modal2'>
+                    <div className='alert-modal2'>
                         <h1 onClick={alertModal}>X</h1>
                          <p>{alertMensagem}</p>
                     </div>

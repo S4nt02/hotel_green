@@ -10,12 +10,14 @@ import "./cadAcomodacao.css"
 function CadAcomodacoes ({dadosAcomodacaoParaEditar, aoAlterar}){
 
     const [dadosAcomodacao, setDadosAcomodacao] = useState(() => dadosAcomodacaoParaEditar || {})
+    const [acomodacoes, setAcomodacoes] = useState([])
     const [idAcomodacao, setIdAcomodacao] = useState("")
     const [editar, setEditar] = useState(false)
     const [tiposQuartos, setTiposQuartos] = useState([])
     const [alertOpen, setAlertModal] = useState(false)
     const [alertMensagem, setAlertMensagem] = useState("")
     const [unidades, setUnidades] = useState([])
+    const [erroQuantidade, setErroQuantidade] = useState("")
 
     const validarAcomodacao = z.object({
         numAcomodacao : z.coerce.number().min(1, { message: "Digite um número para a acomodação" }) ,
@@ -53,10 +55,56 @@ function CadAcomodacoes ({dadosAcomodacaoParaEditar, aoAlterar}){
 
     }
 
+
+    /////////////Burro ta tendo que fazer a leitura duas vezes//////////////
+    const buscarAcomodacoes = async () => {
+        try{
+        const buscarAcomodacoes = await fetch(`${API_URL}/api/buscarAcomodacoes`,)
+        const dados = await buscarAcomodacoes.json()
+
+        if(!buscarAcomodacoes.ok){
+                
+        }
+
+            setAcomodacoes(dados)
+        }
+        catch(erro){
+            
+        }
+    }
+
+//////////////////////////////////////////////////////////////////////
+
+    const getTotalAcomodacoesPorTipoNaUnidade = (tpAcomodacaoId, unidadeHotelId, acomodacoes) => {
+        return acomodacoes.filter(
+            a => a.tpAcomodacao === tpAcomodacaoId && a.unidade_hotel === unidadeHotelId
+        ).length;
+    };
+
+    const podeCadastrarAcomodacao = (tpAcomodacaoId, unidadeHotelId, tipoAcomodacoes, acomodacoes) => {
+        console.log(tpAcomodacaoId)
+        console.log(unidadeHotelId)
+        console.log(tipoAcomodacoes)
+        console.log(acomodacoes)
+        const tipo = tipoAcomodacoes.find(
+            t => t.id === tpAcomodacaoId && t.unidade_hotel === unidadeHotelId
+        );
+        const totalCadastradas = getTotalAcomodacoesPorTipoNaUnidade(tpAcomodacaoId, unidadeHotelId, acomodacoes);
+
+        if (!tipo) return ("Tipo de acomodação não corresponde a unidade do hotel");
+
+        return totalCadastradas < (tipo.quantidade_total || 0);
+    };
+
+
+
+
+
     
     useEffect(() => {
         buscarTpQuarto();
-        buscarUnidade()
+        buscarUnidade();
+        buscarAcomodacoes()
     }, []); // <- só busca os tipos de quarto uma vez ao montar
 
     useEffect(() => {
@@ -66,6 +114,13 @@ function CadAcomodacoes ({dadosAcomodacaoParaEditar, aoAlterar}){
             if(dadosAcomodacaoParaEditar.id){
                 setEditar(true)
             }
+
+            reset({
+                numAcomodacao: dadosAcomodacaoParaEditar.numAcomodacao || "",
+                num_andar: dadosAcomodacaoParaEditar.num_andar || "",
+                tpAcomodacao: dadosAcomodacaoParaEditar.tpAcomodacao || "",
+                unidade_hotel: dadosAcomodacaoParaEditar.unidade_hotel || "",
+            })
             
 
 
@@ -92,72 +147,88 @@ function CadAcomodacoes ({dadosAcomodacaoParaEditar, aoAlterar}){
     })
 
     const onSaveQuarto = async (dados) =>{
-        setAlertModal(true)
-        
-        if(editar){
-            dados.id = dadosAcomodacao.id
-            try{
-                const cadastrarAcomodacao = await fetch(`${API_URL}/api/editarAcomodacao`,{
-                    method : 'POST',
-                    headers : {
-                        'Content-Type' : 'application/json'
-                    },
-                    body : JSON.stringify(dados)
-                })
+        const result = podeCadastrarAcomodacao(dados.tpAcomodacao, dados.unidade_hotel, tiposQuartos, acomodacoes)
 
-                if(!cadastrarAcomodacao.editado){
-                    setAlertMensagem("Acomodação editada com sucesso")
-                    reset({
-                        numAcomodacao: "",
-                        num_andar: "",
-                        tpAcomodacao: "",
-                        unidade_hotel: "",
-                    });
-                }
-                else{
-                     setAlertMensagem("Erro ao editar acomodação")
-                }
+        if( result === true){
+            setAlertModal(true)
+            setErroQuantidade("")
+            if(editar){
+                dados.id = dadosAcomodacao.id
+                try{
+                    const cadastrarAcomodacao = await fetch(`${API_URL}/api/editarAcomodacao`,{
+                        method : 'POST',
+                        headers : {
+                            'Content-Type' : 'application/json'
+                        },
+                        body : JSON.stringify(dados)
+                    })
 
-                
+                    if(!cadastrarAcomodacao.editado){
+                        setAlertMensagem("Acomodação editada com sucesso")
+                        reset({
+                            numAcomodacao: "",
+                            num_andar: "",
+                            tpAcomodacao: "",
+                            unidade_hotel: "",
+                        });
+                    }
+                    else{
+                        setAlertMensagem("Erro ao editar acomodação")
+                    }
+
+                    
+
+                }
+                catch(erro){
+                    setAlertMensagem("Erro ao cadastrar acomodação")
+                }
 
             }
-            catch(erro){
-                setAlertMensagem("Erro ao cadastrar acomodação")
-            }
+            else{
+                try{
+                    const cadastrarAcomodacao = await fetch(`${API_URL}/api/cadastrarAcomodacao`,{
+                        method : 'POST',
+                        headers : {
+                            'Content-Type' : 'application/json'
+                        },
+                        body : JSON.stringify(dados)
+                    })
 
-        }
-        else{
-            try{
-                const cadastrarAcomodacao = await fetch(`${API_URL}/api/cadastrarAcomodacao`,{
-                    method : 'POST',
-                    headers : {
-                        'Content-Type' : 'application/json'
-                    },
-                    body : JSON.stringify(dados)
-                })
+                    if(!cadastrarAcomodacao.sucesso){
+                        setAlertMensagem("Acomodação editada com sucesso")
+                        reset({
+                            numAcomodacao: "",
+                            num_andar: "",
+                            tpAcomodacao: "",
+                            unidade_hotel: "",
+                        });
+                    }
+                    else{
+                        setAlertMensagem("Erro ao editar acomodação")
+                    }
 
-                if(!cadastrarAcomodacao.sucesso){
-                    setAlertMensagem("Acomodação editada com sucesso")
-                    reset({
-                        numAcomodacao: "",
-                        num_andar: "",
-                        tpAcomodacao: "",
-                        unidade_hotel: "",
-                    });
+                    
+
                 }
-                else{
+                catch(erro){
                     setAlertMensagem("Erro ao editar acomodação")
                 }
-
-                
-
             }
-            catch(erro){
-                setAlertMensagem("Erro ao editar acomodação")
-            }
+
+            if (aoAlterar) aoAlterar()
         }
+        else{
 
-        if (aoAlterar) aoAlterar()
+            if(result === false){
+                setErroQuantidade("Quantidade máxima de acomodações cadastradas para esse tipo de quarto")
+            }
+            else{
+                setErroQuantidade(result)
+            }
+            
+        }
+        
+       
 
     }
 
@@ -179,6 +250,7 @@ function CadAcomodacoes ({dadosAcomodacaoParaEditar, aoAlterar}){
         <>
         
         <form onSubmit={handleSubmit(onSaveQuarto, onError)} className="tiposacomodacoes">
+            {erroQuantidade !== "" && <p>{erroQuantidade}</p>}
             <h2>Acomodações</h2>
             <div className="numacomodacoes">
             <label>Número da acomodação:</label>
@@ -205,7 +277,7 @@ function CadAcomodacoes ({dadosAcomodacaoParaEditar, aoAlterar}){
             Tipos de acomodações      
             </label>
             {/* {trazer tp dados do tp acomodacoes} */}
-            <select value={watch('tpAcomodacao')||""} {...register('tpAcomodacao')}>
+            <select value={watch('tpAcomodacao')||""} {...register('tpAcomodacao')} >
                 <option value={""}>Selecione o tipo de quarto</option>
                 {tiposQuartos.map(tpQuarto => (
                     <option key={tpQuarto.id} value={tpQuarto.id}>
@@ -232,8 +304,8 @@ function CadAcomodacoes ({dadosAcomodacaoParaEditar, aoAlterar}){
              {editar && (<button type="button" onClick={cancelarEdicao}>Cancelar</button>)}
         </form>
             {alertOpen && (
-                <div className='overlay-modal'>
-                    <div className='alert-modal'>
+                <div className='overlay-modal2'>
+                    <div className='alert-modal2'>
                         <h1 onClick={alertModal}>X</h1>
                          <p>{alertMensagem}</p>
                     </div>

@@ -1,4 +1,4 @@
-.overlay-modal {
+.overlay-modal2 {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,7 +11,7 @@
     z-index: 2; /* Para garantir que fique acima do conteúdo */
 }
 
-.alert-modal{
+.alert-modal2{
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(30, 100, 60, 0.8);
