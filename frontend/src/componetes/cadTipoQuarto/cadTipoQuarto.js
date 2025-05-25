@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react' //import para recuperar dados do back
-import { coerce, z } from 'zod';
+import { array, coerce, z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { set, useForm} from 'react-hook-form';
 import { API_URL } from '../../url';
@@ -16,6 +16,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
     const [alertOpen, setAlertModal] = useState(false)
     const [alertMensagem, setAlertMensagem] = useState("")
     const [unidades, setUnidades] = useState([])
+    const [imagens, setImagens] = useState([])
 
     const adicionarComodidade = () => {
         
@@ -50,6 +51,18 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
 
     }
 
+    const adicionarImagem = (event) => {
+        const files = Array.from(event.target.files)
+
+        const imageFiles = files.filter(file => file.type.startsWith('image/'))
+
+        setImagens( prevImagens => [...prevImagens, ...imageFiles])
+    }
+
+    const removerImagen = (indexImg) =>{
+        setImagens(prevImages => prevImages.filter((_, index) => index !== indexImg))
+    }
+
 
 
 
@@ -73,18 +86,38 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
     const onSaveTpAcomodacao = async (dados) => {
         setAlertModal(true)
         console.log("chamando a função")
-        console.log(`dados ${JSON.stringify(dados)}`)
 
+        const formData = new FormData();
+
+        // Adiciona os campos simples
+        formData.append("unidade_hotel", dados.unidade_hotel);
+        formData.append("nomeAcomodacao", dados.nomeAcomodacao);
+        formData.append("quantidade_total", dados.quantidade_total);
+        formData.append("descricao", dados.descricao);
+        formData.append("vlDiaria", dados.vlDiaria);
+        formData.append("quantidade_adultos", dados.quantidade_adultos);
+        formData.append("quantidade_criancas", dados.quantidade_criancas);
+
+        // Adiciona comodidades (como múltiplos valores)
+        dados.comodidades.forEach((item, index) => {
+            formData.append(`comodidades[]`, item);
+        });
+
+        console.log(imagens)
+        // Adiciona imagens
+        imagens.forEach((imagem, index) => {
+            formData.append("imagens", imagem); // ou "imagens" dependendo do backend
+        });
+        
+        console.log(formData)
         ///dados para o back
         if(editar){
-            dados.id = dadosTipoQuarto.id
+            
+            formData.append( "id", dadosTipoQuarto.id)
             try{
                 const cadastrar = await fetch(`${API_URL}/api/editarTpQuarto`, {
                     method : 'POST',
-                    headers : {
-                        'Content-Type' : "application/json"
-                    },
-                    body : JSON.stringify(dados)
+                    body : formData
                 })
 
                 if(!cadastrar.editado){
@@ -100,6 +133,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                             quantidade_criancas : "" ,
                         });
                         setListaComodidades([])
+                        setImagens([])
                 }
                 else{
                     setAlertMensagem("Erro ao editar tipo de acomodação")
@@ -113,10 +147,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
             try{
                 const cadastrar = await fetch(`${API_URL}/api/cadastrarTpQuarto`, {
                     method : 'POST',
-                    headers : {
-                        'Content-Type' : "application/json"
-                },
-                body : JSON.stringify(dados)
+                    body : formData
             })
 
                 if(!cadastrar.sucesso){
@@ -190,6 +221,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
             });
 
             setListaComodidades(dadosTipoQuartoParaEditar.comodidades || []);
+            setImagens(dadosTipoQuartoParaEditar.imagens || [])
         }
     }, [dadosTipoQuartoParaEditar]);
 
@@ -329,6 +361,21 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                     {...register("quantidade_criancas")}
                     />
                     {errors.quantidade_criancas && <p>{errors.quantidade_criancas.message}</p>}
+                </div>
+
+                <div className='imagens-input'>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={adicionarImagem}
+                    />
+                    {imagens.map((image, index) => (
+                        <div key={index}>
+                            <img src={editar ? image : URL.createObjectURL(image)} className='ref-imagen'></img>
+                            <button onClick={() => removerImagen(index)}>X</button>
+                        </div>
+                    ))}
                 </div>
                 <button type='submit' className='cad_quartos'>{editar ? "Atualizar tipo de acomodação" : "Cadastrar Tipo de Acomodação"}</button>
                 {editar && (<button type="button" onClick={cancelarEdicao}>Cancelar</button>)}

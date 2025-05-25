@@ -2,6 +2,8 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
+const { Storage } = require("@google-cloud/storage");
+const multer = require('multer');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 // import { MySQLConnector } from '@google-cloud/sql-connector';
@@ -76,6 +78,15 @@ const bd = mysql.createPool({
 //   connectTimeout: 10000,
 // });
 // })
+
+/////////Confi multer imagens para o storage
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Configuração do GCS
+const storage = new Storage({
+  keyFilename: path.join(__dirname, "gcs-key.json"),
+});
+const bucket = storage.bucket("hotel_green_garden_imagens");
 
 
 // Rota de login
@@ -541,7 +552,7 @@ app.post('/api/editarFuncionario', (req, res) =>{
 
 ///////////CADASTRO TP QUARTO//////////////////
 
-app.post('/api/cadastrarTpQuarto', (req, res) =>{
+app.post('/api/cadastrarTpQuarto', upload.array('imagens'), async (req, res)  =>{
   const {
     unidade_hotel,
     nomeAcomodacao,
@@ -557,9 +568,31 @@ app.post('/api/cadastrarTpQuarto', (req, res) =>{
     ? JSON.stringify(comodidades)
     : comodidades;
 
+   const urls = await Promise.all(
+      req.files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const blob = bucket.file(Date.now() + "_" + file.originalname);
+          const blobStream = blob.createWriteStream({
+            resumable: false,
+            contentType: file.mimetype,
+          });
+
+          blobStream.on("error", reject);
+
+          blobStream.on("finish", async () => {
+            await blob.makePublic();
+            const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+            resolve(publicUrl);
+          });
+
+          blobStream.end(file.buffer);
+        });
+      })
+    );
+
   const sql = `INSERT INTO tipo_acomodacao 
-    (unidade_hotel, nomeAcomodacao, quantidade_total, descricao, comodidades, vlDiaria, quantidade_adultos, quantidade_criancas) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    (unidade_hotel, nomeAcomodacao, quantidade_total, descricao, comodidades, vlDiaria, quantidade_adultos, quantidade_criancas, imagens) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const valores = [
     unidade_hotel,
@@ -570,6 +603,7 @@ app.post('/api/cadastrarTpQuarto', (req, res) =>{
     vlDiaria,
     quantidade_adultos,
     quantidade_criancas,
+    JSON.stringify(urls)
   ]
   
   bd.query(sql, valores, (err, result) =>{
@@ -583,7 +617,7 @@ app.post('/api/cadastrarTpQuarto', (req, res) =>{
 
 
 ////////EDITAR TP QUARTO/////////
-app.post('/api/editarTpQuarto', (req, res) =>{
+app.post('/api/editarTpQuarto', upload.array('imagens'), async (req, res) => {
   const {
     unidade_hotel,
     nomeAcomodacao,
@@ -594,43 +628,104 @@ app.post('/api/editarTpQuarto', (req, res) =>{
     quantidade_adultos,
     quantidade_criancas,
     id
-  } = req.body
+  } = req.body;
 
   const comodidadesFormatado = Array.isArray(comodidades)
     ? JSON.stringify(comodidades)
     : comodidades;
 
-  const sql = `UPDATE tipo_acomodacao SET
-    unidade_hotel = ?,
-    nomeAcomodacao = ?, 
-    quantidade_total = ?, 
-    descricao = ?, 
-    comodidades = ?, 
-    vlDiaria = ?, 
-    quantidade_adultos = ?, 
-    quantidade_criancas = ? WHERE id = ?
-    `;
+  try {
+    // 1. Buscar URLs atuais do banco
+    const imagensAntigas = await new Promise((resolve, reject) => {
+      const sqlUrl = `SELECT imagens FROM tipo_acomodacao WHERE id = ?`;
+      bd.query(sqlUrl, [id], (err, result) => {
+        if (err) return reject(err);
+        if (result.length === 0) return reject(new Error('Tipo de quarto não encontrado'));
 
-  const valores = [
-    unidade_hotel,
-    nomeAcomodacao,
-    quantidade_total,
-    descricao,
-    comodidadesFormatado,
-    vlDiaria,
-    quantidade_adultos,
-    quantidade_criancas,
-    id
-  ]
-  
-  bd.query(sql, valores, (err, result) =>{
-    if(err){
-        console.error('Erro ao salvar cadastro:', err);
-        return res.status(500).json({ erro: 'Erro ao salvar cadastro', detalhes: err });
+        // Proteção extra no JSON.parse
+        let urls = [];
+        try {
+          urls = JSON.parse(result[0].imagens || '[]');
+          if (!Array.isArray(urls)) urls = [];
+        } catch (e) {
+          console.warn('Imagens antigas malformadas, ignorando:', e.message);
+          urls = [];
+        }
+
+        resolve(urls);
+      });
+    });
+
+    // 2. Apagar imagens antigas do Cloud Storage
+    for (const url of imagensAntigas) {
+      try {
+        const nomeArquivo = decodeURIComponent(url.split('/').pop());
+        const file = bucket.file(`hotel_green_garden_imagens/${nomeArquivo}`); // ajuste a subpasta conforme sua estrutura
+        await file.delete();
+        console.log(`Deletado: ${nomeArquivo}`);
+      } catch (error) {
+        console.error('Erro ao deletar imagem:', error.message);
+      }
     }
-    res.status(201).json({editado: true, mensagem: 'Cadastro salvo com sucesso!' })
-  })
-})
+
+    // 3. Upload novas imagens
+    const novasUrls = await Promise.all(
+      req.files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const blob = bucket.file(`hotel_green_garden_imagens/${Date.now()}_${file.originalname}`);
+          const blobStream = blob.createWriteStream({
+            resumable: false,
+            contentType: file.mimetype,
+          });
+
+          blobStream.on("error", reject);
+
+          blobStream.on("finish", async () => {
+            await blob.makePublic();
+            const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+            resolve(publicUrl);
+          });
+
+          blobStream.end(file.buffer);
+        });
+      })
+    );
+
+    // 4. Atualizar tipo de acomodação no banco
+    const sqlUpdate = `UPDATE tipo_acomodacao SET
+      unidade_hotel = ?, nomeAcomodacao = ?, quantidade_total = ?, 
+      descricao = ?, comodidades = ?, vlDiaria = ?, 
+      quantidade_adultos = ?, quantidade_criancas = ?, imagens = ?
+      WHERE id = ?`;
+
+    const valoresUpdate = [
+      unidade_hotel,
+      nomeAcomodacao,
+      quantidade_total,
+      descricao,
+      comodidadesFormatado,
+      vlDiaria,
+      quantidade_adultos,
+      quantidade_criancas,
+      JSON.stringify(novasUrls),
+      id
+    ];
+
+    await new Promise((resolve, reject) => {
+      bd.query(sqlUpdate, valoresUpdate, (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+
+    return res.status(200).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' });
+
+  } catch (error) {
+    console.error('Erro ao editar tipo de quarto:', error);
+    return res.status(500).json({ erro: 'Erro interno ao editar', detalhes: error.message });
+  }
+});
+
 
 
 
@@ -725,20 +820,51 @@ app.get('/api/buscarAcomodacoes', (req, res) => {
 //////////EXCLUIR TPQUARTO///////////////////
 
 
-app.post('/api/excluirTpQuarto' , (req, res) =>{
-  const {id} = req.body
+app.post('/api/excluirTpQuarto', async (req, res) => {
+  const { id } = req.body;
 
-  const sql = 'DELETE FROM tipo_acomodacao WHERE id = ?'
+  try {
+    // 1. Buscar imagens atuais no banco
+    const imagens = await new Promise((resolve, reject) => {
+      const sqlBusca = 'SELECT imagens FROM tipo_acomodacao WHERE id = ?';
+      bd.query(sqlBusca, [id], (err, result) => {
+        if (err) return reject(err);
+        if (result.length === 0) return reject(new Error('Tipo de quarto não encontrado'));
+        
+        const imagensArray = JSON.parse(result[0].imagens || '[]');
+        resolve(imagensArray);
+      });
+    });
 
-  bd.query(sql, [id], (err, result) => {
-    if(err){
-      return res.status(500).json({ erro: err })
+    // 2. Deletar imagens do Cloud Storage
+    for (const url of imagens) {
+      try {
+        const nomeArquivo = decodeURIComponent(url.split('/').pop());
+        const file = bucket.file(nomeArquivo); // ou `pasta/${nomeArquivo}` se você estiver usando uma subpasta
+        await file.delete();
+        console.log(`Imagem deletada: ${nomeArquivo}`);
+      } catch (error) {
+        console.error(`Erro ao deletar ${url}:`, error.message);
+      }
     }
-    else{
-      res.json({excluido: true})
-    }
-  })
-})
+
+    // 3. Deletar o registro do banco
+    await new Promise((resolve, reject) => {
+      const sqlDelete = 'DELETE FROM tipo_acomodacao WHERE id = ?';
+      bd.query(sqlDelete, [id], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+
+    res.json({ excluido: true });
+
+  } catch (error) {
+    console.error('Erro ao excluir tipo de quarto:', error);
+    res.status(500).json({ erro: 'Erro ao excluir tipo de quarto', detalhes: error.message });
+  }
+});
+
 
 
 //////////EXCLUIR ACOMODAÇÔES////////////////

@@ -49,7 +49,7 @@ function MenuLateral(){
 
             {infosMenu === "" && <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <ul>
-                    <li>Acomodações</li>
+                    <Link to="/acomodacoes"><li>Acomodações</li></Link>
                     <li>Reservas</li>
                     <li>Sobre nós</li>
                     <li><button onClick={sair}>SAIR</button></li>

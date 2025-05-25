@@ -20,4 +20,10 @@
     background-color: #d3d3d3;
     width: 20%;
     height: 20%;
-}  
+} 
+
+.ref-imagen{
+    width: 100px;
+    height: 100px;
+    border-radius: 0px;
+}

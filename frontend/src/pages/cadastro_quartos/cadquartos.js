@@ -5,6 +5,10 @@ import CadAcomodacoes from '../../componetes/cadAcomodacao/cadAcomodacao';
 import { API_URL } from '../../url';
 import "./cadquartos.css"
 import CadUnidade from '../../componetes/cad_unidade/cadUnidade';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper/modules';
 
 function App() {
     ///// Adicionar verificações de login e autorização//////
@@ -125,6 +129,7 @@ function App() {
       }
       buscarTpQuarto()
       setIdTpQuarto("")
+      setDesejaExcluirTpQuarto(false)
     }
 
     const desejaExcluirTpQuarto = (id) =>{
@@ -163,6 +168,19 @@ function App() {
                       Diaria-{tpQuarto.vlDiaria}
                     </div>
                     <div>
+                      <Swiper
+                        modules={[Navigation]}
+                        navigation
+                        spaceBetween={10}
+                        slidesPerView={1}
+                        style={{ width: '300px', height: '300px' }}
+                      >
+                        {tpQuarto.imagens?.map((url, index) => (
+                          <SwiperSlide key={index}>
+                            <img src={url} alt={`Imagem ${index + 1}`} style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
                       Quantidade Hospedes<br></br>
                       Adutlos-{tpQuarto.quantidade_adultos}<br></br>
                       Criancar-{tpQuarto.quantidade_criancas}
