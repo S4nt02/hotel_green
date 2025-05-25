@@ -83,9 +83,8 @@ const bd = mysql.createPool({
 const upload = multer({ storage: multer.memoryStorage() });
 
 // Configuração do GCS
-const storage = new Storage({
-  keyFilename: path.join(__dirname, "gcs-key.json"),
-});
+const keyFilePath = process.env.GCP_STORE;
+const storage = new Storage({ keyFilename: keyFilePath });
 const bucket = storage.bucket("hotel_green_garden_imagens");
 
 
@@ -617,7 +616,7 @@ app.post('/api/cadastrarTpQuarto', upload.array('imagens'), async (req, res)  =>
 
 
 ////////EDITAR TP QUARTO/////////
-app.post('/api/editarTpQuarto', upload.array('imagens'), async (req, res) => {
+app.post('/api/editarTpQuarto', upload.array('imagensNovas'), async (req, res) => {
   const {
     unidade_hotel,
     nomeAcomodacao,
@@ -627,52 +626,66 @@ app.post('/api/editarTpQuarto', upload.array('imagens'), async (req, res) => {
     vlDiaria,
     quantidade_adultos,
     quantidade_criancas,
-    id
+    id,
+    urlsExistentes // <- vem como string JSON
   } = req.body;
+
+  let urlsMantidas = [];
+  try {
+    urlsMantidas = JSON.parse(urlsExistentes || '[]');
+    if (!Array.isArray(urlsMantidas)) urlsMantidas = [];
+  } catch (e) {
+    console.error('Erro ao parsear urlsExistentes:', e.message);
+    urlsMantidas = [];
+  }
 
   const comodidadesFormatado = Array.isArray(comodidades)
     ? JSON.stringify(comodidades)
     : comodidades;
 
   try {
-    // 1. Buscar URLs atuais do banco
+    // 1. Buscar URLs atuais do banco (urlAntigas)
     const imagensAntigas = await new Promise((resolve, reject) => {
       const sqlUrl = `SELECT imagens FROM tipo_acomodacao WHERE id = ?`;
       bd.query(sqlUrl, [id], (err, result) => {
         if (err) return reject(err);
         if (result.length === 0) return reject(new Error('Tipo de quarto não encontrado'));
 
-        // Proteção extra no JSON.parse
         let urls = [];
         try {
           urls = JSON.parse(result[0].imagens || '[]');
           if (!Array.isArray(urls)) urls = [];
         } catch (e) {
-          console.warn('Imagens antigas malformadas, ignorando:', e.message);
-          urls = [];
+          console.warn('Imagens antigas malformadas:', e.message);
         }
 
         resolve(urls);
       });
     });
 
-    // 2. Apagar imagens antigas do Cloud Storage
-    for (const url of imagensAntigas) {
+    // 2. Descobrir quais URLs devem ser excluídas (não estão mais nas mantidas)
+    const urlsParaExcluir = imagensAntigas.filter(
+      (url) => !urlsMantidas.includes(url)
+    );
+
+    // 3. Apagar essas do Cloud Storage
+    for (const url of urlsParaExcluir) {
       try {
         const nomeArquivo = decodeURIComponent(url.split('/').pop());
-        const file = bucket.file(`hotel_green_garden_imagens/${nomeArquivo}`); // ajuste a subpasta conforme sua estrutura
+        const file = bucket.file(`hotel_green_garden_imagens/${nomeArquivo}`);
         await file.delete();
-        console.log(`Deletado: ${nomeArquivo}`);
+        console.log(`Deletado do storage: ${nomeArquivo}`);
       } catch (error) {
         console.error('Erro ao deletar imagem:', error.message);
       }
     }
 
-    // 3. Upload novas imagens
+    // 4. Upload de novas imagens
     const novasUrls = await Promise.all(
       req.files.map((file) => {
         return new Promise((resolve, reject) => {
-          const blob = bucket.file(`hotel_green_garden_imagens/${Date.now()}_${file.originalname}`);
+          const nomeUnico = `${Date.now()}_${file.originalname}`;
+          const blob = bucket.file(`hotel_green_garden_imagens/${nomeUnico}`);
           const blobStream = blob.createWriteStream({
             resumable: false,
             contentType: file.mimetype,
@@ -691,7 +704,10 @@ app.post('/api/editarTpQuarto', upload.array('imagens'), async (req, res) => {
       })
     );
 
-    // 4. Atualizar tipo de acomodação no banco
+    // 5. Junta as URLs mantidas com as novas
+    const todasAsImagens = [...urlsMantidas, ...novasUrls];
+
+    // 6. Atualiza o banco
     const sqlUpdate = `UPDATE tipo_acomodacao SET
       unidade_hotel = ?, nomeAcomodacao = ?, quantidade_total = ?, 
       descricao = ?, comodidades = ?, vlDiaria = ?, 
@@ -707,7 +723,7 @@ app.post('/api/editarTpQuarto', upload.array('imagens'), async (req, res) => {
       vlDiaria,
       quantidade_adultos,
       quantidade_criancas,
-      JSON.stringify(novasUrls),
+      JSON.stringify(todasAsImagens),
       id
     ];
 
@@ -718,14 +734,13 @@ app.post('/api/editarTpQuarto', upload.array('imagens'), async (req, res) => {
       });
     });
 
-    return res.status(200).json({ editado: true, mensagem: 'Cadastro salvo com sucesso!' });
+    return res.status(200).json({ editado: true, mensagem: 'Cadastro atualizado com sucesso!' });
 
   } catch (error) {
     console.error('Erro ao editar tipo de quarto:', error);
     return res.status(500).json({ erro: 'Erro interno ao editar', detalhes: error.message });
   }
 });
-
 
 
 

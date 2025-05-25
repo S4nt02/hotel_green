@@ -17,6 +17,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
     const [alertMensagem, setAlertMensagem] = useState("")
     const [unidades, setUnidades] = useState([])
     const [imagens, setImagens] = useState([])
+    const [urlAntiga, setUrlAntiga] = useState([])
 
     const adicionarComodidade = () => {
         
@@ -97,19 +98,31 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
         formData.append("vlDiaria", dados.vlDiaria);
         formData.append("quantidade_adultos", dados.quantidade_adultos);
         formData.append("quantidade_criancas", dados.quantidade_criancas);
+        formData.append("urlAntigas", urlAntiga)
 
         // Adiciona comodidades (como múltiplos valores)
         dados.comodidades.forEach((item, index) => {
             formData.append(`comodidades[]`, item);
         });
 
-        console.log(imagens)
-        // Adiciona imagens
-        imagens.forEach((imagem, index) => {
-            formData.append("imagens", imagem); // ou "imagens" dependendo do backend
+
+        const arquivos = [];
+        const urls = [];
+
+        imagens.forEach((img) => {
+        if (typeof img === 'string') {
+            urls.push(img); // é uma URL
+        } else if (img instanceof File) {
+            arquivos.push(img); // é um arquivo
+        }
         });
+
+        arquivos.forEach((arquivo) => {
+            formData.append("imagensNovas", arquivo);
+        });
+
+        formData.append("urlsExistentes", JSON.stringify(urls));
         
-        console.log(formData)
         ///dados para o back
         if(editar){
             
@@ -222,6 +235,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
 
             setListaComodidades(dadosTipoQuartoParaEditar.comodidades || []);
             setImagens(dadosTipoQuartoParaEditar.imagens || [])
+            setUrlAntiga(dadosTipoQuartoParaEditar.imagens || [])
         }
     }, [dadosTipoQuartoParaEditar]);
 
