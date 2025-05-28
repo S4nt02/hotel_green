@@ -6,7 +6,9 @@ function ReservasFuncionarios (){
     return(
         <>
             <HeaderComponente/>
-            teste
+            <main>
+                
+            </main>
         </>
     )
 }

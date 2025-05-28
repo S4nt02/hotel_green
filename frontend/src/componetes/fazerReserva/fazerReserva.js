@@ -21,6 +21,7 @@ function FazerReserva () {
     const [periodo, setPeriodo] = useState([])
     const [acompanhantesAdultos, setAcompanhantesAdultos] = useState([])
     const [acompanhantesCriancas, setAcompanhantesCriancas] = useState([])
+    const [erroMensage, setMensageErro] = useState("")
 
     const buscarTpQuarto = async () => {
         try{
@@ -111,6 +112,11 @@ function FazerReserva () {
     };
 
     const confirmarReserva = async () => {
+
+        if(id === "" || id === null){
+            setMensageErro("Realize login ou cadastre-se para confirmar a reserva")
+            return
+        }
         
         const dados = {
             checkIn : checkIn,
@@ -124,6 +130,7 @@ function FazerReserva () {
             acompanhantesCriancas : acompanhantesCriancas,
         }
 
+
         const confirmarReserva = await fetch(`${API_URL}/api/confirmarReserva`, {
             method : 'POST',
             headers :{
@@ -134,6 +141,15 @@ function FazerReserva () {
 
         if(confirmarReserva.sucesso){
 
+        }
+    }
+
+    const avancar = () => {
+        if(tpQuartoSelecionado.length !== 0){
+            setTelaExibida(2)
+        }
+        else{
+            setMensageErro("Por favor selecione um tipo de acomodação")
         }
     }
 
@@ -207,7 +223,7 @@ function FazerReserva () {
                         </div>
                     </div>
                     <div>
-                        <button onClick={() => setTelaExibida(2)}>Avançar</button>
+                        <button onClick={avancar}>Avançar</button>
                     </div>
                 </>
             )}

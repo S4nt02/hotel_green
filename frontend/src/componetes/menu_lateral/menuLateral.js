@@ -51,6 +51,7 @@ function MenuLateral(){
                 <ul>
                     <Link to="/acomodacoes"><li>Acomodações</li></Link>
                     <Link to="/reservas"><li>Reservas</li></Link>
+                    <Link to="/minhasReservas"><li>Minhas Reservas</li></Link>
                     <li>Sobre nós</li>
                     <li><button onClick={sair}>SAIR</button></li>
                 </ul>

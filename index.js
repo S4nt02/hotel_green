@@ -1203,6 +1203,8 @@ app.post(`/api/confirmarReserva`, (req, res) => {
 
   const acompanhantesAdultosJSON = JSON.stringify(req.body.acompanhantesAdultos || {});
   const acompanhantesCriancasJSON = JSON.stringify(req.body.acompanhantesCriancas || {});
+  const dataReserva = new Date()
+  const dataReservaFormatada = dataReserva.toLocaleDateString()
 
 
   const formatarData = (data) => {
@@ -1272,8 +1274,8 @@ app.post(`/api/confirmarReserva`, (req, res) => {
         INSERT INTO reservas (
           checkIn, checkOut, periodo, unidade,
           tpAcomodacao, vlDiaria, id_hospede,
-          acompanhantesAdultos, acompanhantesCriancas, idAcomodacao
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          acompanhantesAdultos, acompanhantesCriancas, idAcomodacao, dataReserva
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
       console.log(acompanhantesAdultos)
       const paramsInsert = [
@@ -1286,7 +1288,8 @@ app.post(`/api/confirmarReserva`, (req, res) => {
         id_hospede,
         acompanhantesAdultosJSON,
         acompanhantesCriancasJSON,
-        idAcomodacaoDisponivel
+        idAcomodacaoDisponivel,
+        dataReservaFormatada
       ];
 
       bd.query(sqlInsert, paramsInsert, (erroInsert, resultadoInsert) => {
@@ -1306,7 +1309,40 @@ app.post(`/api/confirmarReserva`, (req, res) => {
 });
 
 
+///////////////////////BUSCAR RESERVAS USUÁRIOS/////////////////////////
 
+app.post('/api/buscarMinhasReservas' , (req, res) => {
+  const {id} = req.body
+
+  const sql = `
+  SELECT 
+    r.id,
+    r.checkIn,
+    r.checkOut,
+    r.periodo,
+    r.vlDiaria,
+    r.id_hospede,
+    r.acompanhantesAdultos,
+    r.acompanhantesCriancas,
+    r.idAcomodacao,
+    r.entrada,
+    r.saida,
+
+    ta.nomeAcomodacao AS nomeAcomodacao,
+    u.nomeUnidade AS nomeUnidade,
+    a.numeroAcomodacao AS numeroAcomodacao,
+    a.num_andar AS num_andar
+
+  FROM reservas r
+  LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+  LEFT JOIN unidades u ON r.unidade = u.id
+  LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+
+  WHERE r.id_hospede = ?;
+  `
+
+  
+})
 
 
 
