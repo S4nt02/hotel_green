@@ -18,6 +18,9 @@ function FazerReserva () {
     const [exibirTpQuartos, setExibirTpQuartos] = useState([])
     const [acomodacoesDisponiveis, setAcomodacoesDisp] = useState([])
     const [tpQuartoSelecionado, setTpQuartoSelecionado] = useState([])
+    const [periodo, setPeriodo] = useState([])
+    const [acompanhantesAdultos, setAcompanhantesAdultos] = useState([])
+    const [acompanhantesCriancas, setAcompanhantesCriancas] = useState([])
 
     const buscarTpQuarto = async () => {
         try{
@@ -87,6 +90,51 @@ function FazerReserva () {
         const quartoInfo = exibirTpQuartos.find(tpQuarto => tpQuarto.id === id);
         setTpQuartoSelecionado(quartoInfo); // quartoInfo será um objeto
         console.log(tpQuartoSelecionado)
+        calcularDiferencaDias(checkIn, checkOut)
+        setAcompanhantesAdultos(Array(quartoInfo.quantidade_adultos).fill(""))
+        setAcompanhantesCriancas(Array(quartoInfo.quantidade_criancas).fill(""))
+    }
+
+    const calcularDiferencaDias = (checkIn, checkOut) => {
+        const dataInicial = new Date(checkIn);
+        const dataFinal = new Date(checkOut);
+
+        // Zerar hora/minuto/segundo para evitar diferença parcial
+        dataInicial.setHours(0, 0, 0, 0);
+        dataFinal.setHours(0, 0, 0, 0);
+
+        const diferencaEmMs = dataFinal.getTime() - dataInicial.getTime();
+        const diferencaEmDias = Math.floor(diferencaEmMs / (1000 * 60 * 60 * 24));
+        console.log(diferencaEmDias)
+        
+        setPeriodo(diferencaEmDias)
+    };
+
+    const confirmarReserva = async () => {
+        
+        const dados = {
+            checkIn : checkIn,
+            checkOut : checkOut,
+            periodo : periodo,
+            unidade : unidadeBuscar,
+            tpAcomodacao : tpQuartoSelecionado.id,
+            vlDiaria : tpQuartoSelecionado.vlDiaria,
+            id_hospede : id,
+            acompanhantesAdultos : acompanhantesAdultos,
+            acompanhantesCriancas : acompanhantesCriancas,
+        }
+
+        const confirmarReserva = await fetch(`${API_URL}/api/confirmarReserva`, {
+            method : 'POST',
+            headers :{
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify(dados)
+        })
+
+        if(confirmarReserva.sucesso){
+
+        }
     }
 
 
@@ -115,6 +163,7 @@ function FazerReserva () {
                 <>
                     <div>
                         //dados de check-in check-out unidade adultos e crianças
+                        <label>Unidade</label>
                         <select value={unidadeBuscar} onChange={(e) => setUnidadeBuscar(e.target.value)}>
                             <option value={''}>Selecione uma unidade</option>
                             {unidades.map(unidade =>(
@@ -125,7 +174,7 @@ function FazerReserva () {
                         <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)}></input>
                         <label>Check-out</label>
                         <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)}></input>
-                        <label>Unidade</label>
+                        
 
                     </div>
                     <div>
@@ -170,10 +219,10 @@ function FazerReserva () {
                         <h3>Confirmar Reservas</h3>
                         <p>Revise os detalhes de sua reserva antes de confirmar</p>
                         <div>
-                            <p>Uunidade: {unidadeBuscar}</p>
+                            <p>Unidade: {unidades.find(unidade => String(unidade.id) === String(unidadeBuscar))?.nomeUnidade}</p>
                             <p>Check-in: {checkIn}</p>
                             <p>Check-out: {checkOut}</p>
-                            <p>Período: {parseInt(checkOut - checkIn)}noites </p>
+                            <p>Período: {periodo} noites </p>
                             <p>Acomodação: {tpQuartoSelecionado.nomeAcomodacao}</p>
                             <p>Diaria: {tpQuartoSelecionado.vlDiaria}</p>
                             <div>
@@ -185,7 +234,14 @@ function FazerReserva () {
                                             <div>
                                                 <label>Adultos</label>
                                                 {[...Array(tpQuartoSelecionado.quantidade_adultos)].map((_, index) =>(
-                                                    <input type="text" placeholder={`Acompanhante ${index + 1}`}></input>
+                                                    <input type="text" placeholder={`Acompanhante ${index + 1}`}
+                                                        value={acompanhantesAdultos[index] || ""}
+                                                        onChange={(e) => {
+                                                            const novoAcompanhantes = [...acompanhantesAdultos]
+                                                            novoAcompanhantes[index] = e.target.value
+                                                            setAcompanhantesAdultos(novoAcompanhantes)
+                                                        }}
+                                                    ></input>
                                                 ))}
                                             </div>
                                         </>
@@ -195,7 +251,14 @@ function FazerReserva () {
                                             <div>
                                                 <label>Crianças</label>
                                                  {[...Array(tpQuartoSelecionado.quantidade_criancas)].map((_, index) =>(
-                                                    <input type="text" placeholder={`Criança ${index + 1}`}></input>
+                                                    <input type="text" placeholder={`Criança ${index + 1}`}
+                                                        value={acompanhantesCriancas[index] || ""}
+                                                        onChange={(e) => {
+                                                            const novoAcompanhantes = [...acompanhantesCriancas]
+                                                            novoAcompanhantes[index] = e.target.value
+                                                            setAcompanhantesCriancas(novoAcompanhantes)
+                                                        }}
+                                                    ></input>
                                                  ))}
                                             </div>
                                         </>
@@ -205,7 +268,7 @@ function FazerReserva () {
                         </div>
                         <div>
                             <button onClick={() => setTelaExibida(1)}>Voltar</button>
-                            <button>Confirmar Reservas</button>
+                            <button onClick={confirmarReserva}>Confirmar Reservas</button>
                         </div>
                     </div>
                 </>

@@ -50,7 +50,7 @@ function MenuLateral(){
             {infosMenu === "" && <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <ul>
                     <Link to="/acomodacoes"><li>Acomodações</li></Link>
-                    <li>Reservas</li>
+                    <Link to="/reservas"><li>Reservas</li></Link>
                     <li>Sobre nós</li>
                     <li><button onClick={sair}>SAIR</button></li>
                 </ul>
@@ -60,7 +60,7 @@ function MenuLateral(){
                 <ul>
                     <Link to="/funcionario"><li><a>Funcionários</a></li></Link>
                     <li>Hospedes</li>
-                    <li>Reservas</li>
+                    <Link to="/reservasFun"><li>Reservas</li></Link>
                     <Link to="/cadastro_quartos"><li>Quartos</li></Link>
                     <Link to="/itens"><li>Itens</li></Link>
                     <li>Consumo</li>

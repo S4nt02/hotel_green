@@ -12,6 +12,7 @@ import CadastroQuartos from './pages/cadastro_quartos/cadquartos';
 import Itens from './pages/itens/itens';
 import Acomodacoes from './pages/acomodacoes/acomodacoes';
 import ReservasUser from './pages/reservasUser/reservasUser';
+import ReservasFuncionarios from './pages/reservasFun/reservasFuncionarios';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/itens" element={<Itens/>}/>
           <Route path='/acomodacoes' element={<Acomodacoes/>}/>
           <Route path='/reservas' element={<ReservasUser/>}/>
+          <Route path='/reservasFun' element={<ReservasFuncionarios/>}/>
         </Routes>
       </AuthProvider>
 

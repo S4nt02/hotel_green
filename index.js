@@ -1110,6 +1110,8 @@ app.post('/api/editarUnidade', (req, res) =>{
   })
 })
 
+///////////////////////////////////////////////////////////////////////////
+
 
 
 //////////////////////////BUSCAR QUARTOS DISPONIVEIS////////////////////////
@@ -1128,24 +1130,21 @@ app.post('/api/quartosDisponiveis', (req, res) => {
   const checkInFormatado = formatarData(checkIn);
   const checkOutFormatado = formatarData(checkOut);
 
-  const sqlReservas = `
-    SELECT id_acomodacao FROM reservas
-    WHERE (
-      (? IS NULL OR ? IS NULL)
-      OR (
-        checkIn <= ? AND checkOut >= ?
-      )
-    )
-    AND (? IS NULL OR unidade = ?)
-  `;
+  let sqlReservas = `SELECT idAcomodacao FROM reservas WHERE 1=1`;
+  const paramsReservas = [];
 
-  const paramsReservas = [
-    checkInFormatado, checkOutFormatado,
-    checkOutFormatado, checkInFormatado,
-    unidade, unidade
-  ];
+  // Filtro por datas se ambos os campos forem válidos
+  if (checkInFormatado && checkOutFormatado) {
+    sqlReservas += ` AND (? < checkOut AND ? > checkIn)`;
+    paramsReservas.push(checkInFormatado, checkOutFormatado);
+  }
 
-  // Executa consulta de reservas usando callback
+  // Filtro por unidade, se informado
+  if (unidade) {
+    sqlReservas += ` AND unidade = ?`;
+    paramsReservas.push(unidade);
+  }
+
   bd.query(sqlReservas, paramsReservas, (erroReservas, resultadosReservas) => {
     if (erroReservas) {
       console.error('Erro ao buscar reservas:', erroReservas);
@@ -1153,18 +1152,23 @@ app.post('/api/quartosDisponiveis', (req, res) => {
     }
 
     const idsReservados = resultadosReservas.map(r => r.id_acomodacao);
-    console.log(idsReservados)
+    console.log('IDs ocupados:', idsReservados);
 
-    let sqlAcomodacoes = 'SELECT * FROM acomodacoes';
-    let paramsAcomodacoes = [];
+    // Consulta de acomodações disponíveis
+    let sqlAcomodacoes = `SELECT * FROM acomodacoes WHERE 1=1`;
+    const paramsAcomodacoes = [];
+
+    if (unidade) {
+      sqlAcomodacoes += ` AND unidade_hotel = ?`;
+      paramsAcomodacoes.push(unidade);
+    }
 
     if (idsReservados.length > 0) {
       const placeholders = idsReservados.map(() => '?').join(', ');
-      sqlAcomodacoes += ` WHERE id NOT IN (${placeholders})`;
-      paramsAcomodacoes = idsReservados;
+      sqlAcomodacoes += ` AND id NOT IN (${placeholders})`;
+      paramsAcomodacoes.push(...idsReservados);
     }
 
-    // Executa consulta de acomodações disponíveis
     bd.query(sqlAcomodacoes, paramsAcomodacoes, (erroAcomodacoes, resultadosAcomodacoes) => {
       if (erroAcomodacoes) {
         console.error('Erro ao buscar acomodações:', erroAcomodacoes);
@@ -1172,8 +1176,6 @@ app.post('/api/quartosDisponiveis', (req, res) => {
       }
 
       const tiposUnicos = [...new Set(resultadosAcomodacoes.map(a => a.tpAcomodacao))];
-      console.log(resultadosAcomodacoes)
-      console.log(tiposUnicos)
 
       res.json({
         acomodacoesDisponiveis: resultadosAcomodacoes,
@@ -1184,87 +1186,124 @@ app.post('/api/quartosDisponiveis', (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+////////////////////////CONFIRMAR RESRVAR/////////////////////////////////
+
+app.post(`/api/confirmarReserva`, (req, res) => {
+  const {
+    checkIn,
+    checkOut,
+    periodo,
+    unidade,
+    tpAcomodacao,
+    vlDiaria,
+    id_hospede,
+    acompanhantesAdultos,
+    acompanhantesCriancas,
+  } = req.body;
+
+  const acompanhantesAdultosJSON = JSON.stringify(req.body.acompanhantesAdultos || {});
+  const acompanhantesCriancasJSON = JSON.stringify(req.body.acompanhantesCriancas || {});
+
+
+  const formatarData = (data) => {
+    if (!data) return null;
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const checkInFormatado = formatarData(checkIn);
+  const checkOutFormatado = formatarData(checkOut);
+
+  // 1. Buscar IDs de acomodações já reservadas que conflitam
+  const sqlReservas = `
+    SELECT idAcomodacao FROM reservas
+    WHERE (? < checkOut AND ? > checkIn)
+    AND unidade = ?
+    AND tpAcomodacao = ?
+  `;
+
+  const paramsReservas = [
+    checkInFormatado,
+    checkOutFormatado,
+    unidade,
+    tpAcomodacao
+  ];
+
+  bd.query(sqlReservas, paramsReservas, (erroReservas, resultadosReservas) => {
+    if (erroReservas) {
+      console.error('Erro ao buscar reservas:', erroReservas);
+      return res.status(500).json({ error: 'Erro ao buscar reservas' });
+    }
+
+    const idsOcupados = resultadosReservas.map(r => r.id_acomodacao);
+
+    // 2. Buscar acomodações disponíveis da mesma unidade e tipo
+    let sqlAcomodacoes = `
+      SELECT id FROM acomodacoes
+      WHERE unidade_hotel = ? AND tpAcomodacao = ?
+    `;
+    const paramsAcomodacoes = [unidade, tpAcomodacao];
+
+    // Se há ocupados, adiciona filtro
+    if (idsOcupados.length > 0) {
+      const placeholders = idsOcupados.map(() => '?').join(', ');
+      sqlAcomodacoes += ` AND id NOT IN (${placeholders})`;
+      paramsAcomodacoes.push(...idsOcupados);
+    }
+
+    bd.query(sqlAcomodacoes, paramsAcomodacoes, (erroAcomodacoes, resultadosAcomodacoes) => {
+      if (erroAcomodacoes) {
+        console.error('Erro ao buscar acomodações disponíveis:', erroAcomodacoes);
+        return res.status(500).json({ error: 'Erro ao buscar acomodações disponíveis' });
+      }
+
+      if (resultadosAcomodacoes.length === 0) {
+        return res.status(404).json({ error: 'Nenhuma acomodação disponível para esse período.' });
+      }
+
+      // 3. Pega o primeiro ID de acomodação disponível
+      const idAcomodacaoDisponivel = resultadosAcomodacoes[0].id;
+
+      // 4. Inserir nova reserva
+      const sqlInsert = `
+        INSERT INTO reservas (
+          checkIn, checkOut, periodo, unidade,
+          tpAcomodacao, vlDiaria, id_hospede,
+          acompanhantesAdultos, acompanhantesCriancas, idAcomodacao
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      console.log(acompanhantesAdultos)
+      const paramsInsert = [
+        checkInFormatado,
+        checkOutFormatado,
+        periodo,
+        unidade,
+        tpAcomodacao,
+        vlDiaria,
+        id_hospede,
+        acompanhantesAdultosJSON,
+        acompanhantesCriancasJSON,
+        idAcomodacaoDisponivel
+      ];
+
+      bd.query(sqlInsert, paramsInsert, (erroInsert, resultadoInsert) => {
+        if (erroInsert) {
+          console.error('Erro ao cadastrar reserva:', erroInsert);
+          return res.status(500).json({ error: 'Erro ao cadastrar reserva' });
+        }
+
+        return res.status(200).json({
+          message: 'Reserva confirmada com sucesso!',
+          idReserva: resultadoInsert.insertId,
+          idAcomodacao: idAcomodacaoDisponivel
+        });
+      });
+    });
+  });
+});
 
 
 
