@@ -147,6 +147,7 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                         });
                         setListaComodidades([])
                         setImagens([])
+                        setUrlAntiga([])
                 }
                 else{
                     setAlertMensagem("Erro ao editar tipo de acomodação")
@@ -176,6 +177,8 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                             quantidade_criancas : "" ,
                         });
                         setListaComodidades([])
+                        setImagens([])
+                        setUrlAntiga([])
                 }
                 else{
                     setAlertMensagem("Erro ao cadastrar tipo de acomodação")
@@ -252,6 +255,9 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                 quantidade_criancas : "" ,
         });
         setListaComodidades([])
+        setImagens([])
+        setUrlAntiga([])
+
     };
 
     const alertModal = () => {
@@ -386,7 +392,16 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                     />
                     {imagens.map((image, index) => (
                         <div key={index}>
-                            <img src={editar ? image : URL.createObjectURL(image)} className='ref-imagen'></img>
+                            <img
+                                src={
+                                    editar
+                                    ? image
+                                    : image instanceof Blob
+                                        ? URL.createObjectURL(image)
+                                        : image // assume que já é uma string (URL)
+                                }
+                                className='ref-imagen'
+                            />
                             <button onClick={() => removerImagen(index)}>X</button>
                         </div>
                     ))}

@@ -8,6 +8,7 @@ const AuthContext = createContext();
 // Provedor do contexto
 export const AuthProvider = ({ children }) => {
   const [id, setId] = useState(null);
+  const [nomeUser, setNomeUser] = useState(null)
   const [autorizacao, setAutorizacao] = useState(null)
   const [carregando, setCarregando] = useState(true);
 
@@ -22,14 +23,17 @@ export const AuthProvider = ({ children }) => {
       if (data.autenticado) {
         setId(data.id);
         setAutorizacao(data.autorizacao)
+        setNomeUser(data.nome)
       } else {
         setId(null);
         setAutorizacao(null)
+        setNomeUser(null)
       }
     } catch (erro) {
       console.error('Erro ao verificar login:', erro);
       setId(null);
       setAutorizacao(null)
+      setNomeUser(null)
     } finally {
       setCarregando(false);
     }
@@ -91,7 +95,7 @@ export const AuthProvider = ({ children }) => {
   
 
   return (
-    <AuthContext.Provider value={{ id, login, logout, carregando, autorizacao }}>
+    <AuthContext.Provider value={{ id, login, logout, carregando, autorizacao, nomeUser }}>
       {children}
     </AuthContext.Provider>
   );

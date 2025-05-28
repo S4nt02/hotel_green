@@ -1112,12 +1112,76 @@ app.post('/api/editarUnidade', (req, res) =>{
 
 
 
+//////////////////////////BUSCAR QUARTOS DISPONIVEIS////////////////////////
+app.post('/api/quartosDisponiveis', (req, res) => {
+  const { checkIn, checkOut, unidade } = req.body;
 
+  const formatarData = (data) => {
+    if (!data) return null;
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
 
+  const checkInFormatado = formatarData(checkIn);
+  const checkOutFormatado = formatarData(checkOut);
 
+  const sqlReservas = `
+    SELECT id_acomodacao FROM reservas
+    WHERE (
+      (? IS NULL OR ? IS NULL)
+      OR (
+        checkIn <= ? AND checkOut >= ?
+      )
+    )
+    AND (? IS NULL OR unidade = ?)
+  `;
 
+  const paramsReservas = [
+    checkInFormatado, checkOutFormatado,
+    checkOutFormatado, checkInFormatado,
+    unidade, unidade
+  ];
 
+  // Executa consulta de reservas usando callback
+  bd.query(sqlReservas, paramsReservas, (erroReservas, resultadosReservas) => {
+    if (erroReservas) {
+      console.error('Erro ao buscar reservas:', erroReservas);
+      return res.status(500).json({ error: 'Erro ao buscar reservas' });
+    }
 
+    const idsReservados = resultadosReservas.map(r => r.id_acomodacao);
+    console.log(idsReservados)
+
+    let sqlAcomodacoes = 'SELECT * FROM acomodacoes';
+    let paramsAcomodacoes = [];
+
+    if (idsReservados.length > 0) {
+      const placeholders = idsReservados.map(() => '?').join(', ');
+      sqlAcomodacoes += ` WHERE id NOT IN (${placeholders})`;
+      paramsAcomodacoes = idsReservados;
+    }
+
+    // Executa consulta de acomodações disponíveis
+    bd.query(sqlAcomodacoes, paramsAcomodacoes, (erroAcomodacoes, resultadosAcomodacoes) => {
+      if (erroAcomodacoes) {
+        console.error('Erro ao buscar acomodações:', erroAcomodacoes);
+        return res.status(500).json({ error: 'Erro ao buscar acomodações' });
+      }
+
+      const tiposUnicos = [...new Set(resultadosAcomodacoes.map(a => a.tpAcomodacao))];
+      console.log(resultadosAcomodacoes)
+      console.log(tiposUnicos)
+
+      res.json({
+        acomodacoesDisponiveis: resultadosAcomodacoes,
+        tpAcomodacao: tiposUnicos
+      });
+    });
+  });
+});
 
 
 

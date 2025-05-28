@@ -163,6 +163,7 @@ function App() {
                   <div>
                     <div>
                       <h1>{tpQuarto.nomeAcomodacao}</h1>
+                      {tpQuarto.unidade_hotel}
                     </div>
                     <div>
                       Diaria-{tpQuarto.vlDiaria}
