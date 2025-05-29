@@ -75,7 +75,7 @@ function Acomodacoes (){
                     ))}
                 </div>
             </main>
-            <footer>
+            <footer className="footer-acomodacoes">
                 <Rodape></Rodape>
             </footer>
 

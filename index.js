@@ -1204,7 +1204,6 @@ app.post(`/api/confirmarReserva`, (req, res) => {
   const acompanhantesAdultosJSON = JSON.stringify(req.body.acompanhantesAdultos || {});
   const acompanhantesCriancasJSON = JSON.stringify(req.body.acompanhantesCriancas || {});
   const dataReserva = new Date()
-  const dataReservaFormatada = dataReserva.toLocaleDateString()
 
 
   const formatarData = (data) => {
@@ -1218,6 +1217,7 @@ app.post(`/api/confirmarReserva`, (req, res) => {
 
   const checkInFormatado = formatarData(checkIn);
   const checkOutFormatado = formatarData(checkOut);
+  const dataReservaFormatada = formatarData(dataReserva)
 
   // 1. Buscar IDs de acomodações já reservadas que conflitam
   const sqlReservas = `
@@ -1316,35 +1316,59 @@ app.post('/api/buscarMinhasReservas' , (req, res) => {
 
   const sql = `
   SELECT 
-    r.id,
-    r.checkIn,
-    r.checkOut,
-    r.periodo,
-    r.vlDiaria,
-    r.id_hospede,
-    r.acompanhantesAdultos,
-    r.acompanhantesCriancas,
-    r.idAcomodacao,
-    r.entrada,
-    r.saida,
+      r.id,
+      r.checkIn,
+      r.checkOut,
+      r.periodo,
+      r.vlDiaria,
+      r.id_hospede,
+      r.acompanhantesAdultos,
+      r.acompanhantesCriancas,
+      r.idAcomodacao,
+      r.entrada,
+      r.saida,
+      r.dataReserva,
 
-    ta.nomeAcomodacao AS nomeAcomodacao,
-    u.nomeUnidade AS nomeUnidade,
-    a.numeroAcomodacao AS numeroAcomodacao,
-    a.num_andar AS num_andar
+      ta.nomeAcomodacao AS nomeAcomodacao,
+      u.nomeUnidade AS nomeUnidade,
+      a.numAcomodacao AS numAcomodacao,
+      a.num_andar AS num_andar
 
-  FROM reservas r
-  LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
-  LEFT JOIN unidades u ON r.unidade = u.id
-  LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+    FROM reservas r
+    LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+    LEFT JOIN unidades u ON r.unidade = u.id
+    LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
 
-  WHERE r.id_hospede = ?;
+    WHERE r.id_hospede =  ?
   `
 
-  
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+        console.error('Erro ao buscar reserva:', err);
+        return res.status(500).json({ err: 'Erro ao buscarreserva' });
+    }
+    return res.status(200).json(result)
+  })
 })
 
 
+/////////////////////////////////////////CANCELAR RESERVA//////////////////////
+app.post('/api/cancelarReserva' , (req,res) => {
+  const {idCancelamento} = req.body
+
+  const sql = `DELETE FROM reservas WHERE id = ?`
+
+  bd.query(sql, [idCancelamento], (err, result) =>{
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    res.json({excluido: true})
+  })
+})
+
+
+////////////////////////////////CANCELAMENTO COM COBRANÇA///////////////////////
+//// cancela a reserva e gera a cobrança na tabela de cobrança
 
 
 
@@ -1358,6 +1382,45 @@ app.post('/api/buscarMinhasReservas' , (req, res) => {
 
 
 
+
+////////////////////////BUSCANDO RESERVAS QUE NAO FORAM REALIZADAS CHECK-IN////////////////
+app.get(`/api/buscarReservasFun`, (req, res) => {
+  const sql =`
+  SELECT 
+        r.id,
+        r.checkIn,
+        r.checkOut,
+        r.periodo,
+        r.vlDiaria,
+        r.id_hospede,
+        r.acompanhantesAdultos,
+        r.acompanhantesCriancas,
+        r.idAcomodacao,
+        r.entrada,
+        r.saida,
+        r.dataReserva,
+
+        ta.nomeAcomodacao AS nomeAcomodacao,
+        u.nomeUnidade AS nomeUnidade,
+        a.numAcomodacao AS numAcomodacao,
+        a.num_andar AS num_andar,
+        us.nome AS nome
+
+      FROM reservas r
+      LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+      LEFT JOIN unidades u ON r.unidade = u.id
+      LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+      LEFT JOIN usuarios us ON r.id_hospede = us.id
+
+      WHERE r.entrada IS NULL and r.saida IS NULL`
+
+  bd.query(sql, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    res.json(result)
+  })
+})
 
 
 

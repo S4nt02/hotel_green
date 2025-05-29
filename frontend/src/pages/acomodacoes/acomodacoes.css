@@ -16,7 +16,7 @@
     font-size: 27px;
 }
 
-footer{
+.footer-acomodacoes{
     display: flex;
     flex-direction: column;
     margin-top: 218px;

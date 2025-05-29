@@ -5,6 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { useAuth } from "../../context/authContext";
+import { Link } from "react-router-dom";
 
 function FazerReserva () {
 
@@ -22,6 +23,7 @@ function FazerReserva () {
     const [acompanhantesAdultos, setAcompanhantesAdultos] = useState([])
     const [acompanhantesCriancas, setAcompanhantesCriancas] = useState([])
     const [erroMensage, setMensageErro] = useState("")
+    const [reservaFeita, setReservaFeita] = useState(false)
 
     const buscarTpQuarto = async () => {
         try{
@@ -139,9 +141,14 @@ function FazerReserva () {
             body : JSON.stringify(dados)
         })
 
-        if(confirmarReserva.sucesso){
+        const dadosReserva = await confirmarReserva.json()
+
+
+        if(dadosReserva.message){
 
         }
+
+        setReservaFeita(true)
     }
 
     const avancar = () => {
@@ -242,6 +249,12 @@ function FazerReserva () {
                             <p>Acomodação: {tpQuartoSelecionado.nomeAcomodacao}</p>
                             <p>Diaria: {tpQuartoSelecionado.vlDiaria}</p>
                             <div>
+                                <p>Informações Adicionais</p>
+                                <p>* O check-In deve ser realizado após as 12:00 hrs</p>
+                                <p>* O check-Out deve ser realizado até as 12:00 hrs</p>
+                                <p>* O cancelamento da reserva pode ser feito até 12 horas antes do horário de ínicio da realização do chec-in, cancelamentos após esse limite será cobrada uma taxa de multa pelo cancelamento</p>
+                            </div>
+                            <div>
                                 <p>Hospede: {nomeUser}</p>
                                 <div>
                                     <p>Acompanhantes</p>
@@ -285,6 +298,16 @@ function FazerReserva () {
                         <div>
                             <button onClick={() => setTelaExibida(1)}>Voltar</button>
                             <button onClick={confirmarReserva}>Confirmar Reservas</button>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {reservaFeita && (
+                <>
+                    <div className="overlay-reservas" onClick={() => setReservaFeita(false)}>
+                        <div className="reservaFeita">
+                            <p>Reserva Realizada com sucesso, acesso <Link to="/minhasReservas">Minahs reservas</Link> para conferir sua reserva</p>
                         </div>
                     </div>
                 </>
