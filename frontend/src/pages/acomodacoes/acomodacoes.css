@@ -1,0 +1,23 @@
+.titulo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column ;
+}
+
+.t1{
+    color: #8b4513;
+    font-size: 40px;
+    margin-top: 30px;
+}
+
+.t2{
+    color: #8b4513;
+    font-size: 27px;
+}
+
+footer{
+    display: flex;
+    flex-direction: column;
+    margin-top: 218px;
+}

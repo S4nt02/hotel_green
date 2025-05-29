@@ -5,6 +5,11 @@ import { useAuth } from "../../context/authContext"
 import { TriangleAlert } from "lucide-react"
 import { API_URL } from "../../url"
 
+
+import "./minhasReservas.css";
+
+
+
 function MinhasReservas (){
 
     const {id, nomeUser} = useAuth()
@@ -38,7 +43,7 @@ function MinhasReservas (){
             <main>
                 {!id ? (
                     <div className="alerta-login">
-                        <TriangleAlert size={25}/>
+                        <TriangleAlert size={100}/>
                         <p>Faça login para visualizar suas reservas</p>
                     </div>
                 ) : (

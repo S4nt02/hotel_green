@@ -6,6 +6,9 @@ import { Navigation } from 'swiper/modules';
 import HeaderComponente from "../../componetes/header/headerComponente"
 import { Link } from "react-router-dom";
 import { API_URL } from "../../url";
+import Rodape from "../../componetes/rodape/rodape"
+
+import "./acomodacoes.css";
 
 function Acomodacoes (){
 
@@ -36,9 +39,9 @@ function Acomodacoes (){
            <main>
                 <HeaderComponente/>
                 <div>
-                    <div>
-                        <h1>Catálogo de Acomodações</h1>
-                        <p>Contamos com os melhores quartos e estrutura para atender você e toda sua família</p>
+                    <div className="titulo">
+                        <h1 className="t1">Catálogo de Acomodações</h1>
+                        <p className="t2">Contamos com os melhores quartos e estrutura para atender você e toda sua família</p>
                     </div>
                     {tpQuartos.map(quarto =>(
                         <div key={quarto.id}>                            
@@ -71,7 +74,12 @@ function Acomodacoes (){
                         </div>
                     ))}
                 </div>
-            </main> 
+            </main>
+            <footer>
+                <Rodape></Rodape>
+            </footer>
+
+            
         </>
     )
 }

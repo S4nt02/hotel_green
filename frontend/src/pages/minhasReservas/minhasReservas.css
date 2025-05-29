@@ -1,0 +1,19 @@
+
+
+.alerta-login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 66vh;
+    justify-self: center;
+    padding: 20px;
+    color: #8b4513;
+}
+
+p{
+    margin-top: 20px;
+    font-size: 35px;
+}
+
+

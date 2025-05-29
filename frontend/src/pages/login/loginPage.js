@@ -63,7 +63,7 @@ function LoginPage() {
                             className="loin_input"
                             type="email"
                             id="usuario"
-                            placeholder="Digite seu Email"
+                            placeholder="Digite seu E-mail"
                             value={email}
                             onChange={(e) => {
                                 setEmail(e.target.value);
