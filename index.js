@@ -1422,13 +1422,104 @@ app.get(`/api/buscarReservasFun`, (req, res) => {
   })
 })
 
+///////////////////////////////BUSCAR RESERVA PELO ID//////////////////////////////
+
+app.post(`/api/buscarReservaUnica`, (req, res) => {
+  const {idReserva} =req.body
+
+  const sql = `
+    SELECT 
+      r.id,
+      r.checkIn,
+      r.checkOut,
+      r.periodo,
+      r.vlDiaria,
+      r.id_hospede,
+      r.acompanhantesAdultos,
+      r.acompanhantesCriancas,
+      r.idAcomodacao,
+      r.entrada,
+      r.saida,
+      r.dataReserva,
+
+      ta.nomeAcomodacao AS nomeAcomodacao,
+      u.nomeUnidade AS nomeUnidade,
+      a.numAcomodacao AS numAcomodacao,
+      a.num_andar AS num_andar,
+      us.nome AS nome,
+      us.documento AS documento,
+      us.email AS email,
+      us.telefone AS telefone
+
+    FROM reservas r
+    LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+    LEFT JOIN unidades u ON r.unidade = u.id
+    LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+    LEFT JOIN usuarios us ON r.id_hospede = us.id
+
+    WHERE r.id = ?`
+  
+  bd.query(sql, [idReserva], (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    res.json(result)
+  })
+  
+})
+
+////////////////////////CONFIRMAR ENTRADA/////////////////
+
+app.post(`/api/confirmarEntrada`, (req, res) => {
+
+  const {idReserva} = req.body
+
+  const sql = `UPDATE reservas SET entrada = TRUE WHERE id = ?`
+
+  bd.query(sql, [idReserva], (err, result) =>{
+    if(err){
+       return res.status(500).json({ erro: err })
+    }
+    res.json({entrada : true})
+  })
+})
 
 
+//////////////////////REISTRAR HORARIO////////////////////
+app.post(`/api/registrarEntrada`, (req, res) => {
+
+  const {
+    idReserva,
+    idFuncionario,
+    horarioCheckIn,
+  } = req.body
+
+  const sql = `INSERT INTO reservasEntradaSaida (idReserva, horarioEntrada ,idFuncionarioEntrada) VALUES (?, ?, ?)`
+
+  const valores = [
+    idReserva, horarioCheckIn, idFuncionario
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    res.json({sucesso : true})
+  })
+})
 
 
+///////////////BUSCAR RESERVAS COM CHECKIN/////////////
+app.get(`/api/buscarCheckIn`, (req, res) => {
+  const sql = `SELECT * FROM reservas WHERE entrada = 1 `
 
-
-
+  bd.query(sql, (err, result) => {
+    if(err){
+      return res.status(500).json({erro : err})
+    }
+    res.json(result)
+  })
+})
 
 
 
