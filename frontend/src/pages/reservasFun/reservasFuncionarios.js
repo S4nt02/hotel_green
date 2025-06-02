@@ -43,10 +43,22 @@ function ReservasFuncionarios (){
         return dataFormatada
     }
 
-    const irParaCheckIn = (id) => {
-        setIdReserva(id)
-        setCheckInOpen(true)
+    const irParaCheckIn = (reserva) => {
+        const dataCheckIn = new Date(reserva.checkIn)
+        const hoje = new Date()
+
+        const mesmoDia = dataCheckIn.getDate() === hoje.getDate()
+        const mesmoMes = dataCheckIn.getMonth() === hoje.getMonth()
+        const mesmoAno = dataCheckIn.getFullYear() === hoje.getFullYear()
+
+        if (mesmoDia && mesmoMes && mesmoAno) {
+            setIdReserva(reserva.id)
+            setCheckInOpen(true)
+        } else {
+            alert("O check-in só pode ser realizado na data da reserva!")
+        }
     }
+
 
     const irParaCheckOut = (id) => {
 
