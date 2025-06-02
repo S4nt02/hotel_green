@@ -824,7 +824,13 @@ app.post('/api/editarAcomodacao', (req, res) => {
 //////////BUSCAR ACOMODAÇÔES///////////////////
 
 app.get('/api/buscarAcomodacoes', (req, res) => {
-  const sql = 'SELECT * FROM acomodacoes ORDER BY id';
+const sql = `SELECT 
+  a.*, 
+  u.nomeUnidade
+FROM acomodacoes a
+LEFT JOIN unidades u ON a.unidade_hotel = u.id
+ORDER BY a.id;
+`;
   bd.query(sql, (err, result) => {
     if (err) return res.status(500).json({ erro: 'Erro ao buscar acomodações' });
     res.json(result);
@@ -1520,6 +1526,252 @@ app.get(`/api/buscarCheckIn`, (req, res) => {
     res.json(result)
   })
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////BUSCAR ACOMODACOES OCUPADAS///////////////////////
+app.post(`/api/buscarAcomodacoesOcupadas`, (req, res) => {
+  const { dataInicial, dataFinal } = req.body;
+
+  const formatarData = (data) => {
+    if (!data) return null;
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const dataInicialFormata = formatarData(dataInicial)
+  const dataFinalFormatada = formatarData(dataFinal)
+
+  const sql = `SELECT 
+      r.id,
+      r.idAcomodacao,
+      ta.id AS idTipoAcomodacao,
+      ta.nomeAcomodacao AS nomeAcomodacao,
+      ta.descricao AS descricao,
+      u.nomeUnidade AS nomeUnidade,
+      a.id AS idAcomodacao,
+      a.numAcomodacao AS numAcomodacao,
+      a.num_andar AS num_andar,
+      u.id AS idUnidades,
+      r.entrada
+    FROM reservas r
+    LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+    LEFT JOIN unidades u ON r.unidade = u.id
+    LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+    WHERE (? < r.checkOut AND ? > r.checkIn)`;
+
+  const valores = [dataInicialFormata, dataFinalFormatada];
+
+  bd.query(sql, valores, (err, result) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({ erro: err });
+    }
+
+    // Aqui você pode filtrar com base no campo "entrada"
+    const acomodacoesOcupadas = result.filter(r => r.entrada === 1);
+    const acomodacoesReservadas = result.filter(r => r.entrada !== 1);
+    const totalOcupadas = acomodacoesOcupadas.length
+    const totalReservadas = acomodacoesReservadas.length
+
+    // Retorna as duas listas ao frontend
+    return res.json({
+      acomodacoesOcupadas,
+      acomodacoesReservadas,
+      totalOcupadas,
+      totalReservadas
+    });
+  });
+});
+
+////////////ACOMODACOES DISPONIVEIS//////////////////
+
+app.post('/api/buscarAcomodacoesDisponiveis', (req, res) => {
+  const { dataInicial, dataFinal } = req.body;
+
+
+  const formatarData = (data) => {
+    if (!data) return null;
+    const d = new Date(data);
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const dataInicialFormata = formatarData(dataInicial)
+  const dataFinalFormatada = formatarData(dataFinal)
+  // Consulta principal: acomodações disponíveis
+  const sqlDisponiveis = `
+    SELECT 
+      a.id AS idAcomodacao,
+      a.numAcomodacao,
+      a.num_andar,
+      a.unidade_hotel,
+      ta.id AS idTipoAcomodacao,
+      u.id AS idUnidade,
+      ta.nomeAcomodacao,
+      ta.descricao,
+      u.nomeUnidade
+    FROM acomodacoes a
+    LEFT JOIN tipo_acomodacao ta ON a.tpAcomodacao = ta.id
+    LEFT JOIN unidades u ON a.unidade_hotel = u.id
+    WHERE a.id NOT IN (
+      SELECT r.idAcomodacao
+      FROM reservas r
+      WHERE (? < r.checkOut AND ? > r.checkIn)
+    )
+  `;
+
+  const valores = [dataInicialFormata, dataFinalFormatada];
+
+  bd.query(sqlDisponiveis, valores, (err, disponiveis) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({ erro: err });
+    }
+
+    // Consulta secundária: total de acomodações
+    const sqlTotal = `SELECT COUNT(*) AS total FROM acomodacoes`;
+
+    bd.query(sqlTotal, (err2, totalResult) => {
+      if (err2) {
+        console.log(err2)
+        return res.status(500).json({ erro: err2 });
+      }
+
+      const totalAcomodacoes = totalResult[0].total;
+      const totalDisponiveis = disponiveis.length;
+
+      return res.json({
+        totalAcomodacoes,
+        totalDisponiveis,
+        acomodacoesDisponiveis: disponiveis
+      });
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

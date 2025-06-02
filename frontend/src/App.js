@@ -14,6 +14,7 @@ import Acomodacoes from './pages/acomodacoes/acomodacoes';
 import ReservasUser from './pages/reservasUser/reservasUser';
 import ReservasFuncionarios from './pages/reservasFun/reservasFuncionarios';
 import MinhasReservas from './pages/minhasReservas/minhasReservas';
+import Ocupacao from './pages/ocupacao/ocupacao';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path='/reservas' element={<ReservasUser/>}/>
           <Route path='/reservasFun' element={<ReservasFuncionarios/>}/>
           <Route path='/minhasReservas' element={<MinhasReservas/>}/>
+          <Route path='/ocupacao' element={<Ocupacao/>}/>
         </Routes>
       </AuthProvider>
 

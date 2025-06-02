@@ -9,6 +9,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
+import Ocupacao from '../ocupacao/ocupacao';
 
 function App() {
     ///// Adicionar verificações de login e autorização//////
@@ -153,6 +154,7 @@ function App() {
           <input type="button" value="Tipos de acomodações" onClick={() => handleSelecionarFormulario(1)} />
           <input type="button" value="Quartos" onClick={() => handleSelecionarFormulario(2)} />
           <input type='button'  value="Unidades"onClick={() => handleSelecionarFormulario(3)}/>
+          <input type='button'  value="Ocupação"onClick={() => handleSelecionarFormulario(4)}/> 
 
           <div style={{ marginTop: '20px' }}>
             {formSelecionado === 1 && (
@@ -200,11 +202,13 @@ function App() {
                 <div>
                   {dadosAcomodacao.map(acomodacao => {
                     const tpQuarto = dadosTpQuarto.find(t => t.id === acomodacao.tpAcomodacao);
+
                     return (
                       <div key={acomodacao.id} className='exibirAcomodacoes'>
                         <h1>Número quarto - {acomodacao.numAcomodacao}</h1>
                         <h1>Andar - {acomodacao.num_andar}</h1>
                         <h1>Tipo de quarto - {tpQuarto.nomeAcomodacao}</h1>
+                        <h1>Unidade-{acomodacao.nomeUnidade}</h1>
                         <button onClick={() => editarAcomodacao(acomodacao.id)}>EDITAR</button>
                         <button onClick={() => desejaExcluirAcomodacao(acomodacao.id)}>EXCLUIR</button>
                       </div>
@@ -218,6 +222,10 @@ function App() {
               <>
                 <CadUnidade/>
               </>
+            )}
+
+            {formSelecionado === 4 && (
+              <Ocupacao/>
             )}
           </div>
         </div>
