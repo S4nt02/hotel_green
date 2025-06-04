@@ -1482,43 +1482,47 @@ app.post(`/api/buscarReservaUnica`, (req, res) => {
 
 ////////////////////////CONFIRMAR ENTRADA/////////////////
 
-app.post(`/api/confirmarEntrada`, (req, res) => {
-
-  const {idReserva} = req.body
-
-  const sql = `UPDATE reservas SET entrada = TRUE WHERE id = ?`
-
-  bd.query(sql, [idReserva], (err, result) =>{
-    if(err){
-       return res.status(500).json({ erro: err })
-    }
-    res.json({entrada : true})
-  })
-})
-
-
-//////////////////////REISTRAR HORARIO////////////////////
 app.post(`/api/registrarEntrada`, (req, res) => {
-
   const {
     idReserva,
     idFuncionario,
     horarioCheckIn,
-  } = req.body
+    acompanhantesAdultos,
+    acompanhantesCriancas
+  } = req.body;
 
-  const sql = `INSERT INTO reservasEntradaSaida (idReserva, horarioEntrada ,idFuncionarioEntrada) VALUES (?, ?, ?)`
-
-  const valores = [
-    idReserva, horarioCheckIn, idFuncionario
-  ]
+  const sql = `
+    INSERT INTO reservasEntradaSaida (idReserva, horarioEntrada ,idFuncionarioEntrada)
+    VALUES (?, ?, ?)
+  `;
+  const valores = [idReserva, horarioCheckIn, idFuncionario];
 
   bd.query(sql, valores, (err, result) => {
-    if(err){
-      return res.status(500).json({ erro: err })
+    if (err) {
+      return res.status(500).json({ erro: err });
     }
-    res.json({sucesso : true})
-  })
-})
+
+    const sqlReservas = `
+      UPDATE reservas
+      SET acompanhantesAdultos = ?, acompanhantesCriancas = ?
+      WHERE id = ?
+    `;
+    const valoresReservas = [
+      JSON.stringify(acompanhantesAdultos),
+      JSON.stringify(acompanhantesCriancas),
+      idReserva
+    ];
+
+    bd.query(sqlReservas, valoresReservas, (err, resultReservas) => {
+      if (err) {
+        return res.status(500).json({ erro: err });
+      }
+
+      res.json({ sucesso: true });
+    });
+  });
+});
+
 
 
 ///////////////BUSCAR RESERVAS COM CHECKIN/////////////

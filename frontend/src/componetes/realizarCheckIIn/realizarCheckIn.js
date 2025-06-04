@@ -56,8 +56,12 @@ function RealizarCheckIn ({idReserva}){
         const registro = {
             idReserva : idReserva,
             idFuncionario : id,
-            horarioCheckIn : horarioCheckIn
+            horarioCheckIn : horarioCheckIn,
+            acompanhantesAdultos: acompanhantesAdultos,
+            acompanhantesCriancas : acompanhantesCriancas,
         }
+
+        console.log(registro)
         
 
         try{
