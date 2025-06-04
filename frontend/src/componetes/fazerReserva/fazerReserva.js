@@ -9,172 +9,167 @@ import { Link } from "react-router-dom";
 
 function FazerReserva () {
 
-    const {id, autorizacao, nomeUser} = useAuth()
-    const [telaExibida, setTelaExibida] = useState(1)
-    const [tpQuartos, setDadosTpQuarto] = useState([])
-    const [unidades, setUnidades] = useState([])
-    const [checkIn, setCheckIn] = useState("")
-    const [checkOut, setCheckOut] = useState("")
-    const [unidadeBuscar, setUnidadeBuscar] = useState()
-    const [exibirTpQuartos, setExibirTpQuartos] = useState([])
-    const [acomodacoesDisponiveis, setAcomodacoesDisp] = useState([])
-    const [tpQuartoSelecionado, setTpQuartoSelecionado] = useState([])
-    const [periodo, setPeriodo] = useState([])
-    const [acompanhantesAdultos, setAcompanhantesAdultos] = useState([])
-    const [acompanhantesCriancas, setAcompanhantesCriancas] = useState([])
-    const [erroMensage, setMensageErro] = useState("")
-    const [reservaFeita, setReservaFeita] = useState(false)
+    const { id, autorizacao, nomeUser } = useAuth();
+    const [telaExibida, setTelaExibida] = useState(1);
+    const [tpQuartos, setDadosTpQuarto] = useState([]);
+    const [unidades, setUnidades] = useState([]);
+
+    const hoje = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+    const [checkIn, setCheckIn] = useState(hoje);
+    const [checkOut, setCheckOut] = useState("");
+    const [unidadeBuscar, setUnidadeBuscar] = useState("");
+    const [exibirTpQuartos, setExibirTpQuartos] = useState([]);
+    const [acomodacoesDisponiveis, setAcomodacoesDisp] = useState([]);
+    const [tpQuartoSelecionado, setTpQuartoSelecionado] = useState([]);
+    const [periodo, setPeriodo] = useState([]);
+    const [acompanhantesAdultos, setAcompanhantesAdultos] = useState([]);
+    const [acompanhantesCriancas, setAcompanhantesCriancas] = useState([]);
+    const [erroMensage, setMensageErro] = useState("");
+    const [reservaFeita, setReservaFeita] = useState(false);
 
     const buscarTpQuarto = async () => {
-        try{
-            const buscarTiposQuartos = await fetch(`${API_URL}/api/buscarTipoQuartos`)
-            const dados = await buscarTiposQuartos.json()
+    try {
+        const buscarTiposQuartos = await fetch(`${API_URL}/api/buscarTipoQuartos`);
+        const dados = await buscarTiposQuartos.json();
 
-            if(!buscarTiposQuartos.ok){
-                
-            }
-
-            setDadosTpQuarto(dados)
-            setExibirTpQuartos(dados)
-        }
-        catch(erro){
-            
-        }
+        setDadosTpQuarto(dados);
+        setExibirTpQuartos(dados);
+    } catch (erro) {
+        console.error("Erro ao buscar tipos de quarto:", erro);
     }
-
-    const buscarUnidade = async () => {
-        try{
-            const buscarUnidade = await fetch(`${API_URL}/api/buscarUnidade`)
-            const dados = await buscarUnidade.json()
-
-            setUnidades(dados)
-        }
-        catch{
-
-        }
-
-    }
-
-    const buscarAcomodacoesDisp = async () => {
-    const parametros = {
-        checkIn,
-        checkOut,
-        unidade: unidadeBuscar,
     };
 
-    try {
-        const buscarDisp = await fetch(`${API_URL}/api/quartosDisponiveis`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parametros),
-        });
+    const buscarUnidade = async () => {
+        try {
+            const buscarUnidade = await fetch(`${API_URL}/api/buscarUnidade`);
+            const dados = await buscarUnidade.json();
 
-        const dados = await buscarDisp.json();
-
-        setAcomodacoesDisp(dados.acomodacoesDisponiveis);
-
-        // Aguarda o tpQuartos estar carregado
-        if (tpQuartos.length > 0) {
-        const tiposFiltrados = tpQuartos.filter(tpQuarto =>
-            dados.tpAcomodacao.includes(tpQuarto.id) &&
-            String(tpQuarto.unidade_hotel) === String(unidadeBuscar)
-        );
-        setExibirTpQuartos(tiposFiltrados);
-        } else {
-        console.warn("tpQuartos ainda está vazio no momento do filtro.");
+            setUnidades(dados);
+        } catch (erro) {
+            console.error("Erro ao buscar unidades:", erro);
         }
+    };
 
-    } catch (erro) {
-        console.error("Erro ao buscar acomodações:", erro);
-    }
+    const buscarAcomodacoesDisp = async () => {
+        const parametros = {
+            checkIn,
+            checkOut,
+            unidade: unidadeBuscar,
+        };
+
+        try {
+            const buscarDisp = await fetch(`${API_URL}/api/quartosDisponiveis`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parametros),
+            });
+
+            const dados = await buscarDisp.json();
+
+            setAcomodacoesDisp(dados.acomodacoesDisponiveis);
+
+            // Corrigido: exibe tipos de quarto disponíveis, com ou sem unidade selecionada
+            if (tpQuartos.length > 0) {
+            // Primeiro filtra pelos disponíveis na data
+            let tiposFiltrados = tpQuartos.filter(tpQuarto =>
+                dados.tpAcomodacao.includes(tpQuarto.id)
+            );
+
+            // Depois, se unidade estiver definida, refina o filtro
+            if (unidadeBuscar && unidadeBuscar !== "") {
+                tiposFiltrados = tiposFiltrados.filter(tpQuarto =>
+                String(tpQuarto.unidade_hotel) === String(unidadeBuscar)
+                );
+            }
+
+            setExibirTpQuartos(tiposFiltrados);
+            } else {
+            console.warn("tpQuartos ainda está vazio no momento do filtro.");
+            }
+
+        } catch (erro) {
+            console.error("Erro ao buscar acomodações:", erro);
+        }
     };
 
     const setTpQuartoInfos = (id) => {
         const quartoInfo = exibirTpQuartos.find(tpQuarto => tpQuarto.id === id);
         setTpQuartoSelecionado(quartoInfo); // quartoInfo será um objeto
-        console.log(tpQuartoSelecionado)
-        calcularDiferencaDias(checkIn, checkOut)
-        setAcompanhantesAdultos(Array(quartoInfo.quantidade_adultos).fill(""))
-        setAcompanhantesCriancas(Array(quartoInfo.quantidade_criancas).fill(""))
-    }
+        calcularDiferencaDias(checkIn, checkOut);
+        setAcompanhantesAdultos(Array(quartoInfo.quantidade_adultos).fill(""));
+        setAcompanhantesCriancas(Array(quartoInfo.quantidade_criancas).fill(""));
+    };
 
     const calcularDiferencaDias = (checkIn, checkOut) => {
         const dataInicial = new Date(checkIn);
         const dataFinal = new Date(checkOut);
 
-        // Zerar hora/minuto/segundo para evitar diferença parcial
         dataInicial.setHours(0, 0, 0, 0);
         dataFinal.setHours(0, 0, 0, 0);
 
         const diferencaEmMs = dataFinal.getTime() - dataInicial.getTime();
         const diferencaEmDias = Math.floor(diferencaEmMs / (1000 * 60 * 60 * 24));
-        console.log(diferencaEmDias)
-        
-        setPeriodo(diferencaEmDias)
+
+        setPeriodo(diferencaEmDias);
     };
 
     const confirmarReserva = async () => {
-
-        if(id === "" || id === null){
-            setMensageErro("Realize login ou cadastre-se para confirmar a reserva")
-            return
+        if (id === "" || id === null) {
+            setMensageErro("Realize login ou cadastre-se para confirmar a reserva");
+            return;
         }
-        
+
         const dados = {
-            checkIn : checkIn,
-            checkOut : checkOut,
-            periodo : periodo,
-            unidade : unidadeBuscar,
-            tpAcomodacao : tpQuartoSelecionado.id,
-            vlDiaria : tpQuartoSelecionado.vlDiaria,
-            id_hospede : id,
-            acompanhantesAdultos : acompanhantesAdultos,
-            acompanhantesCriancas : acompanhantesCriancas,
+            checkIn,
+            checkOut,
+            periodo,
+            unidade: unidadeBuscar,
+            tpAcomodacao: tpQuartoSelecionado.id,
+            vlDiaria: tpQuartoSelecionado.vlDiaria,
+            id_hospede: id,
+            acompanhantesAdultos,
+            acompanhantesCriancas,
+        };
+
+        try {
+            const confirmarReserva = await fetch(`${API_URL}/api/confirmarReserva`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados),
+            });
+
+            const dadosReserva = await confirmarReserva.json();
+
+            if (dadosReserva.message) {
+            // poderia exibir mensagem ou tratar erro
+            }
+
+            setReservaFeita(true);
+        } catch (erro) {
+            console.error("Erro ao confirmar reserva:", erro);
         }
-
-
-        const confirmarReserva = await fetch(`${API_URL}/api/confirmarReserva`, {
-            method : 'POST',
-            headers :{
-                'Content-Type' : 'application/json'
-            },
-            body : JSON.stringify(dados)
-        })
-
-        const dadosReserva = await confirmarReserva.json()
-
-
-        if(dadosReserva.message){
-
-        }
-
-        setReservaFeita(true)
-    }
+    };
 
     const avancar = () => {
-        if(tpQuartoSelecionado.length !== 0){
-            setTelaExibida(2)
-        }
-        else{
-            setMensageErro("Por favor selecione um tipo de acomodação")
-        }
+    if (tpQuartoSelecionado.length !== 0) {
+        setTelaExibida(2);
+    } else {
+        setMensageErro("Por favor selecione um tipo de acomodação");
     }
-
-
-
-    useEffect(() => {
-        buscarTpQuarto();
-        buscarUnidade();
-    },[])
+    };
 
     useEffect(() => {
-        if (checkIn || checkOut || unidadeBuscar) {
-            buscarAcomodacoesDisp();
-        } else {
-            // Se quiser, limpa os estados quando algum parâmetro estiver vazio
-            setAcomodacoesDisp([]);
-            setExibirTpQuartos([]);
-        }
+    buscarTpQuarto();
+    buscarUnidade();
+    }, []);
+
+    useEffect(() => {
+    if (checkIn && checkOut) {
+        buscarAcomodacoesDisp();
+    } else {
+        setAcomodacoesDisp([]);
+        setExibirTpQuartos([]);
+    }
     }, [checkIn, checkOut, unidadeBuscar]);
 
 
@@ -204,28 +199,37 @@ function FazerReserva () {
                         //exibição dos tipos de quartos
                         
                         <div>
-                            {exibirTpQuartos.map(tpQuarto =>(
-                                <div key={tpQuarto.id}>
-                                    <h3>{tpQuarto.nomeAcomodacao}</h3>
-                                    <div>
-                                        <Swiper
-                                        modules={[Navigation]}
-                                        navigation
-                                        spaceBetween={10}
-                                        slidesPerView={1}
-                                        style={{ width: '300px', height: '300px' }}
-                                        >
-                                        {tpQuarto.imagens?.map((url, index) => (
-                                            <SwiperSlide key={index}>
-                                            <img src={url} alt={`Imagem ${index + 1}`} style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
-                                            </SwiperSlide>
-                                        ))}
-                                        </Swiper>
-                                    </div>
-                                    <button onClick={() => setTpQuartoInfos(tpQuarto.id)}>Selecionar</button>
-                                </div>
-                                
-                            ))}
+                            {exibirTpQuartos.length > 0 ? (
+                                <>
+                                    {exibirTpQuartos.map(tpQuarto =>(
+                                        <div key={tpQuarto.id}>
+                                            <h3>{tpQuarto.nomeAcomodacao}</h3>
+                                            <div>
+                                                <Swiper
+                                                modules={[Navigation]}
+                                                navigation
+                                                spaceBetween={10}
+                                                slidesPerView={1}
+                                                style={{ width: '300px', height: '300px' }}
+                                                >
+                                                {tpQuarto.imagens?.map((url, index) => (
+                                                    <SwiperSlide key={index}>
+                                                    <img src={url} alt={`Imagem ${index + 1}`} style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
+                                                    </SwiperSlide>
+                                                ))}
+                                                </Swiper>
+                                            </div>
+                                            <button onClick={() => setTpQuartoInfos(tpQuarto.id)}>Selecionar</button>
+                                        </div>
+                                        
+                                    ))} 
+                                </>
+                            ) : (
+                                <>
+                                    <p>Sem acomodações disponiveis para essa unidade nesta data</p>
+                                </>
+                            )}
+
                             
                         </div>
                     </div>

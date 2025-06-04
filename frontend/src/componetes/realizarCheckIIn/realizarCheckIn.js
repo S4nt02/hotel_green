@@ -7,6 +7,8 @@ function RealizarCheckIn ({idReserva}){
     const {id, nomeUser} = useAuth()
     const [infosReservas, setInfosReserva] = useState({})
     const [horarioCheckIn, setHorarioCheckIn] = useState("")
+    const [acompanhantesAdultos, setAcompanhantesAdultos] = useState([])
+    const [acompanhantesCriancas, setAcompanhantesCriancas] = useState([])
 
     const buscarReservaUnica = async () => {
 
@@ -21,7 +23,18 @@ function RealizarCheckIn ({idReserva}){
         const dados = await buscar.json()
         console.log(dados)
         setInfosReserva(dados[0])
-        
+
+       setAcompanhantesAdultos(
+            dados[0].acompanhantesAdultos && Array.isArray(dados[0].acompanhantesAdultos)
+                ? dados[0].acompanhantesAdultos
+                : Array(dados[0].quantidadeAdultos).fill("")
+        );
+
+        setAcompanhantesCriancas(
+            dados[0].acompanhantesCriancas && Array.isArray(dados[0].acompanhantesCriancas)
+                ? dados[0].acompanhantesCriancas
+                : Array(dados[0].quantidadeCriancas).fill("")
+        );
     }
 
     const obterData = () => {
@@ -88,23 +101,66 @@ function RealizarCheckIn ({idReserva}){
         
     },[])
 
-    return(
+   return (
         <>
             <div>
+            <div>
+                ID
+                <p>{infosReservas.id}</p>
+                Nome
+                <p>{infosReservas.nome}</p>
+                <label>Horário da entrada</label>
+                <input value={horarioCheckIn} readOnly />
                 <div>
-                    ID
-                    <p>{infosReservas.id}</p>
-                    Nome
-                    <p>{infosReservas.nome}</p>
-                    <label>Horário da entrada</label>
-                    <input value={horarioCheckIn}></input>
+                <p>Acompanhantes</p>
+
+                {infosReservas.quantidadeAdultos > 0 && (
                     <div>
-                        <button onClick={efetuarCheckIn}>Efetuar checkIn</button>
+                    <label>Adultos</label>
+                    {[...Array(infosReservas.quantidadeAdultos)].map((_, index) => (
+                        <input
+                        key={`adulto-${index}`}
+                        type="text"
+                        placeholder={`Acompanhante ${index + 1}`}
+                        value={acompanhantesAdultos[index] || ""}
+                        onChange={(e) => {
+                            const novoAcompanhantes = [...acompanhantesAdultos];
+                            novoAcompanhantes[index] = e.target.value;
+                            setAcompanhantesAdultos(novoAcompanhantes);
+                        }}
+                        />
+                    ))}
                     </div>
+                )}
+
+                {infosReservas.quantidadeCriancas > 0 && (
+                    <div>
+                    <label>Crianças</label>
+                    {[...Array(infosReservas.quantidadeCriancas)].map((_, index) => (
+                        <input
+                        key={`crianca-${index}`}
+                        type="text"
+                        placeholder={`Criança ${index + 1}`}
+                        value={acompanhantesCriancas[index] || ""}
+                        onChange={(e) => {
+                            const novoAcompanhantes = [...acompanhantesCriancas];
+                            novoAcompanhantes[index] = e.target.value;
+                            setAcompanhantesCriancas(novoAcompanhantes);
+                        }}
+                        />
+                    ))}
+                    </div>
+                )}
                 </div>
+
+                <div>
+                <button onClick={efetuarCheckIn}>Efetuar checkIn</button>
+                </div>
+            </div>
             </div>
         </>
     )
 }
+
 
 export default RealizarCheckIn

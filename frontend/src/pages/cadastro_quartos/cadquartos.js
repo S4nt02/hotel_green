@@ -154,7 +154,6 @@ function App() {
           <input type="button" value="Tipos de acomodações" onClick={() => handleSelecionarFormulario(1)} />
           <input type="button" value="Quartos" onClick={() => handleSelecionarFormulario(2)} />
           <input type='button'  value="Unidades"onClick={() => handleSelecionarFormulario(3)}/>
-          <input type='button'  value="Ocupação"onClick={() => handleSelecionarFormulario(4)}/> 
 
           <div style={{ marginTop: '20px' }}>
             {formSelecionado === 1 && (
@@ -224,9 +223,6 @@ function App() {
               </>
             )}
 
-            {formSelecionado === 4 && (
-              <Ocupacao/>
-            )}
           </div>
         </div>
       </main>

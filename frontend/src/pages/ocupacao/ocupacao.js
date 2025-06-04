@@ -9,8 +9,11 @@ function Ocupacao() {
     const [acomodacoesDisponiveis, setAcomodacaoDisponiveis] = useState([])
     const [acomodacoesReservadas, setAcomodacaoReservada] = useState([])
 
-    const [busca, setBusca] = useState("")
     const [unidadeSelecionada, setUnidadeSelecionada] = useState("")
+    const [disponiveisFiltradas, setDisponiveisFiltradas ] = useState([])
+    const [reservadasFiltradas, setReservadasFiltradas] = useState([])
+    const [ocupadasFiltradas, setOcupadasFiltradas] = useState([])
+    
 
 
     const hoje = new Date()
@@ -60,18 +63,12 @@ function Ocupacao() {
 
     const filtrarAcomodacoes = (lista) => {
         return lista.filter(acomodacao => {
-            const buscar = busca.toLowerCase()
-            const idMatch = acomodacao.id?.toString().includes(buscar)
-            const numeroMatch = acomodacao.numAcomodacao?.toString().includes(buscar)
-            const unidadeMatch = unidadeSelecionada === "" || acomodacao.idUnidade?.toString() === unidadeSelecionada
-
-            return (idMatch || numeroMatch) && unidadeMatch
+            const idUnidadeAcomodacao = String(acomodacao.idUnidade || acomodacao.unidade?.id || "")
+            return unidadeSelecionada === "" || idUnidadeAcomodacao === unidadeSelecionada
         })
-    }   
+    }
 
-    const disponiveisFiltradas = filtrarAcomodacoes(acomodacoesDisponiveis)
-    const reservadasFiltradas = filtrarAcomodacoes(acomodacoesReservadas)
-    const ocupadasFiltradas = filtrarAcomodacoes(acomodacaoOcupada)
+
 
     useEffect(() => {
         buscarUnidade()
@@ -81,6 +78,16 @@ function Ocupacao() {
         buscarAcomodacoesDisponiveis()
         buscarAcomodacoesOcupadas()
     }, [dataInicial, dataFinal])
+
+    useEffect(() => {
+        console.log('Unidade selecionada:', unidadeSelecionada)
+        console.log('Reservadas antes do filtro:', acomodacoesReservadas)
+
+        setDisponiveisFiltradas(filtrarAcomodacoes(acomodacoesDisponiveis))
+        setReservadasFiltradas(filtrarAcomodacoes(acomodacoesReservadas))
+        setOcupadasFiltradas(filtrarAcomodacoes(acomodacaoOcupada))
+    }, [unidadeSelecionada, acomodacoesDisponiveis, acomodacoesReservadas, acomodacaoOcupada])
+
 
     return (
         <>  
@@ -128,7 +135,7 @@ function Ocupacao() {
 
                 {sessao === 1 && (
                     <div>
-                        {filtrarAcomodacoes(acomodacoesDisponiveis).map(acomodacao => (
+                        {disponiveisFiltradas.map(acomodacao => (
                             <div key={acomodacao.id}>
                                 <h1>Acomodação: {acomodacao.id}</h1>
                                 <div>
@@ -144,7 +151,7 @@ function Ocupacao() {
 
                 {sessao === 2 && (
                     <div>
-                        {filtrarAcomodacoes(acomodacoesReservadas).map(acomodacao => (
+                        {reservadasFiltradas.map(acomodacao => (
                             <div key={acomodacao.id}>
                                 <h1>Acomodação: {acomodacao.id}</h1>
                                 <div>
@@ -160,7 +167,7 @@ function Ocupacao() {
 
                 {sessao === 3 && (
                     <div>
-                        {filtrarAcomodacoes(acomodacaoOcupada).map(acomodacao => (
+                        {ocupadasFiltradas.map(acomodacao => (
                             <div key={acomodacao.id}>
                                 <h1>Acomodação: {acomodacao.id}</h1>
                                 <div>

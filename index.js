@@ -1136,17 +1136,15 @@ app.post('/api/quartosDisponiveis', (req, res) => {
   const checkInFormatado = formatarData(checkIn);
   const checkOutFormatado = formatarData(checkOut);
 
-  let sqlReservas = `SELECT idAcomodacao FROM reservas WHERE 1=1`;
+  let sqlReservas = `SELECT idAcomodacao FROM reservas WHERE cancelada != 1`;
   const paramsReservas = [];
 
-  // Filtro por datas se ambos os campos forem válidos
   if (checkInFormatado && checkOutFormatado) {
     sqlReservas += ` AND (? < checkOut AND ? > checkIn)`;
     paramsReservas.push(checkInFormatado, checkOutFormatado);
   }
 
-  // Filtro por unidade, se informado
-  if (unidade) {
+  if (unidade && unidade.trim() !== '') {
     sqlReservas += ` AND unidade = ?`;
     paramsReservas.push(unidade);
   }
@@ -1157,14 +1155,12 @@ app.post('/api/quartosDisponiveis', (req, res) => {
       return res.status(500).json({ error: 'Erro ao buscar reservas' });
     }
 
-    const idsReservados = resultadosReservas.map(r => r.id_acomodacao);
-    console.log('IDs ocupados:', idsReservados);
+    const idsReservados = resultadosReservas.map(r => r.idAcomodacao);
 
-    // Consulta de acomodações disponíveis
     let sqlAcomodacoes = `SELECT * FROM acomodacoes WHERE 1=1`;
     const paramsAcomodacoes = [];
 
-    if (unidade) {
+    if (unidade && unidade.trim() !== '') {
       sqlAcomodacoes += ` AND unidade_hotel = ?`;
       paramsAcomodacoes.push(unidade);
     }
@@ -1192,9 +1188,11 @@ app.post('/api/quartosDisponiveis', (req, res) => {
 });
 
 
+
 ////////////////////////CONFIRMAR RESRVAR/////////////////////////////////
 
 app.post(`/api/confirmarReserva`, (req, res) => {
+  
   const {
     checkIn,
     checkOut,
@@ -1212,18 +1210,22 @@ app.post(`/api/confirmarReserva`, (req, res) => {
   const dataReserva = new Date()
 
 
-  const formatarData = (data) => {
+  const formatarData = (data, num) => {
     if (!data) return null;
     const d = new Date(data);
     const ano = d.getFullYear();
     const mes = String(d.getMonth() + 1).padStart(2, '0');
-    const dia = String(d.getDate()).padStart(2, '0');
+    const dia = String(d.getDate() + num).padStart(2, '0');
     return `${ano}-${mes}-${dia}`;
   };
 
-  const checkInFormatado = formatarData(checkIn);
-  const checkOutFormatado = formatarData(checkOut);
-  const dataReservaFormatada = formatarData(dataReserva)
+  const checkInFormatado = formatarData(checkIn, 1);
+  const checkOutFormatado = formatarData(checkOut, 1);
+  const dataReservaFormatada = formatarData(dataReserva, 0)
+  console.log(checkIn)
+  console.log(checkOut)
+  console.log(checkInFormatado)
+  console.log(checkOutFormatado)
 
   // 1. Buscar IDs de acomodações já reservadas que conflitam
   const sqlReservas = `
@@ -1231,6 +1233,7 @@ app.post(`/api/confirmarReserva`, (req, res) => {
     WHERE (? < checkOut AND ? > checkIn)
     AND unidade = ?
     AND tpAcomodacao = ?
+    AND (cancelada IS NULL OR cancelada != 1)
   `;
 
   const paramsReservas = [
@@ -1418,10 +1421,11 @@ app.get(`/api/buscarReservasFun`, (req, res) => {
       LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
       LEFT JOIN usuarios us ON r.id_hospede = us.id
 
-      WHERE r.entrada IS NULL and r.saida IS NULL`
+      WHERE r.entrada IS NULL AND r.saida IS NULL AND (r.cancelada !=1 or r.cancelada IS NULL) `
 
   bd.query(sql, (err, result) => {
     if(err){
+      console.log(err)
       return res.status(500).json({ erro: err })
     }
     res.json(result)
@@ -1449,6 +1453,8 @@ app.post(`/api/buscarReservaUnica`, (req, res) => {
       r.dataReserva,
 
       ta.nomeAcomodacao AS nomeAcomodacao,
+      ta.quantidade_adultos AS quantidadeAdultos,
+      ta.quantidade_criancas AS quantidadeCriancas,
       u.nomeUnidade AS nomeUnidade,
       a.numAcomodacao AS numAcomodacao,
       a.num_andar AS num_andar,
@@ -1575,7 +1581,7 @@ app.post(`/api/buscarAcomodacoesOcupadas`, (req, res) => {
       a.id AS idAcomodacao,
       a.numAcomodacao AS numAcomodacao,
       a.num_andar AS num_andar,
-      u.id AS idUnidades,
+      u.id AS idUnidade,
       r.entrada
     FROM reservas r
     LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
