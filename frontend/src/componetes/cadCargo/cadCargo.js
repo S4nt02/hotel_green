@@ -54,14 +54,6 @@ function CadCargo (){
     }
 
 
-
-
-
-
-
-
-
-
     return(
         <>
             {exibir === false && <div className="alinhar-cadCargo-content">
@@ -70,14 +62,14 @@ function CadCargo (){
                     Nome do cargo
                 </label>
                 <input type="text" placeholder="Insira o nome para o novo cargo" value={cargo} className="cadCargo-input" onChange={(e) => setCargo(e.target.value)}></input>
-                {erro && (<p>Por favor insira um nome para o cargo</p>)}
-                <button onClick={cadastrarCargo}>Cadastrar</button>
+                {erro && (<p className="erro-mensagem">Por favor insira um nome para o cargo</p>)}
+                <button className="button-cad-cargo" onClick={cadastrarCargo}>Cadastrar</button>
             </div>}
             {exibir === true && (
                 <div>
                     {mensagem && <p>{mensagem}</p>}
                     {cadastrado === true && (
-                        <button onClick={() => {
+                        <button className="button-cad-cargo" onClick={() => {
                             setExibir(false)
                             setCadastrado(false)
                             setCargo('')
@@ -88,7 +80,7 @@ function CadCargo (){
                         </button>
                     )}
                     {cadastrado === false && (
-                        <button onClick={() => {
+                        <button className="button-cad-cargo" onClick={() => {
                             setExibir(false)
                             setErro(false)
                         }}>

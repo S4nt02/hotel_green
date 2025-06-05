@@ -25,7 +25,7 @@
 }
   
 .fechar-cad-funcioanrio {
-    background: red; /* Apenas um exemplo para o botão de fechar */
+    background: #8b4513; /* Apenas um exemplo para o botão de fechar */
     color: white;
     border: none;
     padding: 10px 15px;
@@ -94,11 +94,13 @@ table{
     width: 100%;
     table-layout: fixed;
     margin-top: 30px;
+    text-align: center;
  
 }
 
 th, td{
     font-size: 20px;
+    color: #8b4513;
 }
 
 .excluir-overlay {
@@ -124,3 +126,52 @@ th, td{
     width: 20%;
     height: 20%;
 }  
+
+
+.button-edit{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.button-config{
+    background-color: #8b4513;
+    color: #d3d3d3;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.button-cancelar-cargo{
+    color: #8b4513;
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.button-excluir-fun{
+    background-color: #8b4513;
+    color: #d3d3d3;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bolder;
+
+}
+
+.title-excluir-fun{
+    text-align: center;
+    margin-top: 10px;
+    color: #8b4513;
+    font-size: 20px;
+}
+
+.alinhar-button-fun{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+}
+
+.h2-fun{
+    color: #2e8b57;
+    font-size: 25px;
+}

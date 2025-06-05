@@ -6,6 +6,7 @@ const { Storage } = require("@google-cloud/storage");
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+const PDFDocument = require('pdfkit');
 // import { MySQLConnector } from '@google-cloud/sql-connector';
 
 const app = express();
@@ -1710,7 +1711,7 @@ app.get('/api/buscarHospedes', (req, res) => {
     LEFT JOIN usuarios u ON r.id_hospede = u.id
     LEFT JOIN reservasEntradaSaida rs ON r.id = rs.idReserva
     LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
-    WHERE r.entrada = 1 AND saida IS NULL AND r.cancelada IS NULL 
+    WHERE r.entrada = 1 AND saida IS NULL AND r.cancelada IS NULL
   `
 
   bd.query(sql, (err, result) => {
@@ -1724,6 +1725,83 @@ app.get('/api/buscarHospedes', (req, res) => {
 
 
 
+
+///////////////////////GERAR RELATORIO DE HOSPEDES//////////////////////
+app.post('/api/geraRelatorioHospedes', (req, res) => {
+  const dados = req.body;
+
+  const PDFDocument = require('pdfkit');
+  const doc = new PDFDocument({ margin: 40, size: 'A4' });
+
+  res.setHeader('Content-disposition', 'attachment; filename=relatorio.pdf');
+  res.setHeader('Content-type', 'application/pdf');
+
+  doc.pipe(res);
+
+  // Função para formatar arrays removendo valores vazios
+  const formatarArray = (arr) =>
+    Array.isArray(arr) ? arr.filter(Boolean).join(', ') : '';
+
+  // Título
+  doc.fontSize(20).text('Relatório de Hóspedes', { align: 'center' });
+  doc.moveDown(1.5);
+
+  // Cabeçalho da tabela
+  doc.fontSize(12).font('Helvetica-Bold');
+
+  const startX = 50;
+  const cols = [
+    { label: 'Nº Acomod.', width: 70 },
+    { label: 'Unidade', width: 60 },
+    { label: 'Hospede Principal', width: 120 },
+    { label: 'Adultos', width: 80 },
+    { label: 'Crianças', width: 80 },
+    { label: 'Entrada', width: 70 },
+    { label: 'Saída', width: 70 }
+  ];
+
+  const headerY = doc.y; // Y fixo para o cabeçalho
+  let currentX = startX;
+  cols.forEach(col => {
+    doc.text(col.label, currentX, headerY, { width: col.width, align: 'left' });
+    currentX += col.width;
+  });
+
+  const converterData = (dataCon) => {
+    const dataFormatada = new Date(dataCon).toLocaleDateString("pt-BR")
+    return dataFormatada
+  }
+
+  doc.moveDown(0.5);
+  doc.font('Helvetica').moveTo(startX, doc.y).lineTo(currentX, doc.y).stroke();
+  doc.moveDown(0.3);
+
+  // Dados da tabela
+  doc.font('Helvetica');
+  dados.forEach((pessoa) => {
+    let currentX = startX;
+    const linhaY = doc.y;
+
+    const campos = [
+      pessoa.numAcomodacao || '',
+      pessoa.nomeUnidade || '',
+      pessoa.hospede || '',
+      formatarArray(pessoa.acompanhantesAdultos),
+      formatarArray(pessoa.acompanhantesCriancas),
+      pessoa.horarioEntrada || '',
+      converterData(pessoa.checkOut)|| ''
+    ];
+
+    campos.forEach((campo, i) => {
+      doc.text(campo, currentX, linhaY, { width: cols[i].width });
+      currentX += cols[i].width;
+    });
+
+    doc.moveDown(0.5);
+  });
+
+  doc.end();
+});
 
 
 

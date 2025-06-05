@@ -132,17 +132,22 @@ function FuncionarioPage () {
           </thead>
           <tbody>
             {funcionarios.map((funcionario) => (
-              <tr key={funcionario.id}>
-                <td>{funcionario.id}</td> 
-                <td>{funcionario.nome}</td>
-                <td>{funcionario.email}</td>
-                <td>{funcionario.documento}</td>
-                <td>{funcionario.telefone}</td>
-                <td>
-                  <button onClick={() => editarFuncionario(funcionario.id)}>Editar</button>
-                  <button onClick={() => abrirexcluirOpen(funcionario.id)}>Excluir</button>
-                </td>
-              </tr>
+
+                <tr key={funcionario.id}>
+                  <td>{funcionario.id}</td> 
+                  <td>{funcionario.nome}</td>
+                  <td>{funcionario.email}</td>
+                  <td>{funcionario.documento}</td>
+                  <td>{funcionario.telefone}</td>
+                  <td>
+                    <div className="button-edit">
+                      <button className="button-config" onClick={() => editarFuncionario(funcionario.id)}>Editar</button>
+                      <button className="button-config" onClick={() => abrirexcluirOpen(funcionario.id)}>Excluir</button>
+                    </div>
+
+                  </td>
+                </tr>
+
             ))}
           </tbody>
         </table>
@@ -152,10 +157,10 @@ function FuncionarioPage () {
           {excluirOpen && (
             <div className="modal-overlay">
               <div className="excluir_content">
-                <h4>Deseja realmente excluir este funcioanrio</h4>
-                <div>
-                  <button onClick={excluirFuncionario}>Excluir</button>
-                  <button onClick={() => abrirexcluirOpen("")}>Cancelar</button>
+                <h4 className="title-excluir-fun">Deseja realmente excluir este funcioanrio</h4>
+                <div className="alinhar-button-fun">
+                  <button className="button-excluir-fun" onClick={excluirFuncionario}>Excluir</button>
+                  <button className="button-excluir-fun" onClick={() => abrirexcluirOpen("")}>Cancelar</button>
                 </div>
               </div>
             </div>
@@ -164,8 +169,10 @@ function FuncionarioPage () {
           <div className="modal-overlay">
             <div className="modal-content">
               <button onClick={abrirModal} className="fechar-cad-funcioanrio">FECHAR</button>
-              <h2>Novo Funcionário</h2>
-              <CadFuncionario />
+
+                <h2>Novo Funcionário</h2>
+                <CadFuncionario />
+
             </div>
           </div>
         )}
@@ -174,8 +181,11 @@ function FuncionarioPage () {
           <div className="modal-overlay">
             <div className="modal-content">
               <button onClick={modalEditar} className="fechar-cad-funcioanrio">FECHAR</button>
-              <h2>Editar funcionario</h2>
-              <CadFuncionario dadosFuncionarioParaEditar={funcionarioParaEditar}/>
+
+                <h2>Editar funcionario</h2>
+                <CadFuncionario dadosFuncionarioParaEditar={funcionarioParaEditar}/>
+
+
             </div>
           </div>
         )}
@@ -183,7 +193,7 @@ function FuncionarioPage () {
         {cadCargoOpen && (
           <div className="modal-overlay">
             <div className="modal-cargo-content">
-              <button onClick={abrirCadCargo}>X</button>
+              <p className="button-cancelar-cargo" onClick={abrirCadCargo}>X</p>
               <CadCargo></CadCargo>
             </div>
           </div>

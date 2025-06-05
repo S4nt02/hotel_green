@@ -15,8 +15,25 @@
     padding: 10px;
     font-size: 16px;
     margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
     margin-top: 6%;
     color: #8b4513;
+    background-color: beige;
+    border-color: #8b4513;
+    border-radius: 10px;
+    border-style: double;
+}
+
+.button-cad-cargo{
+    background-color: #8b4513;
+    color: #d3d3d3;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.erro-mensagem{
+    color: #2e8b57;
+    font-size: 18px;
+    text-align: center;
 }
