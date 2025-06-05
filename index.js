@@ -1814,7 +1814,7 @@ app.get(`/api/buscarReservasConsumo`, (req, res) => {
       r.checkOut,
       r.id_hospede,
       r.idAcomodacao,
-      r.unidade
+      r.unidade,
       ta.nomeAcomodacao AS nomeAcomodacao,
       u.nomeUnidade AS nomeUnidade,
       a.numAcomodacao AS numAcomodacao,
