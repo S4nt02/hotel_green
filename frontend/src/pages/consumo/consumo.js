@@ -54,32 +54,35 @@ function Consumo() {
     };
 
     function filtrarPorCategoria(dados) {
-        return dados.filter(item =>
-            !categoriaBuscar || item.categoria?.toLowerCase() === categoriaBuscar.toLowerCase()
-        );
+    return dados.filter(item => {
+        const categoriaItem = typeof item.categoria === "string" ? item.categoria.toLowerCase() : "";
+        const categoriaBusca = categoriaBuscar.toLowerCase();
+
+        return !categoriaBuscar || categoriaItem === categoriaBusca;
+    });
     }
 
     const filtrarReservas = (dados) => {
-        return dados.find((item) => {
-            const matchNumAcomodacao = numAcomodacao
-                ? item.numAcomodacao?.toLowerCase().includes(numAcomodacao.toLowerCase())
-                : false;
+    return dados.find((item) => {
+        const matchNumAcomodacao = numAcomodacao
+            ? String(item.numAcomodacao || "").toLowerCase().includes(String(numAcomodacao).toLowerCase())
+            : false;
 
-            const matchDocumento = documento
-                ? item.documento?.toLowerCase().includes(documento.toLowerCase())
-                : false;
+        const matchDocumento = documento
+            ? String(item.documento || "").toLowerCase().includes(String(documento).toLowerCase())
+            : false;
 
-            const matchNome = nomeHospede
-                ? item.nome?.toLowerCase().includes(nomeHospede.toLowerCase())
-                : false;
+        const matchNome = nomeHospede
+            ? String(item.nome || "").toLowerCase().includes(String(nomeHospede).toLowerCase())
+            : false;
 
-            const matchId = idReserva
-                ? item.id?.toString().includes(idReserva)
-                : false;
+        const matchId = idReserva
+            ? String(item.id || "").toLowerCase().includes(String(idReserva).toLowerCase())
+            : false;
 
-            return matchNumAcomodacao || matchDocumento || matchNome || matchId;
-        });
-    };
+        return matchNumAcomodacao || matchDocumento || matchNome || matchId;
+    });
+};
 
     const obterData = () => {
         const dataAtual = new Date();
@@ -98,9 +101,20 @@ function Consumo() {
     }, []);
 
     useEffect(() => {
-        const resultado = filtrarReservas(todasReservas);
-        setReservaSelecionada(resultado || {});
-    }, [nomeHospede, documento, numAcomodacao, idReserva, todasReservas]);
+    const reserva = filtrarReservas(todasReservas);
+
+    if (reserva) {
+        setReservaSelecionada(reserva);
+
+        // Só preencher os campos se estiverem vazios (impede sobrescrever ao digitar)
+        if (!numAcomodacao) setNumAcomodacao(reserva.numAcomodacao || "");
+        if (!documento) setDocumento(reserva.documento || "");
+        if (!nomeHospede) setNomeHospede(reserva.nome || "");
+        if (!idReserva) setIdReserva(reserva.id || "");
+    } else {
+        setReservaSelecionada({});
+    }
+}, [nomeHospede, documento, numAcomodacao, idReserva, todasReservas]);
 
     useEffect(() => {
         setItensFiltrados(filtrarPorCategoria(itens));
