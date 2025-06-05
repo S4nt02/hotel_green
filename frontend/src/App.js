@@ -16,7 +16,7 @@ import ReservasFuncionarios from './pages/reservasFun/reservasFuncionarios';
 import MinhasReservas from './pages/minhasReservas/minhasReservas';
 import Ocupacao from './pages/ocupacao/ocupacao';
 import Hospedes from './pages/hospedes/hospedes';
-
+import Consumo from './pages/consumo/consumo';
 
 function App() {
   return (
@@ -37,6 +37,7 @@ function App() {
           <Route path='/minhasReservas' element={<MinhasReservas/>}/>
           <Route path='/ocupacao' element={<Ocupacao/>}/>
           <Route path='/hospedes' element={<Hospedes/>}/>
+          <Route path='/consumo' element={<Consumo/>}/>
         </Routes>
       </AuthProvider>
 

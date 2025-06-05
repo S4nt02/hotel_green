@@ -1804,9 +1804,42 @@ app.post('/api/geraRelatorioHospedes', (req, res) => {
 });
 
 
+////////////////////BUSCAR RESERVAS PARA CONSUMO/////////////////////////////////
 
+app.get(`/api/buscarReservasConsumo`, (req, res) => {
+  const sql = `
+    SELECT 
+      r.id,
+      r.checkIn,
+      r.checkOut,
+      r.id_hospede,
+      r.idAcomodacao,
+      r.unidade
+      ta.nomeAcomodacao AS nomeAcomodacao,
+      u.nomeUnidade AS nomeUnidade,
+      a.numAcomodacao AS numAcomodacao,
+      a.num_andar AS num_andar,
+      us.nome AS nome,
+      us.documento AS documento,
+      us.email AS email,
+      us.telefone AS telefone
 
+    FROM reservas r
+    LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+    LEFT JOIN unidades u ON r.unidade = u.id
+    LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+    LEFT JOIN usuarios us ON r.id_hospede = us.id
 
+    WHERE r.entrada = 1 AND r.saida IS NULL AND r.cancelada IS NULL`
+  
+  bd.query(sql, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err })
+    }
+    res.json(result)
+  })
+  
+})
 
 
 
