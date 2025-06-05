@@ -1686,7 +1686,41 @@ app.post('/api/buscarAcomodacoesDisponiveis', (req, res) => {
 });
 
 
+//////////////////////////////BUSCAR TODOS OS HOSPEDES NO HOTEL//////////////////////
+app.get('/api/buscarHospedes', (req, res) => {
+  const sql = `  SELECT
+    r.id,
+    r.checkIN,
+    r.checkOut,
+    r.unidade,
+    r.tpAcomodacao,
+    r.id_hospede,
+    r.acompanhantesAdultos,
+    r.acompanhantesCriancas,
+    r.idAcomodacao,
+    un.nomeUnidade AS nomeUnidade,
+    ta.nomeAcomodacao AS nomeAcomodacao,
+    u.nome AS hospede,
+    rs.horarioEntrada AS horarioEntrada,
+    a.numAcomodacao AS numAcomodacao,
+    a.num_andar AS numAndar
+    FROM reservas r
+    LEFT JOIN unidades un ON r.unidade = un.id
+    LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+    LEFT JOIN usuarios u ON r.id_hospede = u.id
+    LEFT JOIN reservasEntradaSaida rs ON r.id = rs.idReserva
+    LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+    WHERE r.entrada = 1 AND saida IS NULL AND r.cancelada IS NULL 
+  `
 
+  bd.query(sql, (err, result) => {
+    if(err){
+      return res.status(500).json({ erro: err });
+    }
+
+    res.json(result)
+  })
+})
 
 
 

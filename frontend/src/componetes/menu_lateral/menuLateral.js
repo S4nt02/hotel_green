@@ -60,7 +60,7 @@ function MenuLateral(){
             {infosMenu === "admin" && <div className={`sidebar ${isOpen ? 'open' : ''}`}>
                 <ul>
                     <Link to="/funcionario"><li><a>Funcionários</a></li></Link>
-                    <li>Hospedes</li>
+                    <Link to="/hospedes"><li>Hospedes</li></Link>
                     <Link to="/reservasFun"><li>Reservas</li></Link>
                     <Link to="/cadastro_quartos"><li>Quartos</li></Link>
                     <Link to="/ocupacao"><li>Ocupação</li></Link>
