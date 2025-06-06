@@ -1842,6 +1842,135 @@ app.get(`/api/buscarReservasConsumo`, (req, res) => {
 })
 
 
+///////////////////////////////// CADASTRAR CONSUMO/////////////////////////
+
+app.post('/api/cadastrarConsumo', (req, res) => {
+  const {
+    idReserva,
+    id,
+    data,
+    idAcomodacao,
+    item,
+    quantidade,
+  } = req.body
+
+  const sql = `INSERT INTO consumo (idReserva, idFuncionario, dataConsumo, idAcomodacao, item, quantidade) VALUES (?, ?, ?, ?, ? ,?)`
+
+  const valores = [
+    idReserva,
+    id,
+    data,
+    idAcomodacao,
+    item,
+    quantidade
+  ]
+
+  bd.query(sql, valores, (err, result) => {
+    if(err){
+      console.log(err)
+      return res.status(500).json({err})
+    }
+
+    res.status(200).json({sucesso : true})
+  })
+})
+
+///////////////////////BUSCAR CONSUMO POR ACOMODAÇÃO////////////////////
+
+app.get('/api/reservasComConsumo', (req, res) => {
+  const sql = `
+    SELECT 
+      r.id AS idReserva,
+      r.id_hospede,
+      r.entrada,
+      r.saida,
+      r.cancelada,
+      r.idAcomodacao,
+      r.unidade,
+      c.id AS idConsumo,
+      c.item,
+      c.quantidade,
+      c.dataConsumo,
+      i.preco,
+      c.idFuncionario AS idFuncionario,
+      f.nome AS nomeFuncionario,
+      u.nome AS nomeHospede,
+      u.documento AS documento,
+      i.preco AS preco,
+      i.nomeItem AS nomeItem,
+      a.numAcomodacao AS numAcomodacao,
+      un.nomeUnidade AS nomeUnidade
+    FROM 
+      reservas r
+    LEFT JOIN consumo c ON r.id = c.idReserva
+    LEFT JOIN funcionarios f ON c.idFuncionario = f.id
+    LEFT JOIN usuarios u ON r.id_hospede = u.id
+    LEFT JOIN itens i ON c.item = i.id
+    LEFT JOIN unidades un ON r.unidade = un.id
+    LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+    WHERE 
+      r.entrada = TRUE
+      AND (r.saida IS NULL OR r.saida = FALSE)
+      AND (r.cancelada IS NULL OR r.cancelada = FALSE)
+    ORDER BY 
+      r.id
+  `;
+
+  bd.query(sql, (err, results) => {
+    if (err) {
+      return res.status(500).json({ erro: err });
+    }
+
+    const agrupado = {};
+
+    results.forEach(row => {
+      if (!agrupado[row.idReserva]) {
+        agrupado[row.idReserva] = {
+          idReserva: row.idReserva,
+          nomeHospede: row.nomeHospede,
+          numAcomodacao : row.numAcomodacao,
+          documento : row.documento,
+          nomeUnidade : row.nomeUnidade,
+          unidade : row.nomeUnidade,
+          entrada: row.entrada,
+          saida: row.saida,
+          cancelada: row.cancelada,
+          consumos: []
+        };
+      }
+
+      if (row.idConsumo) {
+        agrupado[row.idReserva].consumos.push({
+          idConsumo: row.idConsumo,
+          nomeItem: row.nomeItem,          
+          funcionario : row.nomeFuncionario,
+          idFuncionario : row.idFuncionario,
+          quantidade: row.quantidade,
+          dataConsumo: row.dataConsumo,
+          preco: row.preco
+        });
+      }
+    });
+
+    // Retorna um array de reservas com consumos agrupados
+    res.json(Object.values(agrupado));
+  });
+});
+
+///////////////////////EXCLUIR CONSUMO////////////////////////////
+app.post('/api/excluirConsumo', (req, res) => {
+  const {id} = req.body
+
+  const sql = `DELETE FROM consumo WHERE id = ?`
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      console.log(err)
+      return res.status(404).json({err})
+    }
+    res.status(200).json({sucesso : true})
+  })
+})
 
 
 

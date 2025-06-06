@@ -22,6 +22,12 @@ function Consumo() {
     const [reservaSelecionada, setReservaSelecionada] = useState({});
     const [quantidade, setQuantidade] = useState("");
     const [valorTotal, setValorTotal] = useState("");
+    const [mensagem, setMensagem] = useState("")
+
+    const [excluirOpen, setExcluirOpen] = useState(false)
+    const [idConsumo, setIdConsumo] = useState('')
+
+    const [consumos, setConsumo] = useState([])
 
     const buscarItens = async () => {
         try {
@@ -62,6 +68,14 @@ function Consumo() {
     });
     }
 
+    const consultarConsumo = async () => {
+        const consultar = await fetch(`${API_URL}/api/reservasComConsumo`)
+        const dados = await consultar.json()
+        console.log(dados)
+        setConsumo(dados)
+    }
+
+
     const filtrarReservas = (dados) => {
     return dados.find((item) => {
         const matchNumAcomodacao = numAcomodacao
@@ -93,11 +107,17 @@ function Consumo() {
         setData(dataFormatada);
     };
 
+    const converterData = (dataCon) => {
+        const dataFormatada = new Date(dataCon).toLocaleDateString("pt-BR")
+        return dataFormatada
+    }
+
     useEffect(() => {
         buscarItens();
         buscarCategoria();
         buscarTodasdReservas();
         obterData();
+        consultarConsumo()
     }, []);
 
     useEffect(() => {
@@ -106,15 +126,14 @@ function Consumo() {
     if (reserva) {
         setReservaSelecionada(reserva);
 
-        // Só preencher os campos se estiverem vazios (impede sobrescrever ao digitar)
         if (!numAcomodacao) setNumAcomodacao(reserva.numAcomodacao || "");
         if (!documento) setDocumento(reserva.documento || "");
         if (!nomeHospede) setNomeHospede(reserva.nome || "");
         if (!idReserva) setIdReserva(reserva.id || "");
-    } else {
-        setReservaSelecionada({});
-    }
-}, [nomeHospede, documento, numAcomodacao, idReserva, todasReservas]);
+        } else {
+            setReservaSelecionada({});
+        }
+    }, [nomeHospede, documento, numAcomodacao, idReserva, todasReservas]);
 
     useEffect(() => {
         setItensFiltrados(filtrarPorCategoria(itens));
@@ -127,6 +146,74 @@ function Consumo() {
             setValorTotal("");
         }
     }, [itemSelecionado, quantidade]);
+
+    const cadastrarConsumo = async () => {
+        if(numAcomodacao === "" || idReserva === "" || documento === "" || nomeHospede === ""){
+            return setMensagem("Por favor preencha todos os campos")
+        }
+
+        const dados = {
+            idReserva,
+            id,
+            data,
+            idAcomodacao : reservaSelecionada.idAcomodacao,
+            item : itemSelecionado.id,
+            quantidade,
+        }
+        
+
+        const cadastrar = await fetch(`${API_URL}/api/cadastrarConsumo`, {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify(dados)
+        })
+
+        const result = await cadastrar.json()
+
+        if(!result){
+           return setMensagem('Erro ao cadastrar consumo')
+        }
+        consultarConsumo()
+        setIdReserva('')
+        setNumAcomodacao('')
+        setNomeHospede('')
+        setDocumento('')
+
+    }
+
+    const excluirConsumo = async () => {
+        const id = idConsumo
+        try{
+            const excluir = await fetch(`${API_URL}/api/excluirConsumo`, {
+                method : 'POST',
+                headers : { 'Content-Type' : 'application/json'},
+                body : JSON.stringify({id})
+            })
+
+            const resultado = await excluir.json()
+        }
+        catch{
+
+        }
+        consultarConsumo()
+        setExcluirOpen(false)
+
+    }
+
+    const setDadosCadastarConsumo = (idReserva, numAcomodacao, nomeHospede, documento) => {
+        setIdReserva(idReserva)
+        setNumAcomodacao(numAcomodacao)
+        setNomeHospede(nomeHospede)
+        setDocumento(documento)
+        
+    }
+
+    const desejaExcluir = (idexcluir) => {
+        setExcluirOpen(true)
+        setIdConsumo(idexcluir)
+    }
 
     return (
         <>
@@ -217,10 +304,60 @@ function Consumo() {
                         <label>Valor Total:</label>
                         <p>{valorTotal ? `R$ ${valorTotal.toFixed(2)}` : "-"}</p>
                     </div>
+                    <div>
+                        <p>{mensagem}</p>
+                    </div>
 
-                    <button type='submit' className='adicionar_consumo'>Adicionar</button>
+                    <button onClick={cadastrarConsumo} className='adicionar_consumo'>Adicionar</button>
+                    <button type="reset">Cancelar</button>
                 </form>
+                <div>
+                    {consumos.map(consumo => (
+                        <div key={consumo.idReserva}>
+                            <div>
+                                <button onClick={() =>setDadosCadastarConsumo(consumo.idReserva, consumo.numAcomodacao, consumo.nomeHospede, consumo.documento)}>Cadastrar Consumo</button>
+                            </div>
+                            <h3>Acomodação:{consumo.numAcomodacao}</h3>
+                            <p>Unidade:{consumo.nomeUnidade}</p>
+                            <p>Valor Total de Consumo: R$ {
+                            consumo.consumos.reduce((total, item) => {
+                                return total + item.preco * item.quantidade;
+                            }, 0).toFixed(2)
+                            }</p>
+
+                            <div>
+                                <p>Consumo</p>
+                                {consumo.consumos.map(consumoUnt => (
+                                    <div key={consumoUnt.idConsumo}>
+                                        <p>Data de Consumo:{converterData(consumoUnt.dataConsumo)}</p>
+                                        <p>Funcionario:{consumoUnt.nomeFuncionario}</p>
+                                        <p>Item:{consumoUnt.nomeItem}</p>
+                                        <p>Preço:{consumoUnt.preco}</p>
+                                        <p>Quantidade:{consumoUnt.quantidade}</p>
+                                        <p>Total: R$ {(consumoUnt.preco * consumoUnt.quantidade).toFixed(2)}</p>
+                                        <div>
+                                            <button onClick={() => desejaExcluir(consumoUnt.idConsumo)}>Excluir</button>
+                                            <button>Editar</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                        </div>
+                    ))}
+                </div>
             </main>
+            {excluirOpen && (
+                <div className="overlay">
+                    <div className="alert-modal">
+                        <p>Desea realmente excluir esse consumo?</p>
+                        <div>
+                            <button onClick={excluirConsumo}>Excluir</button>
+                            <button onClick={() => setExcluirOpen(false)}>Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
