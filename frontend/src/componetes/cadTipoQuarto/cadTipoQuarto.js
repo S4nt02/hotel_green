@@ -375,16 +375,16 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                             {errors.quantidade_criancas && <p>{errors.quantidade_criancas.message}</p>}
                         </div>
                     </div>
-
-                    <div className='imagens-input'>
-                        <input
-                         type="file"
-                         accept="image/*"
-                         multiple
-                         onChange={adicionarImagem}
-                        />
-                        {imagens.map((image, index) => (
-                        <div key={index}>
+                    <div className='button'>
+                        <div className='imagens-input'>
+                            <input
+                             type="file"
+                             accept="image/*"
+                             multiple
+                             onChange={adicionarImagem}
+                            />
+                            {imagens.map((image, index) => (
+                            <div key={index}>
                             <img
                                 src={
                                     editar
@@ -398,9 +398,12 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                             <button className='deletar_foto' onClick={() => removerImagen(index)}>X</button>
                         </div>
                         ))}
+                        </div>
+                        <button type='submit' className='cad_quartos'>{editar ? "Atualizar tipo de acomodação" : "Cadastrar Tipo de Acomodação"}</button>
+                        {editar && (<button type="button" onClick={cancelarEdicao}>Cancelar</button>)}
                     </div>
-                    <button type='submit' className='cad_quartos'>{editar ? "Atualizar tipo de acomodação" : "Cadastrar Tipo de Acomodação"}</button>
-                    {editar && (<button type="button" onClick={cancelarEdicao}>Cancelar</button>)}
+
+                    
                 </div>
             </form>
 

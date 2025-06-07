@@ -29,8 +29,8 @@
 }
 
 .acomodacoes_card{
-    width: 950px;
-    height: 950px;
+    width: 700px;
+    height: auto;
     border-radius: 0.75rem;
     box-shadow: 0 6px 12px;
     padding: 2rem 2.5rem;
@@ -65,7 +65,7 @@
     color: #8b4513;
     display: flex;
     flex-direction: column;
-    padding-left: 30px;
+    padding-left: 20px;
     padding-right: 30px;
 }
 
@@ -95,24 +95,24 @@ input{
     display: flex;
     flex-direction: column;
     margin: 15px;
-    padding-left: 30px;
+    padding-left: 20px;
 }
 
 .descricao {
     margin-left: 0; /* container no extra left margin */
 }
 .descricao .texto {
-    margin-left: 44px; /* move label 30px from left */
+    margin-left: 34px; /* move label 30px from left */
     display: block;
     font-size: 20px;
     color: #8b4513;
 }
 .descricao textarea {
-    margin-left: 44px; /* move textarea 30px from left */
+    margin-left: 34px; /* move textarea 30px from left */
     border-radius: 6px;
     border-color: #8b4513;
     border-style: double;
-    width: 765px;
+    width: 565px;
     height: 50px;
 }
 
@@ -121,21 +121,38 @@ input[type="file"] {
     color: #f5f5dc;
     font-size: 15px;
     padding-left: 45px;
-    margin-top: 80px;
+    
 }
 
 button.cad_quartos {
-    margin-left: 40px;
+    margin-left: 20px;
     font-size: 15px;
 }
 
 img.ref-imagen {
-    padding-left: 40px;
+    padding-left: 60px;
+    width: 100px;
+    height: 90px;
 }
+
 
 button.deletar_foto{
     margin-left: 40px;
 }
 
+.button{
+    display: flex;
+    padding: 10px;
+    height: 40px;
+    justify-content: space-around;
+}
 
+*
 
+.button_img{
+    display: flex
+;
+    padding: 6px;
+    height: 40px;
+    justify-content: space-around;
+}
