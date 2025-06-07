@@ -267,131 +267,124 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
 
     return(
         <>
-            <form onSubmit={handleSubmit(onSaveTpAcomodacao, onError)} className="acomodacoes">
-                <h2>Tipos de Acomodações</h2>
-                <h4>Adicionar tipo de Acomodação</h4>
-
-                <div>
-                    <label>Unidade do Hotel</label>
-                    <select 
-                        value={watch('unidade_hotel')||""}
-                        {...register('unidade_hotel')}
-                    >
-                        <option value={""}>Selecione uma Unidade</option>
-                        {unidades.map(unidade => (
-                            <option key={unidade.id} value={unidade.id}>{unidade.nomeUnidade}</option>
-                        ))}
-                        
-                    </select>
-                    {errors.unidade_hotel && <p>{errors.unidade_hotel.message}</p>}
+            <form onSubmit={handleSubmit(onSaveTpAcomodacao, onError)} className="acomodacoes_card">
+                <div className='tipo_A'>
+                  <h2>Tipos de Acomodações</h2>
+                  <h4>Adicionar tipo de Acomodação</h4>
                 </div>
+                <div className='corpo'>
+                    <div className='linha_1'>
+                        <div className='UnidadeHotel'>
+                            <label>Unidade do Hotel</label>
+                            <select value={watch('unidade_hotel')||""}{  ...register('unidade_hotel')}>
+                              <option value={""}>Selecione uma Unidade</option>
+                              {unidades.map(unidade => (
+                              <  option key={unidade.id} value={unidade.id}>{unidade.nomeUnidade}</option>
+                              ))}
+                        
+                            </select>
+                            {errors.unidade_hotel && <p>{errors.unidade_hotel.message}</p>}
+                        </div>
+                        <div className='codigoQuarto'>
+                          <label className='codigo'>Nome acomodação</label>
+                          <input type="text" placeholder="Produto"{...register("nomeAcomodacao")}/>
+                          {errors.nomeAcomodacao && <p>{errors.nomeAcomodacao.message}</p>}
+                        </div>
+                    </div>
 
-                <div className='codigoQuarto'>
-                <label className='codigo'>Nome acomodação</label>
-                    <input
-                        type="text"
-                        placeholder="Produto"
+                    <div className='quantidade'>
+                        <label>Quantidade Total de Quartos</label>
+                        <input
+                         type="text"
+                         placeholder="Produto"
+                         classNamename='quant_quarto'
                        
                         
-                        {...register("nomeAcomodacao")}
-                    />
-                    {errors.nomeAcomodacao && <p>{errors.nomeAcomodacao.message}</p>}
-                </div>
+                         {...register("quantidade_total")}
+                        />
+                        {errors.quantidade_total && <p>{errors.quantidade_total.message}</p>}
+                    </div>
+                    <div className='descricao'>
+                        <label className='texto'>Descrição</label><br />
+                        <textarea placeholder="Descreva o tipo de acomodação" rows={4} cols={50} style={{ resize: 'vertical', padding: '8px' }}{...register("descricao")}/><br />
+                        {errors.descricao && <p>{errors.descricao.message}</p>}
+                    </div>
+                    {/* Seção de Comodidades */}
+                    <div className='linha_2'>
+                        <div className='comodidades'>
+                           <label>Comodidades</label>
+                            <div className='buttons'>
+                                <input
+                                 type="text"
+                                 placeholder="Ex: TV, Frigobar..."
+                                  onChange={event => setComodidadeAtual(event.target.value)}
+                                  nKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                  e.preventDefault(); // Impede o envio do form
+                                  adicionarComodidade();
+                                  }
+                                  }}
+                                />
+                                <button className='adicionar' type="button" onClick={adicionarComodidade}>Adicionar</button>
+                                <input type="hidden"  {...register("comodidades")} />
+                            </div>
 
-                <div className='quantidade'>
-                <label>Quantidade Total de Quartos</label>
-                    <input
-                        type="text"
-                        placeholder="Produto"
-                       
-                        
-                        {...register("quantidade_total")}
-                    />
-                    {errors.quantidade_total && <p>{errors.quantidade_total.message}</p>}
-                </div>
+                            {errors.comodidades && <p>{errors.comodidades.message}</p>}
 
-                <label>Descrição</label><br />
-                <textarea
-                
-                
-                placeholder="Descreva o tipo de acomodação"
-                rows={4}
-                cols={50}
-                style={{ resize: 'vertical', padding: '8px' }}
-                {...register("descricao")}
-                /><br />
-                {errors.descricao && <p>{errors.descricao.message}</p>}
-                {/* Seção de Comodidades */}
-                <div className='comodidades'>
-                <label>Comodidades</label>
-                <input
-                    type="text"
-                    placeholder="Ex: TV, Frigobar..."
-                    value={comodidadeAtual}
-                    onChange={event => setComodidadeAtual(event.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                        e.preventDefault(); // Impede o envio do form
-                        adicionarComodidade();
-                        }
-                    }}
-                />
-                <button type="button" onClick={adicionarComodidade}>Adicionar</button>
-                <input type="hidden"  {...register("comodidades")} />
+                            {/* Lista de comodidades exibidas dinamicamente */}
+                            <ul>
+                               {listaComodidades.map((item, index) => (
+                               <li key={index}>
+                                 {item}
+                                 <button type="button" onClick={() => removerComodidade(index)}> X
+                                 </button>
+                                </li>
+                                ))}
+                            </ul>
+                        </div>
 
-                {errors.comodidades && <p>{errors.comodidades.message}</p>}
-
-                {/* Lista de comodidades exibidas dinamicamente */}
-                <ul>
-                    {listaComodidades.map((item, index) => (
-                    <li key={index}>
-                        {item}
-                        <button type="button" onClick={() => removerComodidade(index)}> X
-                        </button>
-                    </li>
-                    ))}
-                </ul>
-                </div>
-
-                <div className='diaria'>
-                    <label>Preço da Diária (R$)</label>
-                    <input 
-                    type="text" 
-                    step="0.01" placeholder="0.00"
-                    {...register("vlDiaria")}
+                        <div className='diaria'>
+                          <label>Preço da Diária (R$)</label>
+                            <input 
+                             type="text" 
+                             step="0.01" placeholder="0.00"
+                             {...register("vlDiaria")}
                     
-                    />
-                    {errors.vlDiaria && <p>{errors.vlDiaria.message}</p>}
-                </div>
-                <div className='adultos'>
-                    <label>Número de Adultos</label>
-                    <input 
-                    type="number" 
-                    placeholder="0"
-                    {...register("quantidade_adultos")}
-                    />
-                    {errors.quantidade_adultos && <p>{errors.quantidade_adultos.message}</p>}
-                </div>
+                            />
+                            {errors.vlDiaria && <p>{errors.vlDiaria.message}</p>}
+                        </div>
+                    </div>
+                    <div className='linha_3'>
+                        <div className='adultos'>
+                            <label>Número de Adultos</label>
+                            <input 
+                              type="number" 
+                              placeholder="0"
+                              {...register("quantidade_adultos")}
+                            />
+                            {errors.quantidade_adultos && <p>{errors.quantidade_adultos.message}</p>}
+                        </div>
 
-                <div className='criancas'>
-                    <label>Número de Crianças</label>
-                    <input 
-                    type="number" 
-                    placeholder="0" 
-                    {...register("quantidade_criancas")}
-                    />
-                    {errors.quantidade_criancas && <p>{errors.quantidade_criancas.message}</p>}
-                </div>
-
-                <div className='imagens-input'>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={adicionarImagem}
-                    />
-                    {imagens.map((image, index) => (
-                        <div key={index}>
+                        <div className='criancas'>
+                            <label>Número de Crianças</label>
+                            <   input 
+                              type="number" 
+                              placeholder="0" 
+                              {...register("quantidade_criancas")}
+                            />
+                            {errors.quantidade_criancas && <p>{errors.quantidade_criancas.message}</p>}
+                        </div>
+                    </div>
+                    <div className='button'>
+                        <div className='imagens-input'>
+                            <input
+                             type="file"
+                             accept="image/*"
+                             multiple
+                             onChange={adicionarImagem}
+                            />
+                            {imagens.map((image, index) => (
+                            <div key={index}>
                             <img
                                 src={
                                     editar
@@ -402,12 +395,16 @@ function CadTipoQuarto ({dadosTipoQuartoParaEditar, aoAlterar}){
                                 }
                                 className='ref-imagen'
                             />
-                            <button onClick={() => removerImagen(index)}>X</button>
+                            <button className='deletar_foto' onClick={() => removerImagen(index)}>X</button>
                         </div>
-                    ))}
+                        ))}
+                        </div>
+                        <button type='submit' className='cad_quartos'>{editar ? "Atualizar tipo de acomodação" : "Cadastrar Tipo de Acomodação"}</button>
+                        {editar && (<button type="button" onClick={cancelarEdicao}>Cancelar</button>)}
+                    </div>
+
+                    
                 </div>
-                <button type='submit' className='cad_quartos'>{editar ? "Atualizar tipo de acomodação" : "Cadastrar Tipo de Acomodação"}</button>
-                {editar && (<button type="button" onClick={cancelarEdicao}>Cancelar</button>)}
             </form>
 
             {alertOpen && (

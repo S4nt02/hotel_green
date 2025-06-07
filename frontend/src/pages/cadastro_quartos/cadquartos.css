@@ -26,4 +26,37 @@
     background-color: #d3d3d3;
     width: 20%;
     height: 20%;
-}  
+} 
+
+.Cabecalho{
+    justify-self: center;
+}
+
+input[type=button] {
+    background-color: #8b4513;
+    border-color: beige;
+    border-radius: 8px;
+    border-style: double;
+    color: beige;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    padding: 7px;
+    margin: 10px;
+}
+
+h1.title,h4.title_2{
+    color: #8b4513;
+}
+
+h4.title_2{
+    display: grid;
+    justify-items: center;
+    margin: 12px;
+}
+
+h1.title{
+    display: grid;
+    justify-self: center;
+}
+
+

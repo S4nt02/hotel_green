@@ -44,19 +44,19 @@ function ReservasFuncionarios (){
     }
 
     const irParaCheckIn = (reserva) => {
-        // const dataCheckIn = new Date(reserva.checkIn)
-        // const hoje = new Date()
+        const dataCheckIn = new Date(reserva.checkIn)
+        const hoje = new Date()
 
-        // const mesmoDia = dataCheckIn.getDate() === hoje.getDate()
-        // const mesmoMes = dataCheckIn.getMonth() === hoje.getMonth()
-        // const mesmoAno = dataCheckIn.getFullYear() === hoje.getFullYear()
+        const mesmoDia = dataCheckIn.getDate() === hoje.getDate()
+        const mesmoMes = dataCheckIn.getMonth() === hoje.getMonth()
+        const mesmoAno = dataCheckIn.getFullYear() === hoje.getFullYear()
 
-        // if (mesmoDia && mesmoMes && mesmoAno) {
+        if (mesmoDia && mesmoMes && mesmoAno) {
             setIdReserva(reserva)
             setCheckInOpen(true)
-        // } else {
-        //     alert("O check-in só pode ser realizado na data da reserva!")
-        // }
+        } else {
+            alert("O check-in só pode ser realizado na data da reserva!")
+        }
     }
 
 

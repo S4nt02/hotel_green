@@ -27,3 +27,132 @@
     height: 100px;
     border-radius: 0px;
 }
+
+.acomodacoes_card{
+    width: 700px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    justify-self: center;
+
+}
+
+.tipo_A{
+    color: #8b4513;
+}
+
+.tipo_A h4{
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.linha_1,
+.linha_2,
+.linha_3{
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+}
+
+.UnidadeHotel,
+.codigoQuarto,
+.comodidades,
+.diaria,
+.adultos,
+.criancas{
+    font-size: 20px;
+    color: #8b4513;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-right: 30px;
+}
+
+select{
+    border-radius: 6px;
+    padding: 6px;
+    width: 260px;
+    border-color: #8b4513;
+    padding: 8px 12px;
+}
+
+button.adicionar{
+    width: 80px;
+}
+
+input{
+    border-radius: 6px;
+    padding: 6px;
+    width: 235px;
+    border-color: #8b4513;
+    padding: 8px 12px;
+}
+
+.quantidade{
+    font-size: 20px;
+    color: #8b4513;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    padding-left: 20px;
+}
+
+.descricao {
+    margin-left: 0; /* container no extra left margin */
+}
+.descricao .texto {
+    margin-left: 34px; /* move label 30px from left */
+    display: block;
+    font-size: 20px;
+    color: #8b4513;
+}
+.descricao textarea {
+    margin-left: 34px; /* move textarea 30px from left */
+    border-radius: 6px;
+    border-color: #8b4513;
+    border-style: double;
+    width: 565px;
+    height: 50px;
+}
+
+input[type="file"] {
+    padding: 15px;
+    color: #f5f5dc;
+    font-size: 15px;
+    padding-left: 45px;
+    
+}
+
+button.cad_quartos {
+    margin-left: 20px;
+    font-size: 15px;
+}
+
+img.ref-imagen {
+    padding-left: 60px;
+    width: 100px;
+    height: 90px;
+}
+
+
+button.deletar_foto{
+    margin-left: 40px;
+}
+
+.button{
+    display: flex;
+    padding: 10px;
+    height: 40px;
+    justify-content: space-around;
+}
+
+*
+
+.button_img{
+    display: flex
+;
+    padding: 6px;
+    height: 40px;
+    justify-content: space-around;
+}
