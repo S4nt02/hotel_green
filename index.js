@@ -1528,7 +1528,7 @@ app.post(`/api/registrarEntrada`, (req, res) => {
 
 ///////////////BUSCAR RESERVAS COM CHECKIN/////////////
 app.get(`/api/buscarCheckIn`, (req, res) => {
-  const sql = `SELECT * FROM reservas WHERE entrada = 1 `
+  const sql = `SELECT * FROM reservas WHERE entrada = 1 AND saida IS NULL AND cancelada IS NULL`
 
   bd.query(sql, (err, result) => {
     if(err){
@@ -1896,6 +1896,7 @@ app.get('/api/reservasComConsumo', (req, res) => {
       f.nome AS nomeFuncionario,
       u.nome AS nomeHospede,
       u.documento AS documento,
+      i.id AS idItem,
       i.preco AS preco,
       i.nomeItem AS nomeItem,
       a.numAcomodacao AS numAcomodacao,
@@ -1942,6 +1943,7 @@ app.get('/api/reservasComConsumo', (req, res) => {
       if (row.idConsumo) {
         agrupado[row.idReserva].consumos.push({
           idConsumo: row.idConsumo,
+          idItem : row.idItem,
           nomeItem: row.nomeItem,          
           funcionario : row.nomeFuncionario,
           idFuncionario : row.idFuncionario,
@@ -1973,7 +1975,37 @@ app.post('/api/excluirConsumo', (req, res) => {
 })
 
 
+////////////////////EDITAR CONSUMO/////////////////////////////
+app.post('/api/editarConsumo', (req, res) => {
+  const {
+    data,
+    id,
+    idConsumoEditar,
+    idReservaEditar,
+    quantidadeEditar,
+    idItemEditar
+  } = req.body
 
+  const sql = `UPDATE consumo SET idReserva = ? , idFuncionario = ?, dataConsumo = ?, item = ?, quantidade = ? WHERE id = ?`
+
+  const valores = [
+    idReservaEditar,
+    id,
+    data,
+    idItemEditar,
+    quantidadeEditar,
+    idConsumoEditar
+
+  ]
+
+  bd.query(sql, valores, (err, resultado) => {
+    if(err){
+      console.log(err)
+      return res.status(404).json({err})
+    }
+    res.status(200).json({sucesso : true})
+  })
+})
 
 
 

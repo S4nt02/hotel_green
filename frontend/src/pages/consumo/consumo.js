@@ -11,7 +11,6 @@ function Consumo() {
     const [todasReservas, setTodasReservas] = useState([]);
 
     const [data, setData] = useState("");
-    const [unidade, setUnidade] = useState("");
     const [numAcomodacao, setNumAcomodacao] = useState("");
     const [documento, setDocumento] = useState("");
     const [nomeHospede, setNomeHospede] = useState("");
@@ -137,6 +136,7 @@ function Consumo() {
 
     useEffect(() => {
         setItensFiltrados(filtrarPorCategoria(itens));
+        
     }, [categoriaBuscar, itens]);
 
     useEffect(() => {
@@ -210,9 +210,63 @@ function Consumo() {
         
     }
 
+    const [editarOpen, setEditarOpen] = useState(false)
+    const [idConsumoEditar, setIdConsumoEditar] = useState("")
+    const [idItemEditar, setIdItemEditar] = useState("")
+    const [numAcomodacaoEditar, setNumAcomodacaoEditar] = useState("");
+    const [documentoEditar, setDocumentoEditar] = useState("");
+    const [nomeHospedeEditar, setNomeHospedeEditar] = useState("");
+    const [idReservaEditar, setIdReservaEditar] = useState("");
+    const [quantidadeEditar, setQuantidadeEditar] = useState("");
+    const [valorTotalEditar, setValorTotalEditar] = useState("");
+    const [itemSelecionadoEditar, setItemSelecionadolEditar] = useState(null);
+
+    const daddosParaEditar = (idConsumo, idItem, quantidade, numAcomodacao, idReserva, nomeHospede, documento) => {
+        setIdConsumoEditar(idConsumo)
+        setNumAcomodacaoEditar(numAcomodacao)
+        setIdItemEditar(idItem)
+        setQuantidadeEditar(quantidade)
+        setNomeHospedeEditar(nomeHospede)
+        setIdReservaEditar(idReserva)
+        setQuantidadeEditar(quantidade)
+        setDocumentoEditar(documento)
+
+        const item = itens.find(i => i.id === idItem) || null;
+        setItemSelecionadolEditar(item)
+
+        setEditarOpen(true)
+    }
+
     const desejaExcluir = (idexcluir) => {
         setExcluirOpen(true)
         setIdConsumo(idexcluir)
+    }
+
+    const atualizarConsumo = async () => {
+        const dados = {
+            data,
+            id,
+            idConsumoEditar,          
+            idReservaEditar,
+            quantidadeEditar,
+            idItemEditar,
+        }
+
+        const editar = await fetch(`${API_URL}/api/editarConsumo`, {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify(dados)
+        })
+
+        const resposta = await editar.json()
+
+        if(!resposta){
+
+        }
+        consultarConsumo()
+        setEditarOpen(false)
     }
 
     return (
@@ -337,7 +391,7 @@ function Consumo() {
                                         <p>Total: R$ {(consumoUnt.preco * consumoUnt.quantidade).toFixed(2)}</p>
                                         <div>
                                             <button onClick={() => desejaExcluir(consumoUnt.idConsumo)}>Excluir</button>
-                                            <button>Editar</button>
+                                            <button onClick={() => daddosParaEditar(consumoUnt.idConsumo, consumoUnt.idItem, consumoUnt.quantidade, consumo.numAcomodacao, consumo.idReserva, consumo.nomeHospede, consumo.documento)}>Editar</button>
                                         </div>
                                     </div>
                                 ))}
@@ -357,6 +411,104 @@ function Consumo() {
                         </div>
                     </div>
                 </div>
+            )}
+            {editarOpen && (
+                    <div className="overlay">
+                        <div className="alert-modal">
+                            <form>
+                                <div>
+                                    <label>Data de consumo</label>
+                                    <input className="dataconsumo" type="date" value={data} readOnly />
+                                </div>
+                                <div>
+                                    <label>Funcionário</label>
+                                    <input className="funcionario" type="text" value={nomeUser} readOnly />
+                                </div>
+                                <div>
+                                    <label>Acomodação</label>
+                                    <input
+                                        className="acomodacao"
+                                        type="text"
+                                        value={numAcomodacaoEditar}
+                                        onChange={(e) => setNumAcomodacaoEditar(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>ID da Reserva</label>
+                                    <input
+                                        className="idreserva"
+                                        type="text"
+                                        value={idReservaEditar}
+                                        onChange={(e) => setIdReservaEditar(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Documento</label>
+                                    <input
+                                        className="cpf"
+                                        type="text"
+                                        value={documentoEditar}
+                                        onChange={(e) => setDocumentoEditar(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Nome do Hóspede</label>
+                                    <input
+                                        type="text"
+                                        value={nomeHospedeEditar}
+                                        onChange={(e) => setNomeHospedeEditar(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Categoria</label>
+                                    <select onChange={(e) => setCategoriaBusca(e.target.value)} value={categoriaBuscar}>
+                                        <option value="">Todas as categorias</option>
+                                        {categorias.map((categoria) => (
+                                            <option key={categoria.id} value={categoria.nomeCategoria}>
+                                                {categoria.nomeCategoria}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Item</label>
+                                    <select
+                                        value={itemSelecionadoEditar?.id || ""}
+                                        onChange={(e) => {
+                                            const item = itensFiltrados.find(i => i.id === parseInt(e.target.value));
+                                            setItemSelecionadolEditar(item || null);
+                                        }}
+                                    >
+                                        <option value="">Todos os itens</option>
+                                        {itensFiltrados.map((item) => (
+                                            <option key={item.id} value={item.id}>
+                                                {item.nomeItem} - ${item.preco}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Quantidade</label>
+                                    <input
+                                        className="quant_consumo"
+                                        type="number"
+                                        value={quantidadeEditar}
+                                        onChange={(e) => setQuantidadeEditar(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Valor Total:</label>
+                                    <p>{}</p>
+                                </div>
+                                <div>
+                                    <p>{mensagem}</p>
+                                </div>
+
+                                <button onClick={atualizarConsumo} className='adicionar_consumo'>Salvar Edição</button>
+                                <button  onClick={() => setEditarOpen(false)}>Cancelar</button>
+                            </form>
+                        </div>
+                    </div>
             )}
         </>
     );
