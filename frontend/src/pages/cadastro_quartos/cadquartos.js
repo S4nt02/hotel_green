@@ -10,6 +10,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import Ocupacao from '../ocupacao/ocupacao';
+import './cadquartos.css'
 
 function App() {
     ///// Adicionar verificações de login e autorização//////
@@ -149,12 +150,13 @@ function App() {
       <main>
         <HeaderComponente />
         <div style={{ padding: '20px' }}>
-          <h1>Sistema de acomodações</h1><br />
-          <h4>Gerenciamento dos tipos de acomodações</h4>
-          <input type="button" value="Tipos de acomodações" onClick={() => handleSelecionarFormulario(1)} />
-          <input type="button" value="Quartos" onClick={() => handleSelecionarFormulario(2)} />
-          <input type='button'  value="Unidades"onClick={() => handleSelecionarFormulario(3)}/>
-
+          <div className="Cabecalho">
+            <h1 className='title'>Sistema de acomodações</h1><br />
+            <h4 className='title_2'>Gerenciamento dos tipos de acomodações</h4>
+            <input type="button" value="Tipos de acomodações" onClick={() => handleSelecionarFormulario(1)} />
+            <input type="button" value="Quartos" onClick={() => handleSelecionarFormulario(2)} />
+            <input type='button'  value="Unidades"onClick={() => handleSelecionarFormulario(3)}/>
+          </div>
           <div style={{ marginTop: '20px' }}>
             {formSelecionado === 1 && (
               <>              

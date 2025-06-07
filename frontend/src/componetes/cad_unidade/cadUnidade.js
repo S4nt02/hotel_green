@@ -178,8 +178,8 @@ function CadUnidade (){
                     </>
                     ) : (
                     <>
-                        <p>{unidade.nomeUnidade}</p>
-                        <button 
+                        <p className='unidades'>{unidade.nomeUnidade}</p>
+                        <button className='editar'
                             onClick={() => {
                             setIdEditando(unidade.id);
                             setValueEdit(unidade.nomeUnidade);
