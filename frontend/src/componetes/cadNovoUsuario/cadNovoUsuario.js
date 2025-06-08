@@ -243,7 +243,6 @@ function CadNovoUsuario () {
     return(
         <>
             <main>
-                <HeaderComponente></HeaderComponente>
                 <div className='form_content_cad'>
                     <form onSubmit={handleSubmit(enviarFormulario, onError)}>
                         <div className='informacoePessoais'>
