@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { API_URL } from "../../url"
 import RealizarCheckIn from "../../componetes/realizarCheckIIn/realizarCheckIn"
 import { useAuth } from "../../context/authContext"
+import FazerRservaFun from "../../componetes/fazerReservaFuncionario/fazerReservaFun"
 
 function ReservasFuncionarios (){
 
@@ -177,7 +178,7 @@ function ReservasFuncionarios (){
 
                 {sessao === 4 && (
                     <>
-                        
+                        <FazerRservaFun/>
                     </>
                 )}
             </main>

@@ -2008,7 +2008,20 @@ app.post('/api/editarConsumo', (req, res) => {
 })
 
 
+///////////////////////BUSCAR USUARIO PARA RESERVA////////////////
+app.post('/api/buscarUsuario', (req, res) => {
+  const {documento} = req.body
 
+  const sql = `SELECT * FROM usuarios WHERE documento = ?`
+
+  bd.query(sql, [documento], (err, result) => {
+    if(err){
+      console.log(err)
+      return res.status(404).json({err})
+    }
+    res.status(200).json(result)
+  })
+})
 
 
 
