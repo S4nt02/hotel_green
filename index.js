@@ -2024,7 +2024,62 @@ app.post('/api/buscarUsuario', (req, res) => {
 })
 
 
+////////////////////RELATORIO RESERVAS DIA///////////////////////
+app.get('/api/relatorioReservas', (req, res) => {
+  const hoje = new Date();
+  const dataHoje = hoje.toISOString().slice(0, 10);
 
+  const sql = `
+    SELECT 
+      r.id,
+      r.checkIn,
+      r.checkOut,
+      r.acompanhantesAdultos,
+      r.acompanhantesCriancas,
+      u.nome AS nomeHospede,
+      un.nomeUnidade AS nomeUnidade,
+      a.numAcomodacao AS numAcomodacao
+    FROM reservas r
+    LEFT JOIN usuarios u ON u.id = r.id_hospede
+    LEFT JOIN unidades un ON un.id = r.unidade
+    LEFT JOIN acomodacoes a ON a.id = r.idAcomodacao
+    WHERE DATE(r.checkIn) = ? AND entrada IS NULL AND cancelada IS NULL
+  `;
+
+  bd.query(sql, [dataHoje], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro na consulta', details: err });
+    }
+
+    const doc = new PDFDocument();
+
+    res.setHeader('Content-Disposition', 'attachment; filename="relatorio_reservas.pdf"');
+    res.setHeader('Content-Type', 'application/pdf');
+
+    doc.pipe(res);
+
+    doc.fontSize(16).text('Relatório de Reservas - ' + dataHoje, { underline: true });
+    doc.moveDown();
+
+    if (result.length === 0) {
+      doc.fontSize(12).text('Nenhuma reserva para hoje.');
+    } else {
+      result.forEach(r => {
+        doc
+          .fontSize(12)
+          .text(`Hóspede: ${r.nomeHospede}`)
+          .text(`Unidade: ${r.nomeUnidade}`)
+          .text(`Acomodação: ${r.numAcomodacao}`)
+          .text(`Check-in: ${new Date(r.checkIn).toLocaleDateString('pt-BR')}`)
+          .text(`Check-out: ${new Date(r.checkOut).toLocaleDateString('pt-BR')}`)
+          .text(`Adultos: ${r.acompanhantesAdultos}, Crianças: ${r.acompanhantesCriancas}`)
+          .moveDown();
+      });
+    }
+
+    doc.end();
+  });
+});
 
 
 

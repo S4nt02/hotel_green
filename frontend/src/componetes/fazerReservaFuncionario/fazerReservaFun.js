@@ -366,6 +366,7 @@ function FazerRservaFun () {
                                         <p>Nome: {usuario.nome}</p>
                                         <p>Documento: {usuario.documento}</p>
                                         <p>email:{usuario.email}</p>
+                                        <p>telefone:{usuario.telefone}</p>
                                         <button onClick={() => selecionarUsuario(usuario.id, usuario.nome)}>Selecionar Usuario</button>
                                     </div>
                                 ))}
@@ -383,6 +384,7 @@ function FazerRservaFun () {
                 <>
                     <div className="overlay">
                         <div className="alert-modal">
+                            <p onClick={() => setModalNovoUsuario(false)}>X</p>
                             <CadNovoUsuario/>
                         </div>
                     </div>

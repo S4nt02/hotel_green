@@ -70,6 +70,33 @@ function ReservasFuncionarios (){
         buscarCheckIn()
     },[sessao])
 
+    const relatorioReserasDias = async () => {
+    try {
+        const response = await fetch(`${API_URL}/api/relatorioReservas`, {
+        method: 'GET',
+        });
+
+        if (!response.ok) {
+        throw new Error('Erro ao buscar o relatório');
+        }
+
+        // Aqui você está recebendo um PDF (blob), e **não** um JSON:
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'relatorioReservasDia.pdf';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Erro ao baixar o relatório:', error);
+    }
+    };
+
+
 
     return(
         <>
@@ -88,6 +115,7 @@ function ReservasFuncionarios (){
                 {sessao === 1 && (
                     <>
                         <div>BARRA DE PESQUISA</div>
+                        <button onClick={relatorioReserasDias}>Relatorio Reservas do dia</button>
                         <div>
                             {reservas.map(reserva => (
                                 <>
