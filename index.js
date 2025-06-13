@@ -2082,7 +2082,72 @@ app.get('/api/relatorioReservas', (req, res) => {
 });
 
 
+/////////////////////buscar todas as informações para realizar o checkout/////////////////////
+app.post('/api/buscarCheckOut', (req, res) => {
+  const {id} = req.body
 
+  const sql = `SELECT
+  r.id,
+  r.checkIn,
+  r.checkOut,
+  r.acompanhantesAdultos,
+  r.acompanhantesCriancas,
+  r.vlDiaria,
+  r.periodo,
+  u.nome AS nomeHospede,
+  u.email AS email,
+  u.telefone AS telefone,
+  u.documento AS documento,
+  un.nomeUnidade AS nomeUnidade,
+  a.numAcomodacao AS numAcomodacao,
+  u.documento AS documento,
+  resd.horarioEntrada,
+
+  CONCAT('[', GROUP_CONCAT(
+      CONCAT(
+          '{',
+              '"item":"', i.nomeItem,
+              '","quantidade":', c.quantidade,
+              ',"preco":', i.preco,
+              ',"data":"', c.dataConsumo,
+              '","categoria":', i.categoria,
+              ',"nomeCategoria":"', ca.nomeCategoria,
+          '"}'
+      )
+      SEPARATOR ','
+  ), ']') AS consumo
+
+  FROM reservas r
+  LEFT JOIN usuarios u ON u.id = r.id_hospede
+  LEFT JOIN unidades un ON un.id = r.unidade
+  LEFT JOIN acomodacoes a ON a.id = r.idAcomodacao
+  LEFT JOIN consumo c ON c.idReserva = r.id 
+  LEFT JOIN itens i ON c.item = i.id
+  LEFT JOIN reservasEntradaSaida resd ON r.id = resd.idReserva
+  LEFT JOIN categoria_itens ca ON i.categoria = ca.id
+  WHERE r.id = ?
+  GROUP BY
+      r.id,
+      r.checkIn,
+      r.checkOut,
+      r.acompanhantesAdultos,
+      r.acompanhantesCriancas,
+      u.nome,
+      un.nomeUnidade,
+      a.numAcomodacao,
+      u.documento,
+      resd.horarioEntrada;
+
+  `
+
+  bd.query(sql, [id], (err, result) => {
+    if(err){
+      console.log(err)
+     return res.status(404).json({err})
+    }
+    res.status(200).json(result)
+  })
+})
 
 
 

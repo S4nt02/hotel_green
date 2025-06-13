@@ -5,6 +5,7 @@ import { API_URL } from "../../url"
 import RealizarCheckIn from "../../componetes/realizarCheckIIn/realizarCheckIn"
 import { useAuth } from "../../context/authContext"
 import FazerRservaFun from "../../componetes/fazerReservaFuncionario/fazerReservaFun"
+import CheckOut from "../../componetes/checkOut/checkOut"
 
 function ReservasFuncionarios (){
 
@@ -20,6 +21,9 @@ function ReservasFuncionarios (){
     const [alertaCancelamento, setAlertaCancelamento] = useState(false)
     const [modalExcluir, setModalExcluir] = useState(false)
     const [cancelarOpen, setCancelarOpen] = useState(false)
+
+    const [idCheckOut, setIdCheckOut] = useState("")
+    const [checkOutOpen, setCheckOutOpen] = useState(false)
 
     const buscarTodasReservas = async () =>{
         try{
@@ -68,7 +72,8 @@ function ReservasFuncionarios (){
 
 
     const irParaCheckOut = (id) => {
-
+        setIdCheckOut(id)
+        setCheckOutOpen(true)
     }
 
     useEffect(() => {
@@ -157,7 +162,7 @@ function ReservasFuncionarios (){
             catch{
 
             }
-            setCancelarOpen(false)
+            
         }
         else{
             try{
@@ -182,6 +187,7 @@ function ReservasFuncionarios (){
             }
         }
         buscarTodasReservas()
+        setCancelarOpen(false)
     }
 
 
@@ -196,7 +202,6 @@ function ReservasFuncionarios (){
                 <div>
                     <button onClick={() => selecionarSesao(1)}>Reservas</button>
                     <button onClick={() => selecionarSesao(2)}>Reservas com chek-in</button>
-                    <button onClick={() => selecionarSesao(3)}>Reservas com check-out</button>
                     <button onClick={() => selecionarSesao(4)}>Nova reserva</button>
 
                 </div>
@@ -285,12 +290,6 @@ function ReservasFuncionarios (){
                     </>
                 )}
 
-                {sessao === 3 && (
-                    <>
-                        
-                    </>
-                )}
-
                 {sessao === 4 && (
                     <>
                         <FazerRservaFun/>
@@ -337,6 +336,15 @@ function ReservasFuncionarios (){
                         <p>{mensagemCancelamento}</p>
                     </div>
                 </div>
+            )}
+
+            {checkOutOpen && (
+                <>
+                    <div className="overlay">
+                        <CheckOut idCheckOut={idCheckOut} className="alert-modal"/>
+                    </div>
+
+                </>
             )}
         </>
     )
