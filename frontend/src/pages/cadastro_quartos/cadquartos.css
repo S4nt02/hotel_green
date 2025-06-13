@@ -59,4 +59,21 @@ h1.title{
     justify-self: center;
 }
 
+.exibirAcomodacoes{
+    border-color: #8b4513;
+    border-radius: 12px;
+    color: #8b4513;
+    margin-top: 50px;
+    padding: 7px;
+}
+
+.exibirAcomodacoes button{
+    margin: 5px;
+}
+
+.card_tpQuarto{
+    border-radius: 12px;
+    border-color: #8b4513;
+}
+
 

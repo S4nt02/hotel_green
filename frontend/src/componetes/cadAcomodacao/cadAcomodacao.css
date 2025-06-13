@@ -21,3 +21,45 @@
     width: 300px;
     height: auto;
 }
+
+
+.tiposacomodacoes_card{
+    width: 700px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    justify-self: center;
+}
+
+label,
+h2{
+    color: #8b4513;
+}
+
+.linha__1,
+.linha__2{
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+}
+
+.cad_acomodacoes{
+    margin-left: 15px;
+}
+
+.unidades {
+    margin-left: 35px;
+}
+
+select {
+    width: 265px;
+}
+
+.exibirAcomodacoes {
+    border-radius: 12px;
+    margin-top: 50px;
+    border-color: #8b4513;
+    color: #8b4513;
+}
+
