@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import HeaderComponente from "../../componetes/header/headerComponente"
 import { API_URL } from "../../url"
-
+import "./hospedes.css" 
 function Hospedes () {
 
     const [infos, setInfos] = useState([])
@@ -74,38 +74,44 @@ function Hospedes () {
         <>
             <HeaderComponente/>
             <main>
-                <label>Unidade</label>
-                <select
-                    value={unidadeSelecionada}
-                    onChange={(e) => setUnidadeSelecionada(e.target.value)}
-                >
-                    <option value={''}>Todas unidades</option>
-                    {unidades.map(unidade => (
-                        <option key={unidade.id} value={unidade.id}>{unidade.nomeUnidade}</option>
+                <div className="unidade_relatorio">
+                    <label className="title_unidade">Unidade</label>
+                    <div className="linha_select">
+                        <select className="campo_relatorio"
+                           value={unidadeSelecionada}
+                           onChange={(e) => setUnidadeSelecionada(e.target.value)}
+                        >
+                           <option value={''}>Todas unidades</option>
+                           {unidades.map(unidade => (
+                           <option key={unidade.id} value={unidade.id}>{unidade.nomeUnidade}</option>
+                           ))}
+                        </select>
+                        <button onClick={baixarRelatorio}>Baixar relatorio</button>
+                    </div>
+                    
+                </div>
+                <div className="body_dados">
+                    {dadosRelatorio.map(info => (
+                            <div key={info.id} className="relatorios">
+                                <p>Reserva: {info.id}</p>
+                                <p>Data de check-in: {info.horarioEntrada}</p>
+                                <p>Data de saída: {converterData(info.checkOut)}</p>
+                                <p>Unidade: {info.nomeUnidade}</p>
+                                <p>Quarto: {info.numAcomodacao}</p>
+                                <p>Hospede Principal: {info.hospede}</p>
+                                <p>Acompanhantes:</p>
+                                <p>Adultos:</p>
+                                {removerValoresVazios(info.acompanhantesAdultos).map((acompanhante, index) => (
+                                 <p key={index}>{acompanhante}</p>
+                                ))}
+                                <p>Crianças:</p>
+                                {removerValoresVazios(info.acompanhantesCriancas).map((acompanhante, index) => (
+                                 <p key={index}>{acompanhante}</p>
+                                ))}
+                            </div>
                     ))}
-                </select>
-                <button onClick={baixarRelatorio}>Baixar relatorio</button>
-                {dadosRelatorio.map(info => (
-                    <>
-                        <div key={info.id}>
-                            <p>Reserva: {info.id}</p>
-                            <p>Data de checkIN: {info.horarioEntrada}</p>
-                            <p>Data de saída: {converterData(info.checkOut)}</p>
-                            <p>Unidade: {info.nomeUnidade}</p>
-                            <p>Quarto: {info.numAcomodacao}</p>
-                            <p>Hospede Principal: {info.hospede}</p>
-                            <p>Acompanhantes:</p>
-                            <p>Adultos:</p>
-                            {removerValoresVazios(info.acompanhantesAdultos).map((acompanhante, index) => (
-                                <p key={index}>{acompanhante}</p>
-                            ))}
-                            <p>Crianças:</p>
-                            {removerValoresVazios(info.acompanhantesCriancas).map((acompanhante, index) => (
-                                <p key={index}>{acompanhante}</p>
-                            ))}
-                        </div>
-                    </>
-                ))}
+                </div>
+                
             </main>
         </>
     )

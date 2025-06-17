@@ -1,0 +1,51 @@
+
+
+.unidade_relatorio{
+    font-size: 20px;
+    color: #8b4513;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    justify-self: left;
+    margin-left: 15px;
+
+}
+
+.campo_relatorio{
+    border-radius: 6px;
+    padding: 6px;
+    width: 200px;
+    border-color: #8b4513;
+    padding: 8px 12px;
+}
+
+.linha_select {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Espaço entre select e button */
+}
+
+.title_unidade{
+    font-size: 30px;
+
+}
+
+.body_dados{
+    display: flex;
+}
+
+.relatorios{
+    width: 200px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    justify-self: left;
+    margin-left: 20px;
+    display: grid;
+
+}
+
+.relatorios p{
+    color:#8b4513;
+}

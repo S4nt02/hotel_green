@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { API_URL } from "../../url"
 import HeaderComponente from "../../componetes/header/headerComponente"
+import "./ocupacao.css"
 
 function Ocupacao() {
     const [sessao, setSessaso] = useState(1)
@@ -93,8 +94,8 @@ function Ocupacao() {
         <>  
             <HeaderComponente/>
             <div className="barra-de-pesquisa">
-                <form>
-                    <div>
+                <form className="card_ocupacao">
+                    <div className="primeira_linha">
                         <label>Data Inicial</label>
                         <input
                             type="date"
@@ -108,7 +109,7 @@ function Ocupacao() {
                             onChange={(e) => setDataFinal(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className="segunda_linha">
                         <label>Unidade</label>
                         <select
                             value={unidadeSelecionada}
@@ -120,13 +121,13 @@ function Ocupacao() {
                             ))}
                         </select>
                     </div>
+                    <div className="infos_ocupacao">
+                        <p>Quantidade Total de Acomodações: {disponiveisFiltradas.length + reservadasFiltradas.length + ocupadasFiltradas.length}</p>
+                        <p>Quantidade de Acomodações disponíveis: {disponiveisFiltradas.length}</p>
+                        <p>Quantidade de acomodações ocupadas: {ocupadasFiltradas.length}</p>
+                        <p>Quantidade de acomodações reservadas: {reservadasFiltradas.length}</p>
+                    </div>
                 </form>
-            </div>
-            <div>
-                <p>Quantidade Total de Acomodações: {disponiveisFiltradas.length + reservadasFiltradas.length + ocupadasFiltradas.length}</p>
-                <p>Quantidade de Acomodações disponíveis: {disponiveisFiltradas.length}</p>
-                <p>Quantidade de acomodações ocupadas: {ocupadasFiltradas.length}</p>
-                <p>Quantidade de acomodações reservadas: {reservadasFiltradas.length}</p>
             </div>
             <main>
                 <input type="button" value="Disponíveis" onClick={() => setSessaso(1)} />
