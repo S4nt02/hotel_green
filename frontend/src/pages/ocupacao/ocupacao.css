@@ -1,0 +1,43 @@
+.card_ocupacao{
+    width: 500px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    margin-left: 135px;
+    margin-top: 30px;
+
+}
+
+
+.primeira_linha,
+.segunda_linha{
+    display: flex;
+   flex-direction: column;
+   margin: 5px;
+}
+
+
+.primeira_linha label,
+.segunda_linha label{
+    font-size: 22px;
+}
+
+
+.primeira_linha input{
+    width: 130px;
+}
+
+.segunda_linha select{
+    width: 160px;
+}
+
+.infos_ocupacao{
+    color: #8b4513;
+    margin-top: 10px;
+}
+
+.infos_ocupacao p{
+    margin: 5px;
+    font-size: 19px;
+}
