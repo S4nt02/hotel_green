@@ -143,22 +143,34 @@ function MinhasReservas (){
                     </div>
                 ) : (
                     <>
-                        <p>Suas Reservas</p>
-                        <div>
+                        <p className="title-reservas">Suas Reservas</p>
+                        <div className="alinhar-minhas-reservas" >
                             {minhasReservas.map(reserva => (
-                                <div key={reserva.id}>
-                                    Número Reserva: {reserva.id}
-                                    Unidade: {reserva.nomeUnidade}
-                                    <h4>{reserva.nomeAcomodacao}</h4>
-                                    checkIn: {converterData(reserva.checkIn)}
-                                    check-out: {converterData(reserva.checkOut)}
-                                    Duração: {reserva.periodo} Noites
-                                    Valor Diaria : {reserva.vlDiaria}
-                                    Valor Total: {valorTotal(reserva.vlDiaria, reserva.periodo)}
-                                    Reserva feita em: {converterData(reserva.dataReserva)}
-                                    { new Date() < new Date(reserva.checkIn) && (
-                                        <button onClick={() => desejaCancelar(reserva.id, reserva.checkIn)}>Cancelar</button>
-                                    )}
+                                <div key={reserva.id} className="card-minhas-reservas">
+                                    <div className="info-minhas-reservas">
+                                        <p className="editar-p-minhas-reservas">Número Reserva: {reserva.id}</p>
+                                        <p className="editar-p-minhas-reservas">Unidade: {reserva.nomeUnidade}</p>
+                                        <p className="editar-p-minhas-reservas">{reserva.nomeAcomodacao}</p>
+                                    </div>
+                                    <div className="">
+                                        <div className="infos-data">
+                                            <p className="editar-p-minhas-reservas">checkIn: {converterData(reserva.checkIn)}</p>
+                                            <p className="editar-p-minhas-reservas">check-out: {converterData(reserva.checkOut)}</p>
+                                            <p className="editar-p-minhas-reservas">Duração: {reserva.periodo} Noites</p>
+                                            <p className="editar-p-minhas-reservas">Reserva feita em: {converterData(reserva.dataReserva)}</p>
+                                        </div>
+                                        <div>
+                                            <p className="p-valores">Valor Diaria : {reserva.vlDiaria}</p>
+                                            <p className="p-valores">Valor Total: {valorTotal(reserva.vlDiaria, reserva.periodo)}</p>
+    
+                                        </div>
+                                    </div>
+                                    <div className="button-cancelar">
+                                        {((!reserva.entrada && !reserva.cancelada)) && (
+                                            <button className="canelar-minhas-reservas" onClick={() => desejaCancelar(reserva.id, reserva.checkIn)}>Cancelar</button>
+                                        )}    
+                                    </div>
+
 
                                 </div>
                             ))}

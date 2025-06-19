@@ -1337,6 +1337,7 @@ app.post('/api/buscarMinhasReservas' , (req, res) => {
       r.idAcomodacao,
       r.entrada,
       r.saida,
+      r.cancelada,
       r.dataReserva,
 
       ta.nomeAcomodacao AS nomeAcomodacao,
@@ -2166,6 +2167,7 @@ app.post('/api/realizarCheckOut', (req, res) => {
   } = req.body;
 
   let dataVencimento = null;
+  let paga = formaPagamento == 1 ? 1 : 0;
 
   if (formaPagamento == 2 && data) {
     const [dia, mes, anoHora] = data.split('/');
@@ -2183,16 +2185,16 @@ app.post('/api/realizarCheckOut', (req, res) => {
     dataVencimento = `${yyyy}-${mm}-${dd} ${hh}:${min}:00`;
   }
 
+  // Adicionando o campo 'paga' na query
   const sql = `
-    INSERT INTO faturas (idReserva, total, desconto, subtotal, formaPagamento, dataVencimento)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO faturas (idReserva, total, desconto, subtotal, formaPagamento, dataVencimento, paga)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
-  const valores = [id, total, desconto, subtotal, formaPagamento, dataVencimento];
+  const valores = [id, total, desconto, subtotal, formaPagamento, dataVencimento, paga];
 
   bd.query(sql, valores, (err, result) => {
     if (err) {
-      console.log(err)
-      console.error("Erro ao inserir fatura:", err);
+      console.log(err);
       return res.status(500).json({ erro: "Erro ao inserir fatura" });
     }
 
@@ -2200,8 +2202,7 @@ app.post('/api/realizarCheckOut', (req, res) => {
 
     bd.query(sqlReservas, [id], (err2, result2) => {
       if (err2) {
-        console.log(err2)
-        console.error("Erro ao fazer checkOut:", err2);
+        console.log(err2);
         return res.status(500).json({ erro: "Erro ao fazer checkOut" });
       }
 
@@ -2209,6 +2210,7 @@ app.post('/api/realizarCheckOut', (req, res) => {
     });
   });
 });
+
 
 
 

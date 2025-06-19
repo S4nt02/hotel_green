@@ -44,3 +44,63 @@
     z-index: 10000;
     position: relative;
 }
+
+.title-reservas{
+    font-size: 60px;
+    font-weight: 900;
+    color: #8b4513;
+    margin: 10px;
+
+}
+
+.card-minhas-reservas{
+    margin: 5px;
+    border-radius: 5px;
+    border: 4px solid #8b4513;
+    border-style: double;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    padding: 15px;
+}
+
+.info-minhas-reservas{
+    display: flex;
+    justify-content: left;
+    margin: 5px;
+}
+
+.infos-data{
+    display: flex;
+    justify-content: left;
+    margin: 5px;
+}
+
+.button-cancelar{
+    display: flex;
+    justify-content: right;
+}
+
+.canelar-minhas-reservas{
+    width: 100px;
+}
+
+.alinhar-minhas-reservas{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.editar-p-minhas-reservas{
+    margin-right: 20px;
+    color: #8b4513;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.p-valores{
+    color: #2e8b57;
+    font-size: 20px;
+}
