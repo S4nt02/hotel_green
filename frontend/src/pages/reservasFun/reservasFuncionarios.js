@@ -81,6 +81,11 @@ function ReservasFuncionarios (){
         buscarCheckIn()
     },[sessao])
 
+    useEffect(() => {
+        buscarCheckIn()
+        buscarTodasReservas()
+    }, [checkOutOpen])
+
     const relatorioReserasDias = async () => {
     try {
         const response = await fetch(`${API_URL}/api/relatorioReservas`, {
@@ -340,7 +345,7 @@ function ReservasFuncionarios (){
 
             {checkOutOpen && (
                 <>
-                    <div className="overlay">
+                    <div className="overlay" onClick={() => setCheckOutOpen(false)}>
                         <div className="aleert-modal">
                             <CheckOut idCheckOut={idCheckOut}/>
                         </div>

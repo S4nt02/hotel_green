@@ -6,7 +6,8 @@ function CheckOut({ idCheckOut }) {
     const [informacoes, setInformacoes] = useState({})
     const [horario, setHorario] = useState("")
     const [desconto, setDesconto] = useState(0)
-    const [formaPagamento, setFormaPagamento] = useState("Dinheiro")
+    const [formaPagamento, setFormaPagamento] = useState("1")
+    const [alertaOpen, setAlertaOpen] = useState(1)
 
     const buscarInformacoes = async () => {
         const buscar = await fetch(`${API_URL}/api/buscarCheckOut`, {
@@ -82,7 +83,8 @@ function CheckOut({ idCheckOut }) {
             total : totalFinal,
             id : informacoes.id,
             data : horario,
-            formaPagamento : formaPagamento
+            formaPagamento : formaPagamento,
+            subtotal : subtotal
         }
 
         try{
@@ -92,67 +94,79 @@ function CheckOut({ idCheckOut }) {
                 body : JSON.stringify(dados)
             })
 
-
+            setAlertaOpen(2)
+            
         }
         catch{
 
         }
+        
     }
 
     return (
-        <div>
-            <div>
-                <p>Quarto: {informacoes.quarto}</p>
-                <p>Unidade: {informacoes.nomeUnidade}</p>
-            </div>
-            <div>
-                <p>Hospede Principal: {informacoes.nomeHospede}</p>
-                <p>Entrada: {informacoes.horarioEntrada}</p>
-                <p>Saída: {horario}</p>
-            </div>
-            <div>
-                <p>Período: {informacoes.periodo}</p>
-                <p>Valor Diária: R$ {vlDiaria.toFixed(2)}</p>
-
+        <>
+            {alertaOpen === 1 && (
                 <div>
-                    <h3>Consumo</h3>
-                    {Object.keys(consumoPorCategoria).map(categoria => (
-                        <div key={categoria}>
-                            <h4>{categoria}</h4>
-                            {consumoPorCategoria[categoria].map((item, i) => (
-                                <p key={i}>
-                                    {item.item} – {item.quantidade} x R$ {item.preco.toFixed(2)} = R$ {(item.quantidade * item.preco).toFixed(2)}
-                                </p>
+                    <div>
+                        <p>Quarto: {informacoes.quarto}</p>
+                        <p>Unidade: {informacoes.nomeUnidade}</p>
+                    </div>
+                    <div>
+                        <p>Hospede Principal: {informacoes.nomeHospede}</p>
+                        <p>Entrada: {informacoes.horarioEntrada}</p>
+                        <p>Saída: {horario}</p>
+                    </div>
+                    <div>
+                        <p>Período: {informacoes.periodo}</p>
+                        <p>Valor Diária: R$ {vlDiaria.toFixed(2)}</p>
+
+                        <div>
+                            <h3>Consumo</h3>
+                            {Object.keys(consumoPorCategoria).map(categoria => (
+                                <div key={categoria}>
+                                    <h4>{categoria}</h4>
+                                    {consumoPorCategoria[categoria].map((item, i) => (
+                                        <p key={i}>
+                                            {item.item} – {item.quantidade} x R$ {item.preco.toFixed(2)} = R$ {(item.quantidade * item.preco).toFixed(2)}
+                                        </p>
+                                    ))}
+                                </div>
                             ))}
                         </div>
-                    ))}
+
+                        <div>
+                            <h3>Sub-Total: R$ {subtotal.toFixed(2)}</h3>
+
+                            <label>Desconto</label>
+                            <input
+                                type="number"
+                                value={desconto}
+                                onChange={e => setDesconto(Number(e.target.value))}
+                            />
+
+                            <h3>Total com Desconto: R$ {totalFinal.toFixed(2)}</h3>
+
+                            <h3>Forma de pagamento</h3>
+                            <select value={formaPagamento} onChange={e => setFormaPagamento(e.target.value)}>
+                                <option value="1">À vista</option>
+                                <option value="2">Faturado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <button onClick={realizarCheckOut}>Finalizar check-out</button>
+                    </div>
                 </div>
-
-                <div>
-                    <h3>Sub-Total: R$ {subtotal.toFixed(2)}</h3>
-
-                    <label>Desconto</label>
-                    <input
-                        type="number"
-                        value={desconto}
-                        onChange={e => setDesconto(Number(e.target.value))}
-                    />
-
-                    <h3>Total com Desconto: R$ {totalFinal.toFixed(2)}</h3>
-
-                    <h3>Forma de pagamento</h3>
-                    <select value={formaPagamento} onChange={e => setFormaPagamento(e.target.value)}>
-                        <option value="1">À vista</option>
-                        <option value="2">Faturado</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <button onClick={realizarCheckOut}>Finalizar check-out</button>
-
-
-            </div>
-        </div>
+            )}
+            {alertaOpen === 2 && (
+                    <>
+                        <div className="alert-modal">
+                            <p>CheckOut realizado</p>
+                        </div>
+                    </>
+                )}
+        </>
+        
     )
 }
 

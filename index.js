@@ -2161,19 +2161,56 @@ app.post('/api/realizarCheckOut', (req, res) => {
     id,
     desconto,
     total,
-    formaPagamento
-  } = req.body
+    formaPagamento,
+    subtotal
+  } = req.body;
 
-  if(formaPagamento == 2){
-    dataVencimento = data //converte data adicionando 30 dias//
+  let dataVencimento = null;
+
+  if (formaPagamento == 2 && data) {
+    const [dia, mes, anoHora] = data.split('/');
+    const [ano, horaMinuto] = anoHora.split(' ');
+    const [horas, minutos] = horaMinuto.split(':');
+    const dataOriginal = new Date(`${ano}-${mes}-${dia}T${horas}:${minutos}:00`);
+    dataOriginal.setDate(dataOriginal.getDate() + 30);
+
+    const yyyy = dataOriginal.getFullYear();
+    const mm = String(dataOriginal.getMonth() + 1).padStart(2, '0');
+    const dd = String(dataOriginal.getDate()).padStart(2, '0');
+    const hh = String(dataOriginal.getHours()).padStart(2, '0');
+    const min = String(dataOriginal.getMinutes()).padStart(2, '0');
+
+    dataVencimento = `${yyyy}-${mm}-${dd} ${hh}:${min}:00`;
   }
 
   const sql = `
-    INSERT INTO faturas (idReserva, total, desconto, formaPagamento, dataVencimento) VALUES (?, ?, ?, ?, ?)
-  `
+    INSERT INTO faturas (idReserva, total, desconto, subtotal, formaPagamento, dataVencimento)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+  const valores = [id, total, desconto, subtotal, formaPagamento, dataVencimento];
 
-  bd.query()
-})
+  bd.query(sql, valores, (err, result) => {
+    if (err) {
+      console.log(err)
+      console.error("Erro ao inserir fatura:", err);
+      return res.status(500).json({ erro: "Erro ao inserir fatura" });
+    }
+
+    const sqlReservas = `UPDATE reservas SET saida = 1 WHERE id = ?`;
+
+    bd.query(sqlReservas, [id], (err2, result2) => {
+      if (err2) {
+        console.log(err2)
+        console.error("Erro ao fazer checkOut:", err2);
+        return res.status(500).json({ erro: "Erro ao fazer checkOut" });
+      }
+
+      return res.json({ sucesso: true, resultado: result });
+    });
+  });
+});
+
+
 
 
 
