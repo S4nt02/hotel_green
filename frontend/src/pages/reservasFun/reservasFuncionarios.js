@@ -341,7 +341,10 @@ function ReservasFuncionarios (){
             {checkOutOpen && (
                 <>
                     <div className="overlay">
-                        <CheckOut idCheckOut={idCheckOut} className="alert-modal"/>
+                        <div className="aleert-modal">
+                            <CheckOut idCheckOut={idCheckOut}/>
+                        </div>
+
                     </div>
 
                 </>

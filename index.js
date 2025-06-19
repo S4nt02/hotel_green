@@ -2150,6 +2150,33 @@ app.post('/api/buscarCheckOut', (req, res) => {
 })
 
 
+//////////////realizar o checkout////////////////
+// ir em reservas confirmar saida
+//salvar valor em faturamento com a opçao de paamento funciona e id da reservas
+//salvar em relatorio entrada saida hora da saida e funcionario
+//
+app.post('/api/realizarCheckOut', (req, res) => {
+  const {
+    data,
+    id,
+    desconto,
+    total,
+    formaPagamento
+  } = req.body
+
+  if(formaPagamento == 2){
+    dataVencimento = data //converte data adicionando 30 dias//
+  }
+
+  const sql = `
+    INSERT INTO faturas (idReserva, total, desconto, formaPagamento, dataVencimento) VALUES (?, ?, ?, ?, ?)
+  `
+
+  bd.query()
+})
+
+
+
 
 
 

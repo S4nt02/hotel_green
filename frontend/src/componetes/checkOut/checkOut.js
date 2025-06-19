@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { API_URL } from "../../url"
 
 function CheckOut({ idCheckOut }) {
+
     const [informacoes, setInformacoes] = useState({})
     const [horario, setHorario] = useState("")
     const [desconto, setDesconto] = useState(0)
@@ -75,6 +76,29 @@ function CheckOut({ idCheckOut }) {
 
     const consumoPorCategoria = agruparConsumo()
 
+    const realizarCheckOut = async () => {
+        const dados = {
+            desconto : desconto,
+            total : totalFinal,
+            id : informacoes.id,
+            data : horario,
+            formaPagamento : formaPagamento
+        }
+
+        try{
+            const checOut = await fetch(`${API_URL}/api/realizarCheckOut`, {
+                method : 'POST',
+                headers : {'Content-Type' : 'application/json'},
+                body : JSON.stringify(dados)
+            })
+
+
+        }
+        catch{
+
+        }
+    }
+
     return (
         <div>
             <div>
@@ -118,10 +142,15 @@ function CheckOut({ idCheckOut }) {
 
                     <h3>Forma de pagamento</h3>
                     <select value={formaPagamento} onChange={e => setFormaPagamento(e.target.value)}>
-                        <option value="Dinheiro">À vista</option>
-                        <option value="Cartão">Faturado</option>
+                        <option value="1">À vista</option>
+                        <option value="2">Faturado</option>
                     </select>
                 </div>
+            </div>
+            <div>
+                <button onClick={realizarCheckOut}>Finalizar check-out</button>
+
+
             </div>
         </div>
     )
