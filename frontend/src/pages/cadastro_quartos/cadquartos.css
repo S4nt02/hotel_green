@@ -1,8 +1,3 @@
-.exibirAcomodacoes{
-    border: 2px solid black;
-    padding: 5px;
-    margin: 5px;
-}
 
 .excluir-overlay {
     position: fixed;
@@ -59,21 +54,51 @@ h1.title{
     justify-self: center;
 }
 
-.exibirAcomodacoes{
-    border-color: #8b4513;
-    border-radius: 12px;
-    color: #8b4513;
-    margin-top: 50px;
-    padding: 7px;
-}
-
-.exibirAcomodacoes button{
-    margin: 5px;
-}
-
 .card_tpQuarto{
     border-radius: 12px;
     border-color: #8b4513;
 }
 
+.exibirAcomodacoes{
+    width: 200px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    justify-self: left;
+    margin-left: 20px;
+
+}
+
+.body_quartos{
+    display: flex;
+    justify-content: center;
+}
+
+.exibirAcomodacoes p{
+    font-size: 16px;
+    margin: 5px;
+}
+
+.exibirAcomodacoes button {
+    margin: 0;
+    margin-top: 10px;
+}
+
+.exibir_tiposQuarto{
+    width: 400px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    margin-left: 20px;
+    margin-top: 40px;
+}
+
+.body_tipos_quarto {
+    display: flex;
+    font-size: 20px;
+    color: #8b4513;
+     justify-self: center;
+}
 

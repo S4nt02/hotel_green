@@ -4,8 +4,9 @@
     border-radius: 0.75rem;
     box-shadow: 0 6px 12px;
     padding: 2rem 2.5rem;
-    margin-left: 135px;
     margin-top: 30px;
+    justify-self: center;
+    color: #8b4513;
 
 }
 
@@ -40,4 +41,36 @@
 .infos_ocupacao p{
     margin: 5px;
     font-size: 19px;
+}
+
+.exibir_ocupacoes{
+    width: 250px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    margin-left: 20px;
+    margin-top: 40px;
+    color: #8b4513;
+}
+
+
+.exibir_ocupacoes h1{
+    font-size: 22px;
+}
+
+.exibir_ocupacoes p{
+    font-size: 18px;
+}
+
+.body_ocupacao {
+    display: flex;
+    font-size: 20px;
+    color: #8b4513;
+    justify-self: center;
+}
+
+.alinhar_button{
+    display: flex;
+    justify-self: center;
 }

@@ -93,6 +93,11 @@ function Ocupacao() {
     return (
         <>  
             <HeaderComponente/>
+            <main className="alinhar_button">
+                <input type="button" value="Disponíveis" onClick={() => setSessaso(1)} />
+                <input type="button" value="Reservadas" onClick={() => setSessaso(2)} />
+                <input type="button" value="Ocupadas" onClick={() => setSessaso(3)} />
+            </main>
             <div className="barra-de-pesquisa">
                 <form className="card_ocupacao">
                     <div className="primeira_linha">
@@ -129,58 +134,57 @@ function Ocupacao() {
                     </div>
                 </form>
             </div>
-            <main>
-                <input type="button" value="Disponíveis" onClick={() => setSessaso(1)} />
-                <input type="button" value="Reservadas" onClick={() => setSessaso(2)} />
-                <input type="button" value="Ocupadas" onClick={() => setSessaso(3)} />
-
-                {sessao === 1 && (
-                    <div>
-                        {disponiveisFiltradas.map(acomodacao => (
-                            <div key={acomodacao.id}>
-                                <h1>Acomodação: {acomodacao.id}</h1>
-                                <div>
-                                    <p>Unidade: {acomodacao.nomeUnidade}</p>
-                                    <p>Tipo acomodação: {acomodacao.nomeAcomodacao}</p>
-                                    <p>Número do Quarto: {acomodacao.numAcomodacao}</p>
-                                    <p>Número do andar: {acomodacao.num_andar}</p>
+            <main className="body_conteudos">
+                <div className="body_ocupacao">
+                    {sessao === 1 && (
+                        <div>
+                            {disponiveisFiltradas.map(acomodacao => (
+                                <div key={acomodacao.id} className="exibir_ocupacoes" >
+                                    <h1>Acomodação: {acomodacao.id}</h1><br></br>
+                                    <div>
+                                        <p>Unidade: {acomodacao.nomeUnidade}</p>
+                                        <p>Tipo acomodação: {acomodacao.nomeAcomodacao}</p>
+                                        <p>Número do Quarto: {acomodacao.numAcomodacao}</p>
+                                        <p>Número do andar: {acomodacao.num_andar}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                            ))}
+                        </div>
+                    )}
 
-                {sessao === 2 && (
-                    <div>
-                        {reservadasFiltradas.map(acomodacao => (
-                            <div key={acomodacao.id}>
-                                <h1>Acomodação: {acomodacao.id}</h1>
-                                <div>
-                                    <p>Unidade: {acomodacao.nomeUnidade}</p>
-                                    <p>Tipo acomodação: {acomodacao.nomeAcomodacao}</p>
-                                    <p>Número do Quarto: {acomodacao.numAcomodacao}</p>
-                                    <p>Número do andar: {acomodacao.num_andar}</p>
+                    {sessao === 2 && (
+                        <div>
+                            {reservadasFiltradas.map(acomodacao => (
+                                <div key={acomodacao.id} className="exibir_ocupacoes">
+                                    <h1>Acomodação: {acomodacao.id}</h1><br></br>
+                                    <div>
+                                       <p>Unidade: {acomodacao.nomeUnidade}</p>
+                                       <p>Tipo acomodação: {acomodacao.nomeAcomodacao}</p>
+                                       <p>Número do Quarto: {acomodacao.numAcomodacao}</p>
+                                       <p>Número do andar: {acomodacao.num_andar}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                            ))}
+                        </div>
+                    )}
+                
+                    {sessao === 3 && (
+                        <div>
+                            {ocupadasFiltradas.map(acomodacao => (
+                                <div key={acomodacao.id} className="exibir_ocupacoes">
+                                    <h1>Acomodação: {acomodacao.id}</h1><br></br>
+                                    <div>
+                                      <p>Unidade: {acomodacao.nomeUnidade}</p>
+                                      <p>Tipo acomodação: {acomodacao.nomeAcomodacao}</p>
+                                      <p>Número do Quarto: {acomodacao.numAcomodacao}</p>
+                                      <p>Número do andar: {acomodacao.num_andar}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
-                {sessao === 3 && (
-                    <div>
-                        {ocupadasFiltradas.map(acomodacao => (
-                            <div key={acomodacao.id}>
-                                <h1>Acomodação: {acomodacao.id}</h1>
-                                <div>
-                                    <p>Unidade: {acomodacao.nomeUnidade}</p>
-                                    <p>Tipo acomodação: {acomodacao.nomeAcomodacao}</p>
-                                    <p>Número do Quarto: {acomodacao.numAcomodacao}</p>
-                                    <p>Número do andar: {acomodacao.num_andar}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                </div>
             </main>
         </>
     )

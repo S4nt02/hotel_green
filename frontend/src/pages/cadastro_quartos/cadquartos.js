@@ -161,16 +161,12 @@ function App() {
             {formSelecionado === 1 && (
               <>              
               <CadTipoQuarto dadosTipoQuartoParaEditar={dadosTpQuartoEditar} aoAlterar={buscarTpQuarto}></CadTipoQuarto>
-              <div>
+              <div className='body_tipos_quarto'>
                 {dadosTpQuarto.map(tpQuarto =>(
-                  <div>
-                    <div>
-                      <h1>{tpQuarto.nomeAcomodacao}</h1>
-                      {tpQuarto.unidade_hotel}
-                    </div>
-                    <div>
-                      Diaria-{tpQuarto.vlDiaria}
-                    </div>
+                  <div key={tpQuarto.id} className='exibir_tiposQuarto'>
+                    <p>Acomodação - {tpQuarto.nomeAcomodacao}</p>
+                    <p>Unidade -{tpQuarto.unidade_hotel}</p>
+                    <p>Diaria-{tpQuarto.vlDiaria}</p><br></br>
                     <div>
                       <Swiper
                         modules={[Navigation]}
@@ -185,9 +181,10 @@ function App() {
                           </SwiperSlide>
                         ))}
                       </Swiper>
-                      Quantidade Hospedes<br></br>
-                      Adutlos-{tpQuarto.quantidade_adultos}<br></br>
-                      Criancar-{tpQuarto.quantidade_criancas}
+                      <br></br>
+                      <p>Quantidade Hospedes</p><br></br>
+                      <p>Adutlos-{tpQuarto.quantidade_adultos}</p>
+                      <p>Criancar-{tpQuarto.quantidade_criancas}</p><br></br>
                       <button onClick={() => editarTpQuarto(tpQuarto.id)}>EDITAR</button>
                       <button onClick={() => desejaExcluirTpQuarto(tpQuarto.id)}>EXCLUIR</button>
                     </div>
@@ -200,16 +197,16 @@ function App() {
             {formSelecionado === 2 && (
               <>
                 <CadAcomodacoes dadosAcomodacaoParaEditar = {dadosAcomodacaoEditar} aoAlterar={buscarAcomodacoes}></CadAcomodacoes>
-                <div>
+                <div className='body_quartos'>
                   {dadosAcomodacao.map(acomodacao => {
                     const tpQuarto = dadosTpQuarto.find(t => t.id === acomodacao.tpAcomodacao);
 
                     return (
                       <div key={acomodacao.id} className='exibirAcomodacoes'>
-                        <h1>Número quarto - {acomodacao.numAcomodacao}</h1>
-                        <h1>Andar - {acomodacao.num_andar}</h1>
-                        <h1>Tipo de quarto - {tpQuarto.nomeAcomodacao}</h1>
-                        <h1>Unidade-{acomodacao.nomeUnidade}</h1>
+                        <p>Número quarto - {acomodacao.numAcomodacao}</p>
+                        <p>Andar - {acomodacao.num_andar}</p>
+                        <p>Tipo de quarto - {tpQuarto.nomeAcomodacao}</p>
+                        <p>Unidade-{acomodacao.nomeUnidade}</p>
                         <button onClick={() => editarAcomodacao(acomodacao.id)}>EDITAR</button>
                         <button onClick={() => desejaExcluirAcomodacao(acomodacao.id)}>EXCLUIR</button>
                       </div>
