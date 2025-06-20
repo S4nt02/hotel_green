@@ -175,56 +175,67 @@ function CadItens () {
 
 
     return (
-        <>
-            <div className='busca'>
-                <div>
-                    <input type='text'></input>
-                    <button onClick={buscarItens}><Search size={18}></Search></button>                    
-                </div>
+        <div className='alimhar-itens-cad'>
+            <div>
+                {!itemOpen && (
+                    <button onClick={abrirAdicionarItem}><CirclePlus size={18}/>Adicionar</button>
+                )}
+                    
+                {itemOpen && (
+                    <div className='alinhar-itens-cad'>
+                        <div className='cad-itens'>
+                            <form onSubmit={handleSubmit(cadastroItem)}>
+                                <div>
+                                    <label>Nome do item</label>
+                                    <input className='input-cad-iten' type='text' placeholder='Descrição do item' {...register("nomeItem")}></input>    
+                                    {errors.nomeItem && <p>{errors.nomeItem.message}</p>}                    
+                                </div>
+                                <div className='categ-preco'>
+                                    <div>
+                                        <label>Categoria</label>
+                                        <select {...register("categoria")}>
+                                            <option value={""}>Selecione uma categoria</option>
+                                            {categorias.map(categoria => (
+                                                <option key={categoria.id} value={categoria.id}>{categoria.nomeCategoria}</option>
+                                            ))}
+                                        </select>  
+                                        {errors.categoria && <p>{errors.categoria.message}</p>}                        
+                                    </div>
+                                    <div>
+                                        <label>
+                                            Preço(R$)
+                                        </label>
+                                        <input type='text' placeholder='0000.00' {...register("preco")}></input>
+                                        {errors.preco && <p>{errors.preco.message}</p>}  
+                                    </div>                        
+                                </div>
+                                <div className='categ-preco'>
+                                    <button onClick={abrirAdicionarItem}>Cancelar</button>
+                                    <button type='submit'>{editar === true ? "Editar" : "Adicionar"}</button>
+                                </div>
 
-                <button onClick={abrirAdicionarItem}><CirclePlus size={18}/>Adicionar</button>
-            </div>
+                            </form>
+                        </div>
+                    </div>                    
 
-            {itemOpen && (<div>
-                <form onSubmit={handleSubmit(cadastroItem)}>
-                    <div>
-                        <label>Nome do item</label>
-                        <input type='text' placeholder='Descrição do item' {...register("nomeItem")}></input>    
-                        {errors.nomeItem && <p>{errors.nomeItem.message}</p>}                    
+                )}
+
+                {itens.map(item => (
+                    <div className='exibir-item'>
+                        <p>Codigo-{item.id}</p>
+                        <p>Item-{item.nomeItem}</p>
+                        <p>Categoria-{item.categoria}</p>
+                        <p>Preço-{item.preco}</p>
+                        <div>
+                            <button onClick={() => excluirModal(item.id)}>Excluir</button>
+                            <button onClick={() => editarItem(item)}>Editar</button>                        
+                        </div>
+
                     </div>
-                    <div>
-                        <label>Categoria</label>
-                        <select {...register("categoria")}>
-                            <option value={""}>Selecione uma categoria</option>
-                            {categorias.map(categoria => (
-                                <option key={categoria.id} value={categoria.id}>{categoria.nomeCategoria}</option>
-                            ))}
-                        </select>  
-                        {errors.categoria && <p>{errors.categoria.message}</p>}                        
-                    </div>
-                    <div>
-                        <label>
-                            Preço(R$)
-                        </label>
-                        <input type='text' placeholder='0000.00' {...register("preco")}></input>
-                        {errors.preco && <p>{errors.preco.message}</p>}  
-                    </div>
-                    <button onClick={abrirAdicionarItem}>Cancelar</button>
-                    <button type='submit'>{editar === true ? "Editar" : "Adicionar"}</button>
-                </form>
-            </div>)}
-
-            {itens.map(item => (
-                <div>
-                    <p>Codigo-{item.id}</p>
-                    <p>Item-{item.nomeItem}</p>
-                    <p>Categoria-{item.categoria}</p>
-                    <p>Preço-{item.preco}</p>
-                    <button onClick={() => excluirModal(item.id)}>Excluir</button>
-                    <button onClick={() => editarItem(item)}>Editar</button>
-                </div>
-            ))}
-
+                ))}
+                
+            </div>  
+            
             {excluirOpen && (
                 <div className='overlay'> 
                     <div className='alert-modal'>
@@ -239,7 +250,7 @@ function CadItens () {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     )
 }
 
