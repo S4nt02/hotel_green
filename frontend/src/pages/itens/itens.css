@@ -1,0 +1,31 @@
+.itens-title{
+    color: #8b4513;
+    font-size: 40px;
+    margin: 20px;
+}
+
+.menu-itens{
+    display: flex;    
+    background-color: #d3d3d3;
+    border-radius: 5px;
+    border: 2px solid #8b4513;
+    color: #2e8b57;
+    width: 90%;
+    justify-content: space-around;
+    padding: 15px;
+    font-size: 22px;
+    margin: 10px;
+}
+
+.alinhar-menu{
+    display: flex;
+    justify-content: center;
+}
+
+.style-menu{
+    background-color: #d3d3d3;
+    border-radius: 10px;
+    width: 80%;
+    padding: 40px;
+}
+

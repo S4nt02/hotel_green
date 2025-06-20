@@ -142,24 +142,29 @@ function CadCategoria (){
     }
 
     return(
-        <>
-
-            {categOpen === false && (<div>
+        <div>
+            <div>
+{categOpen === false && (<div>
                 <button onClick={adicionarCategoria}><CirclePlus size={18}/>Adicionar</button>
             </div>)}
 
-            {categOpen && (<div>
-                <form onSubmit={handleSubmit(cadastrarCategoria, onError)}>
-                    <label>Adicionar Categoria</label>
-                        <input type='text' placeholder='Nome da categoria' {...register("categoria")}></input>
-                        <button onClick={adicionarCategoria}>Cancelar</button>
-                        <button type='submit'>Adicionar</button>
-                        {errors.categoria && <p>{errors.categoria.message}</p>}
-                </form>
-            </div>)}
-            <div>
+            {categOpen && (
+                <div className='alinhar-itens-cad'>
+                    <div className='cad-itens'>
+                        <form onSubmit={handleSubmit(cadastrarCategoria, onError)}>
+                            <label>Adicionar Categoria</label>
+                                <input type='text' placeholder='Nome da categoria' {...register("categoria")}></input>
+                                <button onClick={adicionarCategoria}>Cancelar</button>
+                                <button type='submit'>Adicionar</button>
+                                {errors.categoria && <p>{errors.categoria.message}</p>}
+                        </form>
+                    </div>                    
+                </div>
+
+            )}
+            <div className='alinhar-categ'>
                 {categorias.map((categoria) => (
-                <div key={categoria.id}>
+                <div key={categoria.id} className='exibir-item' >
                     {idEditando === categoria.id ? (
                     <>  
                         <form onSubmit={(e) => {
@@ -179,17 +184,23 @@ function CadCategoria (){
                     ) : (
                     <>
                         <p>{categoria.nomeCategoria}</p>
-                        <button 
-                            onClick={() => {
-                            setIdEditando(categoria.id);
-                            setValueEdit(categoria.nomeCategoria);
-                            }}>Editar
-                        </button>
-                        <button onClick={() => excluirModal(categoria.id)}>Excluir</button>
+                        <div>
+                            <button 
+                                onClick={() => {
+                                setIdEditando(categoria.id);
+                                setValueEdit(categoria.nomeCategoria);
+                                }}>Editar
+                            </button>
+                            <button onClick={() => excluirModal(categoria.id)}>Excluir</button>                            
+                        </div>
+
                     </>
                     )}
                 </div>
-                ))}
+                ))}                
+            </div>
+
+            
 
                 {excluirOpen && (
                     <div className='overlay'> 
@@ -206,7 +217,7 @@ function CadCategoria (){
                     </div>
                 )}
             </div>
-        </>
+        </div>
     )
 }
 

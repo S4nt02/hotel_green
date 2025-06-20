@@ -7,6 +7,7 @@ import { API_URL } from '../../url';
 import HeaderComponente from '../../componetes/header/headerComponente';
 import CadCategoria from '../../componetes/cad_categoria/cad_categoria';
 import CadItens from '../../componetes/cad_itens/cadItens';
+import "./itens.css"
 
 function Itens (){
 
@@ -22,22 +23,32 @@ function Itens (){
         <>
             <main>
                 <HeaderComponente/>
-                <div>
-                    <h1>Sistema de Itens</h1>
-                    <div onClick={() => selecionarFormulario(1)} className='div-selecionar-formulario'>Itens</div>
-                    <div onClick={() => selecionarFormulario(2)} className='div-selecionar-formulario'>Categorias</div>
-                </div>
-                {formSelecionado == 1 && (
-                    <>
-                        <CadItens/>
-                    </>
-                )}
+                <h1 className='itens-title'>Sistema de Itens</h1>
+                <div className='alinhar-menu'>
+                    <div className='style-menu'>
+                        <div className='alinhar-menu'>
+                            <div className='menu-itens'>
+                                <div onClick={() => selecionarFormulario(1)} >Itens</div>
+                                <div  onClick={() => selecionarFormulario(2)} >Categorias</div>
+                            </div>
+                        </div>
 
-                {formSelecionado == 2 && (
-                    <>
-                        <CadCategoria/>
-                    </>
-                )}
+                        {formSelecionado == 1 && (
+                            <>
+                                <CadItens/>
+                            </>
+                        )}
+
+                        {formSelecionado == 2 && (
+                            <>
+                                <CadCategoria/>
+                            </>
+                        )} 
+                    </div>
+
+                </div>
+
+
             </main>
         </>
     )
