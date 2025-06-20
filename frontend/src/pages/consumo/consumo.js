@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { API_URL } from "../../url";
 import HeaderComponente from "../../componetes/header/headerComponente";
 import { useAuth } from "../../context/authContext";
-
+import "./consumo.css"
 function Consumo() {
     const { id, nomeUser, autorizacao } = useAuth();
 
@@ -273,116 +273,135 @@ function Consumo() {
         <>
             <HeaderComponente />
             <main>
-                <form>
-                    <div>
-                        <label>Data de consumo</label>
-                        <input className="dataconsumo" type="date" value={data} readOnly />
-                    </div>
-                    <div>
-                        <label>Funcionário</label>
-                        <input className="funcionario" type="text" value={nomeUser} readOnly />
-                    </div>
-                    <div>
-                        <label>Acomodação</label>
-                        <input
-                            className="acomodacao"
-                            type="text"
-                            value={numAcomodacao}
-                            onChange={(e) => setNumAcomodacao(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>ID da Reserva</label>
-                        <input
-                            className="idreserva"
-                            type="text"
-                            value={idReserva}
-                            onChange={(e) => setIdReserva(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Documento</label>
-                        <input
-                            className="cpf"
-                            type="text"
-                            value={documento}
-                            onChange={(e) => setDocumento(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Nome do Hóspede</label>
-                        <input
-                            type="text"
-                            value={nomeHospede}
-                            onChange={(e) => setNomeHospede(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Categoria</label>
-                        <select onChange={(e) => setCategoriaBusca(e.target.value)} value={categoriaBuscar}>
-                            <option value="">Todas as categorias</option>
-                            {categorias.map((categoria) => (
-                                <option key={categoria.id} value={categoria.nomeCategoria}>
-                                    {categoria.nomeCategoria}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Item</label>
-                        <select
-                            value={itemSelecionado?.id || ""}
-                            onChange={(e) => {
-                                const item = itensFiltrados.find(i => i.id === parseInt(e.target.value));
-                                setItemSelecionadol(item || null);
-                            }}
-                        >
-                            <option value="">Todos os itens</option>
-                            {itensFiltrados.map((item) => (
-                                <option key={item.id} value={item.id}>
-                                    {item.nomeItem} - ${item.preco}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Quantidade</label>
-                        <input
-                            className="quant_consumo"
-                            type="number"
-                            value={quantidade}
-                            onChange={(e) => setQuantidade(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Valor Total:</label>
-                        <p>{valorTotal ? `R$ ${valorTotal.toFixed(2)}` : "-"}</p>
-                    </div>
-                    <div>
-                        <p>{mensagem}</p>
-                    </div>
+                <div className="content-consumo">
+                    <form className="form-consumo">
+                        <div className="inuts-consumo">
+                            <div>
+                                <label>Data de consumo</label>
+                                <input className="dataconsumo" type="date" value={data} readOnly />
+                            </div>
+                            <div>
+                                <label>Funcionário</label>
+                                <input className="funcionario" type="text" value={nomeUser} readOnly />
+                            </div>                            
+                        </div>
+                        <div className="inuts-consumo">
+                            <div>
+                                <label>Acomodação</label>
+                                <input
+                                    className="acomodacao"
+                                    type="text"
+                                    value={numAcomodacao}
+                                    onChange={(e) => setNumAcomodacao(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label>ID da Reserva</label>
+                                <input
+                                    className="idreserva"
+                                    type="text"
+                                    value={idReserva}
+                                    onChange={(e) => setIdReserva(e.target.value)}
+                                />
+                            </div>                            
+                        </div>
+                        <div className="inuts-consumo">
+                            <div>
+                                <label>Documento</label>
+                                <input
+                                    className="cpf"
+                                    type="text"
+                                    value={documento}
+                                    onChange={(e) => setDocumento(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label>Nome do Hóspede</label>
+                                <input
+                                    type="text"
+                                    value={nomeHospede}
+                                    onChange={(e) => setNomeHospede(e.target.value)}
+                                />
+                            </div>                            
+                        </div>
+                        <div className="inuts-consumo">
+                            <div>
+                                <label>Categoria</label>
+                                <select onChange={(e) => setCategoriaBusca(e.target.value)} value={categoriaBuscar}>
+                                    <option value="">Todas as categorias</option>
+                                    {categorias.map((categoria) => (
+                                        <option key={categoria.id} value={categoria.nomeCategoria}>
+                                            {categoria.nomeCategoria}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label>Item</label>
+                                <select
+                                    value={itemSelecionado?.id || ""}
+                                    onChange={(e) => {
+                                        const item = itensFiltrados.find(i => i.id === parseInt(e.target.value));
+                                        setItemSelecionadol(item || null);
+                                    }}
+                                >
+                                    <option value="">Todos os itens</option>
+                                    {itensFiltrados.map((item) => (
+                                        <option key={item.id} value={item.id}>
+                                            {item.nomeItem} - ${item.preco}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>                            
+                        </div>
+                        <div className="inuts-consumo">
+                            <div>
+                                <label>Quantidade</label>
+                                <input
+                                    className="quant_consumo"
+                                    type="number"
+                                    value={quantidade}
+                                    onChange={(e) => setQuantidade(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label>Valor Total:</label>
+                                <p>{valorTotal ? `R$ ${valorTotal.toFixed(2)}` : "-"}</p>
+                            </div>
+                            <div>
+                                <p>{mensagem}</p>
+                            </div>
+                        </div>
 
-                    <button onClick={cadastrarConsumo} className='adicionar_consumo'>Adicionar</button>
-                    <button type="reset">Cancelar</button>
-                </form>
+                        <div className="button-consumo">
+                            <button onClick={cadastrarConsumo} className='adicionar_consumo'>Adicionar</button>
+                            <button type="reset">Cancelar</button>
+                        </div>
+
+                    </form> 
+                </div>
+                
                 <div>
                     {consumos.map(consumo => (
-                        <div key={consumo.idReserva}>
-                            <div>
-                                <button onClick={() =>setDadosCadastarConsumo(consumo.idReserva, consumo.numAcomodacao, consumo.nomeHospede, consumo.documento)}>Cadastrar Consumo</button>
+                        <div key={consumo.idReserva} className="reserva-consumo">
+                            <div className="title-reserva-connsumo">
+                                <h3>Acomodação:{consumo.numAcomodacao}</h3>
+                                <p>Unidade:{consumo.nomeUnidade}</p> 
                             </div>
-                            <h3>Acomodação:{consumo.numAcomodacao}</h3>
-                            <p>Unidade:{consumo.nomeUnidade}</p>
+                            <p>Hospede: {consumo.nomeHospede}</p>
                             <p>Valor Total de Consumo: R$ {
                             consumo.consumos.reduce((total, item) => {
                                 return total + item.preco * item.quantidade;
                             }, 0).toFixed(2)
                             }</p>
+                            <div>
+                                <button onClick={() =>setDadosCadastarConsumo(consumo.idReserva, consumo.numAcomodacao, consumo.nomeHospede, consumo.documento)}>Cadastrar Consumo</button>
+                            </div>
 
                             <div>
-                                <p>Consumo</p>
+                                <h4>Consumo</h4>
                                 {consumo.consumos.map(consumoUnt => (
-                                    <div key={consumoUnt.idConsumo}>
+                                    <div key={consumoUnt.idConsumo} className="consumo-unit">
                                         <p>Data de Consumo:{converterData(consumoUnt.dataConsumo)}</p>
                                         <p>Funcionario:{consumoUnt.nomeFuncionario}</p>
                                         <p>Item:{consumoUnt.nomeItem}</p>
@@ -391,7 +410,7 @@ function Consumo() {
                                         <p>Total: R$ {(consumoUnt.preco * consumoUnt.quantidade).toFixed(2)}</p>
                                         <div>
                                             <button onClick={() => desejaExcluir(consumoUnt.idConsumo)}>Excluir</button>
-                                            <button onClick={() => daddosParaEditar(consumoUnt.idConsumo, consumoUnt.idItem, consumoUnt.quantidade, consumo.numAcomodacao, consumo.idReserva, consumo.nomeHospede, consumo.documento)}>Editar</button>
+                                            <button onClick={() => daddosParaEditar(consumoUnt.idConsumo, consumoUnt.idItem, consumoUnt.quantidade, consumo.numAcomodacao, consumo.idReserva, consumo.nomeHospede, consumo.documento)}>Editar</button>                                            
                                         </div>
                                     </div>
                                 ))}
@@ -413,99 +432,113 @@ function Consumo() {
                 </div>
             )}
             {editarOpen && (
-                    <div className="overlay">
-                        <div className="alert-modal">
+                    <div className="overlay-consumo">
+                        <div className="alert-consumo">
                             <form>
-                                <div>
-                                    <label>Data de consumo</label>
-                                    <input className="dataconsumo" type="date" value={data} readOnly />
+                                <div className="inuts-consumo">
+                                    <div>
+                                        <label>Data de consumo</label>
+                                        <input className="dataconsumo" type="date" value={data} readOnly />
+                                    </div>
+                                    <div>
+                                        <label>Funcionário</label>
+                                        <input className="funcionario" type="text" value={nomeUser} readOnly />
+                                    </div>
+
                                 </div>
-                                <div>
-                                    <label>Funcionário</label>
-                                    <input className="funcionario" type="text" value={nomeUser} readOnly />
+                                <div className="inuts-consumo">
+                                    <div>
+                                        <label>Acomodação</label>
+                                        <input
+                                            className="acomodacao"
+                                            type="text"
+                                            value={numAcomodacaoEditar}
+                                            onChange={(e) => setNumAcomodacaoEditar(e.target.value)}
+                                        />
+                                    </div> 
+                                    <div>
+                                        <label>ID da Reserva</label>
+                                        <input
+                                            className="idreserva"
+                                            type="text"
+                                            value={idReservaEditar}
+                                            onChange={(e) => setIdReservaEditar(e.target.value)}
+                                        />
+                                    </div>                                                                       
                                 </div>
-                                <div>
-                                    <label>Acomodação</label>
-                                    <input
-                                        className="acomodacao"
-                                        type="text"
-                                        value={numAcomodacaoEditar}
-                                        onChange={(e) => setNumAcomodacaoEditar(e.target.value)}
-                                    />
+                                <div className="inuts-consumo">
+                                    <div>
+                                        <label>Documento</label>
+                                        <input
+                                            className="cpf"
+                                            type="text"
+                                            value={documentoEditar}
+                                            onChange={(e) => setDocumentoEditar(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label>Nome do Hóspede</label>
+                                        <input
+                                            type="text"
+                                            value={nomeHospedeEditar}
+                                            onChange={(e) => setNomeHospedeEditar(e.target.value)}
+                                        />
+                                    </div>                                    
                                 </div>
-                                <div>
-                                    <label>ID da Reserva</label>
-                                    <input
-                                        className="idreserva"
-                                        type="text"
-                                        value={idReservaEditar}
-                                        onChange={(e) => setIdReservaEditar(e.target.value)}
-                                    />
+                                <div className="inuts-consumo">
+                                    <div>
+                                        <label>Categoria</label>
+                                        <select onChange={(e) => setCategoriaBusca(e.target.value)} value={categoriaBuscar}>
+                                            <option value="">Todas as categorias</option>
+                                            {categorias.map((categoria) => (
+                                                <option key={categoria.id} value={categoria.nomeCategoria}>
+                                                    {categoria.nomeCategoria}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Item</label>
+                                        <select
+                                            value={itemSelecionadoEditar?.id || ""}
+                                            onChange={(e) => {
+                                                const item = itensFiltrados.find(i => i.id === parseInt(e.target.value));
+                                                setItemSelecionadolEditar(item || null);
+                                            }}
+                                        >
+                                            <option value="">Todos os itens</option>
+                                            {itensFiltrados.map((item) => (
+                                                <option key={item.id} value={item.id}>
+                                                    {item.nomeItem} - ${item.preco}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>                                    
                                 </div>
-                                <div>
-                                    <label>Documento</label>
-                                    <input
-                                        className="cpf"
-                                        type="text"
-                                        value={documentoEditar}
-                                        onChange={(e) => setDocumentoEditar(e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <label>Nome do Hóspede</label>
-                                    <input
-                                        type="text"
-                                        value={nomeHospedeEditar}
-                                        onChange={(e) => setNomeHospedeEditar(e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <label>Categoria</label>
-                                    <select onChange={(e) => setCategoriaBusca(e.target.value)} value={categoriaBuscar}>
-                                        <option value="">Todas as categorias</option>
-                                        {categorias.map((categoria) => (
-                                            <option key={categoria.id} value={categoria.nomeCategoria}>
-                                                {categoria.nomeCategoria}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label>Item</label>
-                                    <select
-                                        value={itemSelecionadoEditar?.id || ""}
-                                        onChange={(e) => {
-                                            const item = itensFiltrados.find(i => i.id === parseInt(e.target.value));
-                                            setItemSelecionadolEditar(item || null);
-                                        }}
-                                    >
-                                        <option value="">Todos os itens</option>
-                                        {itensFiltrados.map((item) => (
-                                            <option key={item.id} value={item.id}>
-                                                {item.nomeItem} - ${item.preco}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label>Quantidade</label>
-                                    <input
-                                        className="quant_consumo"
-                                        type="number"
-                                        value={quantidadeEditar}
-                                        onChange={(e) => setQuantidadeEditar(e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <label>Valor Total:</label>
-                                    <p>{}</p>
-                                </div>
+                                <div className="inuts-consumo">
+                                    <div>
+                                        <label>Quantidade</label>
+                                        <input
+                                            className="quant_consumo"
+                                            type="number"
+                                            value={quantidadeEditar}
+                                            onChange={(e) => setQuantidadeEditar(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label>Valor Total:</label>
+                                        <p>{}</p>
+                                    </div>                                
+                                </div>                
+
                                 <div>
                                     <p>{mensagem}</p>
                                 </div>
+                                <div className="button-consumo">
+                                    <button onClick={atualizarConsumo} className='adicionar_consumo'>Salvar Edição</button>
+                                    <button  onClick={() => setEditarOpen(false)}>Cancelar</button>                                    
+                                </div>
 
-                                <button onClick={atualizarConsumo} className='adicionar_consumo'>Salvar Edição</button>
-                                <button  onClick={() => setEditarOpen(false)}>Cancelar</button>
                             </form>
                         </div>
                     </div>

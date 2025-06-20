@@ -55,19 +55,19 @@ function ReservasFuncionarios (){
     }
 
     const irParaCheckIn = (reserva) => {
-        const dataCheckIn = new Date(reserva.checkIn)
-        const hoje = new Date()
+    const dataCheckIn = new Date(reserva.checkIn)
+    const hoje = new Date()
 
-        const mesmoDia = dataCheckIn.getDate() === hoje.getDate()
-        const mesmoMes = dataCheckIn.getMonth() === hoje.getMonth()
-        const mesmoAno = dataCheckIn.getFullYear() === hoje.getFullYear()
+    // Converter ambas as datas para YYYY-MM-DD
+    const dataCheckInStr = dataCheckIn.toISOString().split('T')[0]
+    const hojeStr = hoje.toISOString().split('T')[0]
 
-        if (mesmoDia && mesmoMes && mesmoAno) {
-            setIdReserva(reserva)
-            setCheckInOpen(true)
-        } else {
-            alert("O check-in só pode ser realizado na data da reserva!")
-        }
+    if (dataCheckInStr === hojeStr) {
+        setIdReserva(reserva)
+        setCheckInOpen(true)
+    } else {
+        alert("O check-in só pode ser realizado na data da reserva!")
+    }
     }
 
 

@@ -1,0 +1,82 @@
+.form-consumo{
+    width: 80%;
+    border-radius: 7px;
+    border-style: double;
+    border: 3px solid #8b4513;
+    background-color: #d3d3d3;
+    padding: 15px;
+}
+
+.content-consumo{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.reserva-consumo{
+    background-color: #d3d3d3;
+    margin: 10px;
+    border-radius: 7px;
+    width: 90%;
+    padding: 15px;
+}
+
+.consumo-unit{
+    border: 3px solid #8b4513;
+    border-radius: 3px;
+    margin: 5px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.title-reserva-connsumo{
+    display: flex;
+    margin: 3px;
+    justify-content: space-between;
+    width:50%;
+}
+
+.inuts-consumo{
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    font-size: 20px;
+}
+
+.inuts-consumo label{
+    width: 200px;
+    margin: 5px;
+}
+
+.inuts-consumo input{
+    width: 300px;
+}
+
+.button-consumo{
+    display: flex;
+    justify-content: right;
+}
+
+.alert-consumo{
+    background-color: #d3d3d3;
+    width:auto;
+    height: auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.overlay-consumo{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(30, 100, 60, 0.5); /* Fundo escurecido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Para garantir que fique acima do conteúdo */
+}
