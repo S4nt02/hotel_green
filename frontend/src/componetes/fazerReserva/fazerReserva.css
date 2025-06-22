@@ -1,0 +1,87 @@
+.card_reservas{
+    width: 300px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    margin-top: 30px;
+    color: #8b4513;
+    margin: 30px;
+    flex-direction: column;
+    display: grid;
+
+}
+
+.card_reservas label{
+    font-size: 18px;
+}
+
+.card_reservas select{
+    width: 200px;
+}
+
+.card_reservas input{
+    width: 173px;
+}
+
+.tipos_reservas h1{
+    color: #8b4513;
+    margin: 30px;
+}
+
+.card_tiposReserva{
+    width: 300px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    margin-top: 30px;
+    color: #8b4513;
+    margin: 30px;
+    flex-direction: column;
+    display: grid;
+
+}
+
+.carrossel_reservas,
+.alinhar_reservas button{
+    margin-top: 20px;
+}
+
+.alinhar_reservas h3{
+    font-size: 28px;
+}
+
+.alinhar_cards {
+    display: flex;
+}
+
+.card_infos{
+    width: 500px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    margin-top: 30px;
+    color: #8b4513;
+    margin: 30px;
+    flex-direction: column;
+    display: grid;
+
+}
+
+.card_infos p{
+    font-size: 20px;
+}
+
+.button_infos {
+    margin-top: 20px;
+}
+
+.alinhar_infos_1,
+.alinhar_infos_2,
+.alinhar_infos_3{
+    margin-top: 15px;
+    display: grid;
+    flex-direction: column;
+}

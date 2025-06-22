@@ -6,6 +6,7 @@ import RealizarCheckIn from "../../componetes/realizarCheckIIn/realizarCheckIn"
 import { useAuth } from "../../context/authContext"
 import FazerRservaFun from "../../componetes/fazerReservaFuncionario/fazerReservaFun"
 import CheckOut from "../../componetes/checkOut/checkOut"
+import "./reservasFuncionarios.css"
 
 function ReservasFuncionarios (){
 
@@ -204,7 +205,7 @@ function ReservasFuncionarios (){
                 {/* {exibir todas as reservas} */}
                 {/* {permitir novas reservas} */}
                 {/* realizar check-in */}
-                <div>
+                <div className="alinhar_button_princi">
                     <button onClick={() => selecionarSesao(1)}>Reservas</button>
                     <button onClick={() => selecionarSesao(2)}>Reservas com chek-in</button>
                     <button onClick={() => selecionarSesao(4)}>Nova reserva</button>
@@ -256,15 +257,14 @@ function ReservasFuncionarios (){
 
                 {sessao === 2 && (
                     <>
-                        <div>
+                        <div className="body_cards">
                             {reservasCheckIn.map(reserva => (
                                 <>
-                                    <div key={reserva.id}>
-                                        <div>
-                                            Número da reserva: {reserva.id}
+                                    <div key={reserva.id} className="card_reservas_check">
+                                        <div className="title_reserva">
+                                            <h3>Número da reserva: {reserva.id}</h3>
                                         </div>
-                                        <hr></hr>
-                                        <div>
+                                        <div className="alinhar_infos_reservas">
                                             Check-in: {converterData(reserva.checkIn)}<br/>
                                             Check-out: {converterData(reserva.checkOut)}<br/>
                                             Hospede Principal : {reserva.nome}<br/>
@@ -284,10 +284,11 @@ function ReservasFuncionarios (){
                                             Andar: {reserva.num_andar}<br/>
                                             Quarto: {reserva.numAcomodacao}<br/>                                        
                                         </div>
+                                        <div className="button_reservas">
+                                          <button onClick={() => irParaCheckOut(reserva.id)}>Realizar Check-Out</button>
+                                        </div>  
                                     </div>
-                                    <div>
-                                        <button onClick={() => irParaCheckOut(reserva.id)}>Realizar Check-Out</button>
-                                    </div>                                   
+                                                                     
                                 </>
 
                             ))}

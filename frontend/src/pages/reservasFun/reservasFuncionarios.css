@@ -5,3 +5,41 @@
     height: 400px;
     
 }
+
+.card_reservas_check{
+    width: 250px;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 12px;
+    padding: 2rem 2.5rem;
+    margin-top: 30px;
+    color: #8b4513;
+    margin: 30px;
+    flex-direction: column;
+    display: grid;
+
+}
+
+
+.title_reserva,
+.button_reservas{
+    color: #8b4513;
+    margin: 20px;
+}
+
+.alinhar_infos_reservas{
+    color: #8b4513;
+    margin-left: 20px;
+}
+
+.body_cards{
+    display: flex;
+}
+
+.alinhar_button_princi{
+    margin: 30px;
+}
+
+.alinhar_button_princi button{
+    font-size: 20px;
+}

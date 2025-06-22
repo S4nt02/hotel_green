@@ -6,6 +6,7 @@ import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { useAuth } from "../../context/authContext";
 import { Link } from "react-router-dom";
+import "./fazerReserva.css"
 
 function FazerReserva () {
 
@@ -179,8 +180,8 @@ function FazerReserva () {
             {telaExibida === 1 &&(
                 // tela de seleção dos valores
                 <>
-                    <div>
-                        //dados de check-in check-out unidade adultos e crianças
+                    <div className="card_reservas">
+                        <h1>Informações</h1>
                         <label>Unidade</label>
                         <select value={unidadeBuscar} onChange={(e) => setUnidadeBuscar(e.target.value)}>
                             <option value={''}>Selecione uma unidade</option>
@@ -192,34 +193,35 @@ function FazerReserva () {
                         <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)}></input>
                         <label>Check-out</label>
                         <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)}></input>
-                        
 
                     </div>
-                    <div>
-                        //exibição dos tipos de quartos
-                        
-                        <div>
+                    <div className="tipos_reservas">
+                        <h1>Tipos de Acomodoções</h1>
+                        <div className="alinhar_cards">
                             {exibirTpQuartos.length > 0 ? (
                                 <>
                                     {exibirTpQuartos.map(tpQuarto =>(
-                                        <div key={tpQuarto.id}>
-                                            <h3>{tpQuarto.nomeAcomodacao}</h3>
-                                            <div>
-                                                <Swiper
-                                                modules={[Navigation]}
-                                                navigation
-                                                spaceBetween={10}
-                                                slidesPerView={1}
-                                                style={{ width: '300px', height: '300px' }}
-                                                >
-                                                {tpQuarto.imagens?.map((url, index) => (
+                                        <div key={tpQuarto.id} className="card_tiposReserva">
+                                            <div className="alinhar_reservas">
+                                               <h3>{tpQuarto.nomeAcomodacao}</h3>
+                                                <div className="carrossel_reservas">
+                                                    <Swiper
+                                                     modules={[Navigation]}
+                                                     navigation
+                                                     spaceBetween={10}
+                                                     slidesPerView={1}
+                                                     style={{ width: '300px', height: '300px' }}
+                                                    >
+                                                     {tpQuarto.imagens?.map((url, index) => (
                                                     <SwiperSlide key={index}>
                                                     <img src={url} alt={`Imagem ${index + 1}`} style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
                                                     </SwiperSlide>
-                                                ))}
-                                                </Swiper>
+                                                     ))}
+                                                    </Swiper>
+                                                </div>
+                                                <button onClick={() => setTpQuartoInfos(tpQuarto.id)}>Selecionar</button> 
                                             </div>
-                                            <button onClick={() => setTpQuartoInfos(tpQuarto.id)}>Selecionar</button>
+                                            
                                         </div>
                                         
                                     ))} 
@@ -242,10 +244,10 @@ function FazerReserva () {
             {telaExibida === 2 &&(
                 //tela de confirmaçao de informações
                 <>
-                    <div>
-                        <h3>Confirmar Reservas</h3>
-                        <p>Revise os detalhes de sua reserva antes de confirmar</p>
-                        <div>
+                    <div className="card_infos">
+                        <h1>Confirmar Reservas</h1>
+                        <h3>Revise os detalhes de sua reserva antes de confirmar</h3>
+                        <div className="alinhar_infos_1">
                             <p>Unidade: {unidades.find(unidade => String(unidade.id) === String(unidadeBuscar))?.nomeUnidade}</p>
                             <p>Check-in: {checkIn}</p>
                             <p>Check-out: {checkOut}</p>
@@ -258,10 +260,10 @@ function FazerReserva () {
                                 <p>* O check-Out deve ser realizado até as 12:00 hrs</p>
                                 <p>* O cancelamento da reserva pode ser feito até 12 horas antes do horário de ínicio da realização do chec-in, cancelamentos após esse limite será cobrada uma taxa de multa pelo cancelamento</p>
                             </div>
-                            <div>
-                                <p>Hospede: {nomeUser}</p>
+                            <div className="alinhar_infos_2">
+                                <h2>Hospede: {nomeUser}</h2>
                                 <div>
-                                    <p>Acompanhantes</p>
+                                    <h4>Acompanhantes</h4>
                                     {tpQuartoSelecionado.quantidade_adultos > 1 && (
                                         <>
                                             <div>
@@ -281,7 +283,7 @@ function FazerReserva () {
                                     )}
                                     {tpQuartoSelecionado.quantidade_criancas > 0 && (
                                         <>
-                                            <div>
+                                            <div className="alinhar_infos_3">
                                                 <label>Crianças</label>
                                                  {[...Array(tpQuartoSelecionado.quantidade_criancas)].map((_, index) =>(
                                                     <input type="text" placeholder={`Criança ${index + 1}`}
@@ -299,7 +301,7 @@ function FazerReserva () {
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div className="button_infos">
                             <button onClick={() => setTelaExibida(1)}>Voltar</button>
                             <button onClick={confirmarReserva}>Confirmar Reservas</button>
                         </div>
