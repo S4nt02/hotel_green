@@ -272,73 +272,76 @@ function FazerRservaFun () {
             {telaExibida === 2 &&(
                 //tela de confirmaçao de informações
                 <>
-                    <div className="card_infos">
-                        <h1>Confirmar Reservas</h1>
-                        <h3>Revise os detalhes de sua reserva antes de confirmar</h3>
-                        <div className="alinhar_infos_1">
-                            <p>Unidade: {unidades.find(unidade => String(unidade.id) === String(unidadeBuscar))?.nomeUnidade}</p>
-                            <p>Check-in: {checkIn}</p>
-                            <p>Check-out: {checkOut}</p>
-                            <p>Período: {periodo} noites </p>
-                            <p>Acomodação: {tpQuartoSelecionado.nomeAcomodacao}</p>
-                            <p>Diaria: {tpQuartoSelecionado.vlDiaria}</p>
-                            <div>
-                                <p>Informações Adicionais</p>
-                                <p>* O check-In deve ser realizado após as 12:00 hrs</p>
-                                <p>* O check-Out deve ser realizado até as 12:00 hrs</p>
-                                <p>* O cancelamento da reserva pode ser feito até 12 horas antes do horário de ínicio da realização do chec-in, cancelamentos após esse limite será cobrada uma taxa de multa pelo cancelamento</p>
-                            </div>
-                            <div className="alinhar_infos_2">
-                                <div className="pesquisa_usu">
-                                    <h2>Hospede Principal: {nomeUser} </h2>
-                                    <button onClick={() => setAbrirModalPesquisar(true)}>Pesquisar Usuario</button>
+                    <div className="alinhar-card-infos">
+                        <div className="card_infos">
+                            <h1>Confirmar Reservas</h1>
+                            <h3>Revise os detalhes de sua reserva antes de confirmar</h3>
+                            <div className="alinhar_infos_1">
+                                <p>Unidade: {unidades.find(unidade => String(unidade.id) === String(unidadeBuscar))?.nomeUnidade}</p>
+                                <p>Check-in: {checkIn}</p>
+                                <p>Check-out: {checkOut}</p>
+                                <p>Período: {periodo} noites </p>
+                                <p>Acomodação: {tpQuartoSelecionado.nomeAcomodacao}</p>
+                                <p>Diaria: {tpQuartoSelecionado.vlDiaria}</p>
+                                <div>
+                                    <p>Informações Adicionais</p>
+                                    <p>* O check-In deve ser realizado após as 12:00 hrs</p>
+                                    <p>* O check-Out deve ser realizado até as 12:00 hrs</p>
+                                    <p>* O cancelamento da reserva pode ser feito até 12 horas antes do horário de ínicio da realização do chec-in, cancelamentos após esse limite será cobrada uma taxa de multa pelo cancelamento</p>
                                 </div>
+                                <div className="alinhar_infos_2">
+                                    <div className="pesquisa_usu">
+                                        <h2>Hospede Principal: {nomeUser} </h2>
+                                        <button onClick={() => setAbrirModalPesquisar(true)}>Pesquisar Usuario</button>
+                                    </div>
 
 
-                                <div className="alinhamento_principal">
-                                    <h4>Acompanhantes</h4>
-                                    {tpQuartoSelecionado.quantidade_adultos > 1 && (
-                                        <>
-                                            <div className="alinhar_infos_3">
-                                                <label>Adultos</label>
-                                                {[...Array(tpQuartoSelecionado.quantidade_adultos)].map((_, index) =>(
-                                                    <input type="text" placeholder={`Acompanhante ${index + 1}`}
-                                                        value={acompanhantesAdultos[index] || ""}
-                                                        onChange={(e) => {
-                                                            const novoAcompanhantes = [...acompanhantesAdultos]
-                                                            novoAcompanhantes[index] = e.target.value
-                                                            setAcompanhantesAdultos(novoAcompanhantes)
-                                                        }}
-                                                    ></input>
-                                                ))}
-                                            </div>
-                                        </>
-                                    )}
-                                    {tpQuartoSelecionado.quantidade_criancas > 0 && (
-                                        <>
-                                            <div className="alinhar_infos_3">
-                                                <label>Crianças</label>
-                                                 {[...Array(tpQuartoSelecionado.quantidade_criancas)].map((_, index) =>(
-                                                    <input type="text" placeholder={`Criança ${index + 1}`}
-                                                        value={acompanhantesCriancas[index] || ""}
-                                                        onChange={(e) => {
-                                                            const novoAcompanhantes = [...acompanhantesCriancas]
-                                                            novoAcompanhantes[index] = e.target.value
-                                                            setAcompanhantesCriancas(novoAcompanhantes)
-                                                        }}
-                                                    ></input>
-                                                 ))}
-                                            </div>
-                                        </>
-                                    )}
+                                    <div className="alinhamento_principal">
+                                        <h4>Acompanhantes</h4>
+                                        {tpQuartoSelecionado.quantidade_adultos > 1 && (
+                                            <>
+                                                <div className="alinhar_infos_3">
+                                                    <label>Adultos</label>
+                                                    {[...Array(tpQuartoSelecionado.quantidade_adultos)].map((_, index) =>(
+                                                        <input type="text" placeholder={`Acompanhante ${index + 1}`}
+                                                            value={acompanhantesAdultos[index] || ""}
+                                                            onChange={(e) => {
+                                                                const novoAcompanhantes = [...acompanhantesAdultos]
+                                                                novoAcompanhantes[index] = e.target.value
+                                                                setAcompanhantesAdultos(novoAcompanhantes)
+                                                            }}
+                                                        ></input>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )}
+                                        {tpQuartoSelecionado.quantidade_criancas > 0 && (
+                                            <>
+                                                <div className="alinhar_infos_3">
+                                                    <label>Crianças</label>
+                                                    {[...Array(tpQuartoSelecionado.quantidade_criancas)].map((_, index) =>(
+                                                        <input type="text" placeholder={`Criança ${index + 1}`}
+                                                            value={acompanhantesCriancas[index] || ""}
+                                                            onChange={(e) => {
+                                                                const novoAcompanhantes = [...acompanhantesCriancas]
+                                                                novoAcompanhantes[index] = e.target.value
+                                                                setAcompanhantesCriancas(novoAcompanhantes)
+                                                            }}
+                                                        ></input>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="button_infos">
-                            <button onClick={() => setTelaExibida(1)}>Voltar</button>
-                            <button onClick={confirmarReserva}>Confirmar Reservas</button>
-                        </div>
+                            <div className="button_infos">
+                                <button onClick={() => setTelaExibida(1)}>Voltar</button>
+                                <button onClick={confirmarReserva}>Confirmar Reservas</button>
+                            </div>
+                        </div>                        
                     </div>
+                   
                 </>
             )}
 

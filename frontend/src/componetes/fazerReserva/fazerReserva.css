@@ -57,7 +57,7 @@
 }
 
 .card_infos{
-    width: 500px;
+    width: 70%;
     height: auto;
     border-radius: 0.75rem;
     box-shadow: 0 6px 12px;
@@ -84,4 +84,9 @@
     margin-top: 15px;
     display: grid;
     flex-direction: column;
+}
+
+.alinhar-card-infos{
+    display: flex;
+    justify-content: center;
 }
