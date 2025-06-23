@@ -32,7 +32,7 @@ function HomePage() {
           <div class = "conteudo1_hotel">
              <img src={conteudo_1} id='conteudo1_img' alt="logo"/>
             <h3>A Green Garden é uma rede hoteleira comprometida com a excelência em hospitalidade, aliando conforto, sofisticação e atendimento personalizado. 
-              Com unidades estrategicamente localizadas em [principais cidades/estados], atendemos tanto o público corporativo quanto o turístico, oferecendo uma 
+              Com unidades estrategicamente localizadas em Canoas, Gramado, Pelotas e Santa Maria, atendemos tanto o público corporativo quanto o turístico, oferecendo uma 
               estrutura completa e adaptada às diferentes necessidades dos hóspedes.
               Cada uma de nossas unidades conta com acomodações modernas, espaços para eventos, restaurantes de alta qualidade e serviços adicionais pensados 
               para proporcionar uma experiência única. Nosso diferencial está na atenção aos detalhes, no cuidado com o bem-estar de cada cliente e no compromisso 
