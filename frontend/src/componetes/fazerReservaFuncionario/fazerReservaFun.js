@@ -387,8 +387,8 @@ function FazerRservaFun () {
 
             {modalNovoUsuario && (
                 <>
-                    <div className="overlay">
-                        <div className="alert-modal">
+                    <div className="overlay-reservas">
+                        <div className="alert-modal-cad-novo-usuario">
                             <p onClick={() => setModalNovoUsuario(false)}>X</p>
                             <CadNovoUsuario/>
                         </div>

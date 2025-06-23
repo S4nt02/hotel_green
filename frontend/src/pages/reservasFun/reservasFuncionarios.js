@@ -56,19 +56,9 @@ function ReservasFuncionarios (){
     }
 
     const irParaCheckIn = (reserva) => {
-    const dataCheckIn = new Date(reserva.checkIn)
-    const hoje = new Date()
-
-    // Converter ambas as datas para YYYY-MM-DD
-    const dataCheckInStr = dataCheckIn.toISOString().split('T')[0]
-    const hojeStr = hoje.toISOString().split('T')[0]
-
-    if (dataCheckInStr === hojeStr) {
         setIdReserva(reserva)
         setCheckInOpen(true)
-    } else {
-        alert("O check-in só pode ser realizado na data da reserva!")
-    }
+
     }
 
 
@@ -305,7 +295,7 @@ function ReservasFuncionarios (){
 
             {checkInOpen && (
                 <>
-                    <div className="checkIn-overlay" onClick={() => setCheckInOpen(false)}>
+                    <div className="overlay-reservas" onClick={() => setCheckInOpen(false)}>
                         <div className="checkin-content">
                             <RealizarCheckIn idReserva={idReserva}/>
                             <div>
@@ -346,8 +336,8 @@ function ReservasFuncionarios (){
 
             {checkOutOpen && (
                 <>
-                    <div className="overlay" onClick={() => setCheckOutOpen(false)}>
-                        <div className="aleert-modal">
+                    <div className="overlay-reservas" onClick={() => setCheckOutOpen(false)}>
+                        <div className="aleert-modal-reservas">
                             <CheckOut idCheckOut={idCheckOut}/>
                         </div>
 

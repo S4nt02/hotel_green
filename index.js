@@ -1274,7 +1274,7 @@ app.post(`/api/confirmarReserva`, (req, res) => {
       }
 
       if (resultadosAcomodacoes.length === 0) {
-        return res.status(404).json({ error: 'Nenhuma acomodação disponível para esse período.' });
+        return res.status(4010).json({ error: 'Nenhuma acomodação disponível para esse período.' });
       }
 
       // 3. Pega o primeiro ID de acomodação disponível
@@ -1530,7 +1530,38 @@ app.post(`/api/registrarEntrada`, (req, res) => {
 
 ///////////////BUSCAR RESERVAS COM CHECKIN/////////////
 app.get(`/api/buscarCheckIn`, (req, res) => {
-  const sql = `SELECT * FROM reservas WHERE entrada = 1 AND saida IS NULL AND cancelada IS NULL`
+  const sql = `    SELECT 
+      r.id,
+      r.checkIn,
+      r.checkOut,
+      r.periodo,
+      r.vlDiaria,
+      r.id_hospede,
+      r.acompanhantesAdultos,
+      r.acompanhantesCriancas,
+      r.idAcomodacao,
+      r.entrada,
+      r.saida,
+      r.dataReserva,
+
+      ta.nomeAcomodacao AS nomeAcomodacao,
+      ta.quantidade_adultos AS quantidadeAdultos,
+      ta.quantidade_criancas AS quantidadeCriancas,
+      u.nomeUnidade AS nomeUnidade,
+      a.numAcomodacao AS numAcomodacao,
+      a.num_andar AS num_andar,
+      us.nome AS nome,
+      us.documento AS documento,
+      us.email AS email,
+      us.telefone AS telefone
+
+    FROM reservas r
+    LEFT JOIN tipo_acomodacao ta ON r.tpAcomodacao = ta.id
+    LEFT JOIN unidades u ON r.unidade = u.id
+    LEFT JOIN acomodacoes a ON r.idAcomodacao = a.id
+    LEFT JOIN usuarios us ON r.id_hospede = us.id
+
+     WHERE entrada = 1 AND saida IS NULL AND cancelada IS NULL`
 
   bd.query(sql, (err, result) => {
     if(err){

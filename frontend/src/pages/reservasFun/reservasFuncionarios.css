@@ -1,8 +1,10 @@
 .checkin-content{
-    background-color: aliceblue;
+    background-color: #d3d3d3;
     color: black;
     width: 300px;
     height: 400px;
+    padding: 20px;
+    border-radius: 20px;
     
 }
 
@@ -42,4 +44,12 @@
 
 .alinhar_button_princi button{
     font-size: 20px;
+}
+
+.aleert-modal-reservas{
+    background-color: #d3d3d3;
+    width: auto;
+    height: auto;
+    padding: 40px;
+    border-radius: 20px;
 }

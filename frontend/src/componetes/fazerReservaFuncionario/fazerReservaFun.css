@@ -9,3 +9,13 @@
 .button_inferior{
     margin: 30px;
 }
+
+.alert-modal-cad-novo-usuario{
+    background-color: #d3d3d3;
+    width: 60%;
+    height: 60%;
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1; /* Permite o crescimento até o limite do modal */
+
+}

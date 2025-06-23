@@ -108,7 +108,7 @@ function CheckOut({ idCheckOut }) {
             {alertaOpen === 1 && (
                 <div>
                     <div>
-                        <p>Quarto: {informacoes.quarto}</p>
+                        <p>Quarto: {informacoes.numAcomodacao}</p>
                         <p>Unidade: {informacoes.nomeUnidade}</p>
                     </div>
                     <div>
