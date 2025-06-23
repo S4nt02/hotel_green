@@ -64,13 +64,19 @@
 }
 
 .body_ocupacao {
-    display: flex;
     font-size: 20px;
     color: #8b4513;
-    justify-self: center;
+    display: flex;
+    justify-content: center;
 }
 
 .alinhar_button{
     display: flex;
     justify-self: center;
+}
+
+.grid-exibir{
+   display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    width: 100%;
 }

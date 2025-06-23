@@ -21,3 +21,44 @@
     flex-direction: column;
     margin-top: 218px;
 }
+
+.alinhar-content{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.card-catalogo{
+    margin: 10px;
+    border: 3px solid #8b4513;
+    border-radius: 20px;
+    padding: 20px; 
+    display: flex;
+}
+
+.catalogo{
+    width: 90%;
+}
+
+.dados-card{
+    margin: 15px;
+}
+
+.dados-card h3{
+    margin: 5px;
+    color: #8b4513;
+    font-size: 30px;
+}
+
+.dados-card-descricao{
+    color: #8b4513;
+    font-size: 22px;
+}
+
+.dados-card-acompanhantes{
+    margin: 20px;
+    display: flex;
+     justify-content: space-around;
+     font-size: 20px;
+     color: #8b4513;
+}

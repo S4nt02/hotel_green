@@ -803,7 +803,7 @@ app.post('/api/editarAcomodacao', (req, res) => {
   num_andar = ?, 
   tpAcomodacao = ?, 
   unidade_hotel = ?
-   WHERE id = id`
+   WHERE id = ?`
 
   const valores = [
     numAcomodacao,

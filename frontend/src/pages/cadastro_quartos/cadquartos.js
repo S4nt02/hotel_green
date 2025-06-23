@@ -166,6 +166,7 @@ function App() {
                   <div key={tpQuarto.id} className='exibir_tiposQuarto'>
                     <p>Acomodação - {tpQuarto.nomeAcomodacao}</p>
                     <p>Unidade -{tpQuarto.unidade_hotel}</p>
+                    <p>Quantidade- {tpQuarto.quantidade_total}</p>
                     <p>Diaria-{tpQuarto.vlDiaria}</p><br></br>
                     <div>
                       <Swiper

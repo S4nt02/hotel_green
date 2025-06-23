@@ -43,36 +43,41 @@ function Acomodacoes (){
                         <h1 className="t1">Catálogo de Acomodações</h1>
                         <p className="t2">Contamos com os melhores quartos e estrutura para atender você e toda sua família</p>
                     </div>
-                    {tpQuartos.map(quarto =>(
-                        <div key={quarto.id}>                            
-                            <div>
-                                <Swiper
-                                modules={[Navigation]}
-                                navigation
-                                spaceBetween={10}
-                                slidesPerView={1}
-                                style={{ width: '300px', height: '300px' }}
-                                >
-                                {quarto.imagens?.map((url, index) => (
-                                    <SwiperSlide key={index}>
-                                    <img src={url} alt={`Imagem ${index + 1}`} style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
-                                    </SwiperSlide>
-                                ))}
-                                </Swiper>
-                            </div>
-                            <div>
-                                <h3>{quarto.nomeAcomodacao}</h3>
-                                <div>
-                                    {quarto.descricao}
+                    <div className="alinhar-content">
+                        <div className="catalogo">
+                            {tpQuartos.map(quarto =>(
+                                <div key={quarto.id} className="card-catalogo">                            
+                                    <div>
+                                        <Swiper
+                                        modules={[Navigation]}
+                                        navigation
+                                        spaceBetween={10}
+                                        slidesPerView={1}
+                                        style={{ width: '300px', height: '300px' }}
+                                        >
+                                        {quarto.imagens?.map((url, index) => (
+                                            <SwiperSlide key={index}>
+                                            <img src={url} alt={`Imagem ${index + 1}`} style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
+                                            </SwiperSlide>
+                                        ))}
+                                        </Swiper>
+                                    </div>
+                                    <div className="dados-card">
+                                        <h3>{quarto.nomeAcomodacao}</h3>
+                                        <div className="dados-card-descricao">
+                                            {quarto.descricao}
+                                        </div>
+                                        <div className="dados-card-acompanhantes">
+                                            <p>Quantidade de adultos-{quarto.quantidade_adultos}</p>
+                                            <p>Quantidade de crianças-{quarto.quantidade_criancas}</p>
+                                        </div>
+
+                                    </div>
                                 </div>
-                                <div>
-                                    <p>Quantidade de adultos-{quarto.quantidade_adultos}</p>
-                                    <p>Quantidade de crianças-{quarto.quantidade_criancas}</p>
-                                </div>
-                                <button>Reservar</button>
-                            </div>
-                        </div>
-                    ))}
+                            ))}                        
+                        </div>                        
+                    </div>
+
                 </div>
             </main>
             <footer className="footer-acomodacoes">

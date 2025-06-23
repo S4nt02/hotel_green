@@ -97,6 +97,8 @@ function CadItens () {
 
 
         buscarItens()
+        setIdItem("")
+        setEditar(false)
     }
 
     const buscarItens = async () => {
