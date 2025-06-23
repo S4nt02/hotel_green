@@ -203,17 +203,17 @@ function ReservasFuncionarios (){
                 </div>
                 {sessao === 1 && (
                     <>
-                        <div>BARRA DE PESQUISA</div>
                         <button onClick={relatorioReserasDias}>Relatorio Reservas do dia</button>
-                        <div>
+                        <div div className="body_cards">
                             {reservas.map(reserva => (
                                 <>
-                                    <div key={reserva.id}>
-                                        <div>
+                                <div key={reserva.id} className="card_reservas_check">
+                                        <div className="title_reserva">
                                             Número da reserva: {reserva.id}
                                         </div>
                                         <hr></hr>
-                                        <div>
+                                        <br/>
+                                        <div className="alinhar_infos_reservas">
                                             Check-in: {converterData(reserva.checkIn)}<br/>
                                             Check-out: {converterData(reserva.checkOut)}<br/>
                                             Hospede Principal : {reserva.nome}<br/>
@@ -232,12 +232,14 @@ function ReservasFuncionarios (){
                                             Acomodação: {reserva.tpAcomodacao}<br/>
                                             Andar: {reserva.num_andar}<br/>
                                             Quarto: {reserva.numAcomodacao}<br/>                                        
-                                        </div>
+                                        </div>  
+                                        <br/>                                  
+                                        <div>
+                                            <button onClick={() => desejaCancelar(reserva.id, reserva.checkIn)}>Cancelar</button>
+                                            <button onClick={() => irParaCheckIn(reserva.id)}>Realizar Check-in</button>
+                                        </div>    
                                     </div>
-                                    <div>
-                                        <button onClick={() => desejaCancelar(reserva.id, reserva.checkIn)}>Cancelar</button>
-                                        <button onClick={() => irParaCheckIn(reserva.id)}>Realizar Check-in</button>
-                                    </div>                                
+                            
                                 </>
 
                             ))}
